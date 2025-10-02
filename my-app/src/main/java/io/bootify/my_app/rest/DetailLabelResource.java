@@ -1,0 +1,66 @@
+package io.bootify.my_app.rest;
+
+import io.bootify.my_app.model.DetailLabelDTO;
+import io.bootify.my_app.service.DetailLabelService;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
+import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+
+@RestController
+@RequestMapping(value = "/api/detailLabels", produces = MediaType.APPLICATION_JSON_VALUE)
+public class DetailLabelResource {
+
+    private final DetailLabelService detailLabelService;
+
+    public DetailLabelResource(final DetailLabelService detailLabelService) {
+        this.detailLabelService = detailLabelService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DetailLabelDTO>> getAllDetailLabels() {
+        return ResponseEntity.ok(detailLabelService.findAll());
+    }
+
+    @GetMapping("/{labelId}")
+    public ResponseEntity<DetailLabelDTO> getDetailLabel(
+            @PathVariable(name = "labelId") final Long labelId) {
+        return ResponseEntity.ok(detailLabelService.get(labelId));
+    }
+
+    @PostMapping
+    @ApiResponse(responseCode = "201")
+    public ResponseEntity<Long> createDetailLabel(
+            @RequestBody @Valid final DetailLabelDTO detailLabelDTO) {
+        final Long createdLabelId = detailLabelService.create(detailLabelDTO);
+        return new ResponseEntity<>(createdLabelId, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{labelId}")
+    public ResponseEntity<Long> updateDetailLabel(
+            @PathVariable(name = "labelId") final Long labelId,
+            @RequestBody @Valid final DetailLabelDTO detailLabelDTO) {
+        detailLabelService.update(labelId, detailLabelDTO);
+        return ResponseEntity.ok(labelId);
+    }
+
+    @DeleteMapping("/{labelId}")
+    @ApiResponse(responseCode = "204")
+    public ResponseEntity<Void> deleteDetailLabel(
+            @PathVariable(name = "labelId") final Long labelId) {
+        detailLabelService.delete(labelId);
+        return ResponseEntity.noContent().build();
+    }
+
+}
