@@ -22,4 +22,10 @@ public class PlanningWorkOrderService {
         PageRequest pageRequest = PageRequest.of(pageNumber, 10, Sort.by(Sort.Direction.DESC, "createTime"));
         return planningWorkOrderRepository.findAll(pageRequest);
     }
+    public List<String> getAllProductionOrderIds() {
+        return planningWorkOrderRepository.findAllProductionOrderIds();
+    }
+    public List<PlanningWorkOrder> getByPRODUCT_ORDER_ID(String productOrderId) {
+        return planningWorkOrderRepository.getByPRODUCT_ORDER_ID(productOrderId);
+    }
 }

@@ -22,4 +22,12 @@ public class PlannningWorkOrderResource {
     public Page<PlanningWorkOrder> getWorkOrders(@RequestParam(defaultValue = "0") int page) {
         return planningWorkOrderService.getLatestWorkOrders(page);
     }
+    @GetMapping("/productionOrderIds")
+    public List<String> getAllProductionOrderIds() {
+        return planningWorkOrderService.getAllProductionOrderIds();
+    }
+    @GetMapping("/byProductionOrderId")
+    public List<PlanningWorkOrder> getByProductionOrderId(@RequestParam String productOrderId) {
+        return planningWorkOrderService.getByPRODUCT_ORDER_ID(productOrderId);
+    }
 }
