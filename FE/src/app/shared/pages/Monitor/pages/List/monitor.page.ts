@@ -1,0 +1,82 @@
+import { CommonModule } from '@angular/common';
+import { Component, signal } from '@angular/core';
+import { SharedModule } from '../../../../../share.module';
+import { HttpClient } from '@angular/common/http';
+import { catchError, throwError } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MonitorService } from '../../service/monitor.service';
+
+@Component({
+    selector: 'app-monitor',
+    standalone: true,
+    templateUrl: './monitor.page.html',
+    styleUrls: ['./monitor.page.scss'],
+    imports: [CommonModule, SharedModule]
+})
+export class MonitorPage {
+    data: any[] = [];
+    products!: any[];
+    constructor(private router: Router, private route: ActivatedRoute, private monitorService: MonitorService) { }
+
+    ngOnInit(): void {
+        this.monitorService.getAll().subscribe(res => {
+            console.log(res);
+            
+        });
+        this.products = [
+            {
+                id: '1000',
+                code: 'f230fh0g3',
+                name: 'Bamboo Watch',
+                description: 'Product Description',
+                image: 'bamboo-watch.jpg',
+                price: 65,
+                category: 'Accessories',
+                quantity: 24,
+                inventoryStatus: 'INSTOCK',
+                rating: 5
+            },
+            {
+                id: '1000',
+                code: 'f230fh0g3',
+                name: 'Bamboo Watch',
+                description: 'Product Description',
+                image: 'bamboo-watch.jpg',
+                price: 65,
+                category: 'Accessories',
+                quantity: 24,
+                inventoryStatus: 'INSTOCK',
+                rating: 5
+            },
+            {
+                id: '1000',
+                code: 'f230fh0g3',
+                name: 'Bamboo Watch',
+                description: 'Product Description',
+                image: 'bamboo-watch.jpg',
+                price: 65,
+                category: 'Accessories',
+                quantity: 24,
+                inventoryStatus: 'INSTOCK',
+                rating: 5
+            },
+            {
+                id: '1000',
+                code: 'f230fh0g3',
+                name: 'Bamboo Watch',
+                description: 'Product Description',
+                image: 'bamboo-watch.jpg',
+                price: 65,
+                category: 'Accessories',
+                quantity: 24,
+                inventoryStatus: 'INSTOCK',
+                rating: 5
+            },
+        ]
+    }
+
+    viewItem(item: any) {
+        this.router.navigate([item.id, 'view'], { relativeTo: this.route });
+    }
+
+}
