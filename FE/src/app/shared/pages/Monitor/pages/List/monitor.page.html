@@ -1,0 +1,24 @@
+<div class="bg-sosen">
+    <div class="base-table-header my-3 d-flex px-2">
+        <h2>Thông tin sản xuất</h2>
+        <p-button label="Thêm" class="p-button-sm" />
+    </div>
+    <p-table [value]="products" class="dark-table">
+        <ng-template #header>
+            <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-product>
+            <tr class="howver-item" (click)="viewItem(product)">
+                <td>{{ product.code }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.quantity }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

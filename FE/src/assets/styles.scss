@@ -1,0 +1,17 @@
+/* You can add global styles to this file, and also import other style files */
+@use './tailwind.css';
+@use './layout/layout.scss';
+@use 'primeicons/primeicons.css';
+@use './demo/demo.scss';
+
+legend {
+    font-size: 15px;
+}
+
+div:where(.swal2-container) {
+  z-index: 9999 !important;
+}
+
+.bg-sosen {
+  background-color: black !important;
+}
