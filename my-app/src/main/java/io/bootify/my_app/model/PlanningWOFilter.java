@@ -44,6 +44,4 @@ public class PlanningWOFilter {
     private String scadaUserGroup;
     private String scadaUserFullname;
     private String scadaStageList;
-
-
 }

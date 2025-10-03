@@ -5,6 +5,7 @@ import io.bootify.planning.domain.PlanningWorkOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,9 +19,17 @@ public class PlannningWorkOrderResource {
     @Autowired
     PlanningWorkOrderService planningWorkOrderService;
 
-    @GetMapping
-    public Page<PlanningWorkOrder> getWorkOrders(@RequestParam(defaultValue = "0") int page) {
-        return planningWorkOrderService.getLatestWorkOrders(page);
+//    @GetMapping
+//    public Page<PlanningWorkOrder> getWorkOrders(@RequestParam(defaultValue = "0") int page) {
+//        return planningWorkOrderService.getLatestWorkOrders(page);
+//    }
+    @GetMapping("/latest")
+    public ResponseEntity<Page<PlanningWorkOrder>> getLatestWorkOrders(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String woId
+    ) {
+        Page<PlanningWorkOrder> result = planningWorkOrderService.getLatestWorkOrders(page, woId);
+        return ResponseEntity.ok(result);
     }
     @GetMapping("/productionOrderIds")
     public List<String> getAllProductionOrderIds() {
