@@ -37,6 +37,7 @@ import { BadgeModule } from 'primeng/badge';
 import { DisableIfInvalidDirective } from './shared/directive/disable-invalid.directive';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { ChartModule } from 'primeng/chart';
+import { AutoComplete } from 'primeng/autocomplete';
 
 @NgModule({
   imports: [
@@ -76,7 +77,8 @@ import { ChartModule } from 'primeng/chart';
     BadgeModule,
     DisableIfInvalidDirective,
     RadioButtonModule,
-    ChartModule
+    ChartModule,
+    AutoComplete
   ],
   exports: [
     CommonModule,
@@ -115,7 +117,8 @@ import { ChartModule } from 'primeng/chart';
     BadgeModule,
     DisableIfInvalidDirective,
     RadioButtonModule,
-    ChartModule
+    ChartModule,
+    AutoComplete
   ],
   providers: [DialogService, MessageService, ConfirmationService]
 })

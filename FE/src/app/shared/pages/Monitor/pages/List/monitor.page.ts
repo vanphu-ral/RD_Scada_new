@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, signal } from '@angular/core';
 import { SharedModule } from '../../../../../share.module';
 import { HttpClient } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MonitorService } from '../../service/monitor.service';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { AddWODialogComponent } from '../../dialogs/add-wo-dialog/add-wo.dialog';
+import { PlanningWoService } from '../../service/planning-wo.service';
 
 @Component({
     selector: 'app-monitor',
@@ -15,64 +18,55 @@ import { MonitorService } from '../../service/monitor.service';
 })
 export class MonitorPage {
     data: any[] = [];
-    products!: any[];
-    constructor(private router: Router, private route: ActivatedRoute, private monitorService: MonitorService) { }
+    totalRecords: number = 0;
+    pageSize: number = 10;
+    ref?: DynamicDialogRef;
+    loading: boolean = false;
+    filters = {
+        branchCode: '',
+        productCode: '',
+        status: '',
+    }
+
+    constructor(private router: Router, private route: ActivatedRoute, private planningWoService: PlanningWoService, private cdr: ChangeDetectorRef, private dialogService: DialogService) { }
 
     ngOnInit(): void {
-        this.monitorService.getAll().subscribe(res => {
-            console.log(res);
-            
+        this.loadData(0, this.pageSize);
+    }
+
+    loadData(page: number, size: number) {
+        this.loading = true;
+        this.planningWoService.getPlanningWOs(this.filters, page, size).subscribe({
+            next: (res) => {
+                this.data = res.content;
+                this.totalRecords = res.totalElements;
+                this.loading = false;
+            },
+            error: (err) => {
+                console.error(err);
+                this.loading = false;
+            }
         });
-        this.products = [
-            {
-                id: '1000',
-                code: 'f230fh0g3',
-                name: 'Bamboo Watch',
-                description: 'Product Description',
-                image: 'bamboo-watch.jpg',
-                price: 65,
-                category: 'Accessories',
-                quantity: 24,
-                inventoryStatus: 'INSTOCK',
-                rating: 5
-            },
-            {
-                id: '1000',
-                code: 'f230fh0g3',
-                name: 'Bamboo Watch',
-                description: 'Product Description',
-                image: 'bamboo-watch.jpg',
-                price: 65,
-                category: 'Accessories',
-                quantity: 24,
-                inventoryStatus: 'INSTOCK',
-                rating: 5
-            },
-            {
-                id: '1000',
-                code: 'f230fh0g3',
-                name: 'Bamboo Watch',
-                description: 'Product Description',
-                image: 'bamboo-watch.jpg',
-                price: 65,
-                category: 'Accessories',
-                quantity: 24,
-                inventoryStatus: 'INSTOCK',
-                rating: 5
-            },
-            {
-                id: '1000',
-                code: 'f230fh0g3',
-                name: 'Bamboo Watch',
-                description: 'Product Description',
-                image: 'bamboo-watch.jpg',
-                price: 65,
-                category: 'Accessories',
-                quantity: 24,
-                inventoryStatus: 'INSTOCK',
-                rating: 5
-            },
-        ]
+    }
+
+    onPage(event: any) {
+        const page = event.first / event.rows;  // tính số trang
+        const size = event.rows;
+        this.loadData(page, size);
+    }
+
+    addWODialog() {
+        this.ref = this.dialogService.open(AddWODialogComponent, {
+            header: 'Danh sách mã WO',
+            width: '1200px',
+            modal: true,
+            data: {},
+        });
+        this.ref.onClose.subscribe((result) => {
+            if (result) {
+
+            }
+        });
     }
 
     viewItem(item: any) {

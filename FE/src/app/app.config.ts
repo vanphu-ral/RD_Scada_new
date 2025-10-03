@@ -51,21 +51,6 @@ export const appConfig: ApplicationConfig = {
         // multi select
         selectionMessage: '{0} cột được chọn'
       }
-    }),
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (loginService: LoginService) => {
-        return async () => {
-          const currentPath = window.location.pathname;
-          if (currentPath.startsWith('/callback')) {
-            await loginService.handlePostLogin();
-          } else {
-            await loginService.restoreLoginFromStorage();
-          }
-        };
-      },
-      deps: [LoginService],
-      multi: true
-    }
+    })
   ]
 };

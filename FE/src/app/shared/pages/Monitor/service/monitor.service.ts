@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BaseApiService } from '../../../service/base-api.service';
 import { Observable } from 'rxjs';
 
@@ -10,6 +10,25 @@ export class MonitorService extends BaseApiService<any> {
   }
 
   override getAll(page: number = 0): Observable<any[]> {
-   return this.http.get<any>(`${this['fullBaseUrl']}?page=${page}`);
+    return this.http.get<any>(`${this['fullBaseUrl']}?page=${page}`);
+  }
+
+  getPlanningWOs(filter: any, page: number, size: number): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page)
+      .set('size', size);
+    if (filter.woId) {
+      params = params.set('woId', filter.woId);
+    }
+    if (filter.lotNumber) {
+      params = params.set('lotNumber', filter.lotNumber);
+    }
+    if (filter.sapWoId) {
+      params = params.set('sapWoId', filter.sapWoId);
+    }
+    if (filter.productCode) {
+      params = params.set('productCode', filter.productCode);
+    }
+    return this.http.get<any>(`${this['fullBaseUrl']}/latest`, { params });
   }
 }
