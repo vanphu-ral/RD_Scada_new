@@ -10,6 +10,7 @@ export class PlanningWoService extends BaseApiService<any> {
   }
 
   override create(entity: CreateEntity<any>): Observable<any> {
+    delete entity.id;
     return this.http.post<any>(this['fullBaseUrl'], entity);
   }
 

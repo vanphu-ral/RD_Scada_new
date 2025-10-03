@@ -41,6 +41,7 @@ export class MonitorPage {
                 this.data = res.content;
                 this.totalRecords = res.totalElements;
                 this.loading = false;
+                this.cdr.detectChanges();
             },
             error: (err) => {
                 console.error(err);
@@ -50,9 +51,13 @@ export class MonitorPage {
     }
 
     onPage(event: any) {
-        const page = event.first / event.rows;  // tính số trang
+        const page = event.first / event.rows;  
         const size = event.rows;
         this.loadData(page, size);
+    }
+
+    onSearch() {
+        this.loadData(0, this.pageSize);
     }
 
     addWODialog() {

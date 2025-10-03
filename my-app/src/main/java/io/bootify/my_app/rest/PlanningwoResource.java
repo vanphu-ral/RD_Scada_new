@@ -39,7 +39,7 @@ public class PlanningwoResource {
         return ResponseEntity.ok(result);
     }
     @PostMapping
-    public ResponseEntity<String> createPlanningWO(PlanningWO planningWO) {
+    public ResponseEntity<String> createPlanningWO(@RequestBody PlanningWO planningWO) {
         planningWOService.create(planningWO);
         return ResponseEntity.ok("PlanningWO created successfully");
     }

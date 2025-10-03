@@ -23,7 +23,6 @@ export class AddWODialogComponent {
     loading: boolean = false;
     filters = {
         woId: '',
-        lotNumber: '',
         sapWoId: '',
         productCode: ''
     };
@@ -44,7 +43,7 @@ export class AddWODialogComponent {
 
     loadData(page: number, size: number) {
         this.loading = true;
-        this.monitorService.getPlanningWOs(this.filters, page, size).subscribe({
+        this.monitorService.getAllCanSearch(this.filters, page, size).subscribe({
             next: (res: any) => {
                 this.listWOs = res.content;
                 this.totalRecords = res.totalElements;

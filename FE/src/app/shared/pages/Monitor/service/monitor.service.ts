@@ -9,19 +9,12 @@ export class MonitorService extends BaseApiService<any> {
     super(http, 'api/planningworkorder');
   }
 
-  override getAll(page: number = 0): Observable<any[]> {
-    return this.http.get<any>(`${this['fullBaseUrl']}?page=${page}`);
-  }
-
-  getPlanningWOs(filter: any, page: number, size: number): Observable<any> {
+  getAllCanSearch(filter: any, page: number, size: number): Observable<any> {
     let params = new HttpParams()
       .set('page', page)
       .set('size', size);
     if (filter.woId) {
       params = params.set('woId', filter.woId);
-    }
-    if (filter.lotNumber) {
-      params = params.set('lotNumber', filter.lotNumber);
     }
     if (filter.sapWoId) {
       params = params.set('sapWoId', filter.sapWoId);
