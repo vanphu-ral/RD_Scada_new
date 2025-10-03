@@ -23,14 +23,19 @@ public class PlannningWorkOrderResource {
 //    public Page<PlanningWorkOrder> getWorkOrders(@RequestParam(defaultValue = "0") int page) {
 //        return planningWorkOrderService.getLatestWorkOrders(page);
 //    }
-    @GetMapping("/latest")
-    public ResponseEntity<Page<PlanningWorkOrder>> getLatestWorkOrders(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(required = false) String woId
-    ) {
-        Page<PlanningWorkOrder> result = planningWorkOrderService.getLatestWorkOrders(page, woId);
-        return ResponseEntity.ok(result);
-    }
+@GetMapping("/latest")
+public ResponseEntity<Page<PlanningWorkOrder>> getLatestWorkOrders(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(required = false) String woId,
+        @RequestParam(required = false) String productCode,
+        @RequestParam(required = false) String sapWoId,
+        @RequestParam(required = false) String lotNumber
+) {
+    Page<PlanningWorkOrder> result = planningWorkOrderService.getLatestWorkOrders(
+            page, woId, productCode, sapWoId, lotNumber
+    );
+    return ResponseEntity.ok(result);
+}
     @GetMapping("/productionOrderIds")
     public List<String> getAllProductionOrderIds() {
         return planningWorkOrderService.getAllProductionOrderIds();
