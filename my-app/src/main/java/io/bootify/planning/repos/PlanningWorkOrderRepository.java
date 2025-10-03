@@ -3,6 +3,7 @@ package io.bootify.planning.repos;
 import io.bootify.planning.domain.PlanningWorkOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,5 +18,5 @@ public interface PlanningWorkOrderRepository extends JpaRepository<PlanningWorkO
 @Query(value = "select * from planning_db.planning_work_order where  PRODUCT_ORDER_ID = ?1 ;",nativeQuery = true)
 List<PlanningWorkOrder> getByPRODUCT_ORDER_ID(String productOrderId);
 
-    Page<PlanningWorkOrder> findAll(Specification<PlanningWorkOrder> spec, PageRequest pageRequest);
+    public Page<PlanningWorkOrder> findAll(Specification<PlanningWorkOrder> spec, Pageable pageRequest);
 }
