@@ -21,7 +21,7 @@ public interface ErrorModelRepository extends JpaRepository<ErrorModel, Integer>
             "StageID as stageID," +
             "HMIErrID as hmiErrID," +
             "(select count(*) from DetailError where workOrder = ?1 and machineName = ?2 and errorName = ErrorName) as quantity " +
-            " from ErrorModel where StageID = ?3 ;",nativeQuery = true)
+            " from ErrorModel where StageID = ?3  and ProductTypeGroupID = 36 ;",nativeQuery = true)
     public List<ErrorResponse> getErrorResponsesByWorkOrderAndMachineNameAndStageID(String workOrder, String machineName, Integer stageID);
 
 }
