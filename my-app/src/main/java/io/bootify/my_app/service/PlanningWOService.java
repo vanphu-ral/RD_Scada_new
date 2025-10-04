@@ -94,9 +94,7 @@ public class PlanningWOService {
         }
         response.setProductionOrderModelDetails(productionOrderModelDetails);
         //
-        response.setScanSerialChecks(scanSerialCheckRepository.findAllByWorkOrder(response.getPlanningWO().getWoId()).stream()
-                .map(scanSerialCheck -> scanSerialCheckService.mapToDTO(scanSerialCheck, new ScanSerialCheckDTO()))
-                .toList());
+        response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(response.getPlanningWO().getWoId()));
         return response;
     }
     public Page<PlanningWO> getFilteredPlanningWOs(PlanningWOFilter filter, Pageable pageable) {
