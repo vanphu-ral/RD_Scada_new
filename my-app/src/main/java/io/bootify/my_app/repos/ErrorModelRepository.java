@@ -14,14 +14,25 @@ public interface ErrorModelRepository extends JpaRepository<ErrorModel, Integer>
     ErrorModel findFirstByHmierrHmierrId(Integer hmierrId);
 
     ErrorModel findFirstByProductTypeGroupProductTypeGroupId(Integer productTypeGroupId);
-    @Query(value = "select " +
-            "ErrorID as errorId," +
-            "ProductTypeGroupID as productTypeGroupID," +
-            "ErrorName as errorName," +
-            "StageID as stageID," +
-            "HMIErrID as hmiErrID," +
-            "(select count(*) from DetailError where workOrder = ?1 and machineName = ?2 and errorName = ErrorName) as quantity " +
-            " from ErrorModel where StageID = ?3  and ProductTypeGroupID = 36 ;",nativeQuery = true)
+    @Query(value =
+            "SELECT  \n" +
+            "    e.ErrorID AS errorId, \n" +
+            "    e.ProductTypeGroupID AS productTypeGroupID, \n" +
+            "    e.ErrorName AS errorName, \n" +
+            "    e.StageID AS stageID, \n" +
+            "    e.HMIErrID AS hmiErrID, \n" +
+            "    COUNT(d.detailEID) AS quantity\n" +
+            "FROM \n" +
+            "    ErrorModel e\n" +
+            "LEFT JOIN \n" +
+            "    DetailError d ON d.errorName = e.ErrorName \n" +
+            "                 AND d.workOrder = ?1 \n" +
+            "                 AND d.machineName = ?2\n" +
+            "WHERE \n" +
+            "    e.StageID = ?3  \n" +
+            "    AND e.ProductTypeGroupID = 36\n" +
+            "GROUP BY \n" +
+            "    e.ErrorID, e.ProductTypeGroupID, e.ErrorName, e.StageID, e.HMIErrID;",nativeQuery = true)
     public List<ErrorResponse> getErrorResponsesByWorkOrderAndMachineNameAndStageID(String workOrder, String machineName, Integer stageID);
 
 }
