@@ -72,7 +72,7 @@ public class ProductionOrderModelsService {
         productionOrderModelsRepository.delete(productionOrderModels);
     }
 
-    private ProductionOrderModelsDTO mapToDTO(final ProductionOrderModels productionOrderModels,
+    public ProductionOrderModelsDTO mapToDTO(final ProductionOrderModels productionOrderModels,
             final ProductionOrderModelsDTO productionOrderModelsDTO) {
         productionOrderModelsDTO.setProductionOrderId(productionOrderModels.getProductionOrderId());
         productionOrderModelsDTO.setWorkOrder(productionOrderModels.getWorkOrder());

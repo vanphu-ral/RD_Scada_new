@@ -58,7 +58,7 @@ public class MachineTypesModelsService {
         machineTypesModelsRepository.delete(machineTypesModels);
     }
 
-    private MachineTypesModelsDTO mapToDTO(final MachineTypesModels machineTypesModels,
+    public MachineTypesModelsDTO mapToDTO(final MachineTypesModels machineTypesModels,
             final MachineTypesModelsDTO machineTypesModelsDTO) {
         machineTypesModelsDTO.setMachineGroupId(machineTypesModels.getMachineGroupId());
         machineTypesModelsDTO.setMachineGroupName(machineTypesModels.getMachineGroupName());

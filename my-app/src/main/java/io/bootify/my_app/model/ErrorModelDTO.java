@@ -19,5 +19,6 @@ public class ErrorModelDTO {
     private Integer hmierr;
 
     private Integer productTypeGroup;
+    private Integer quantity;
 
 }

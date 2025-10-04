@@ -19,7 +19,10 @@ public class PlanningwoResource {
     public PlanningwoResource(PlanningWOService planningWOService) {
         this.planningWOService = planningWOService;
     }
-
+    @GetMapping("/info/{id}")
+    public ResponseEntity<?> getWoInfo(@PathVariable Long id) {
+        return ResponseEntity.ok(planningWOService.getWoInfo(id));
+    }
     @GetMapping
     public ResponseEntity<Page<PlanningWO>> getPlanningWOs(
             @RequestParam(required = false) String branchCode,
@@ -39,8 +42,7 @@ public class PlanningwoResource {
         return ResponseEntity.ok(result);
     }
     @PostMapping
-    public ResponseEntity<String> createPlanningWO(@RequestBody PlanningWO planningWO) {
-        planningWOService.create(planningWO);
-        return ResponseEntity.ok("PlanningWO created successfully");
+    public ResponseEntity<?> createPlanningWO(@RequestBody PlanningWO planningWO) {
+        return planningWOService.create(planningWO);
     }
 }

@@ -56,6 +56,7 @@ public class MainDatabaseConfiguration {
     }
 
     @Bean(name = "mainTransactionManager")
+    @Primary
     public JpaTransactionManager db2TransactionManager(@Qualifier("mainEntityManagerFactory") final EntityManagerFactory emf) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(emf);

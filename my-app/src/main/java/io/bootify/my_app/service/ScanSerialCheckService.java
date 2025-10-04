@@ -64,7 +64,7 @@ public class ScanSerialCheckService {
         scanSerialCheckRepository.delete(scanSerialCheck);
     }
 
-    private ScanSerialCheckDTO mapToDTO(final ScanSerialCheck scanSerialCheck,
+    public ScanSerialCheckDTO mapToDTO(final ScanSerialCheck scanSerialCheck,
             final ScanSerialCheckDTO scanSerialCheckDTO) {
         scanSerialCheckDTO.setSerialId(scanSerialCheck.getSerialId());
         scanSerialCheckDTO.setSerialBoard(scanSerialCheck.getSerialBoard());
