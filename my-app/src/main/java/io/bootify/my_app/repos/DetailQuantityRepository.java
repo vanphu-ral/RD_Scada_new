@@ -4,6 +4,9 @@ import io.bootify.my_app.domain.DetailQuantity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface DetailQuantityRepository extends JpaRepository<DetailQuantity, Long> {
+    List<DetailQuantity> findAllByWorkOrderAndMachineName(String workOrder,String machineName);
 }

@@ -50,7 +50,7 @@ public class DetailQuantityService {
         detailQuantityRepository.delete(detailQuantity);
     }
 
-    private DetailQuantityDTO mapToDTO(final DetailQuantity detailQuantity,
+    public DetailQuantityDTO mapToDTO(final DetailQuantity detailQuantity,
             final DetailQuantityDTO detailQuantityDTO) {
         detailQuantityDTO.setDetailQid(detailQuantity.getDetailQid());
         detailQuantityDTO.setWorkOrder(detailQuantity.getWorkOrder());

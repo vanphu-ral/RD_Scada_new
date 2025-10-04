@@ -70,7 +70,7 @@ public class MachinesModelsService {
         machinesModelsRepository.delete(machinesModels);
     }
 
-    private MachinesModelsDTO mapToDTO(final MachinesModels machinesModels,
+    public MachinesModelsDTO mapToDTO(final MachinesModels machinesModels,
             final MachinesModelsDTO machinesModelsDTO) {
         machinesModelsDTO.setMachineId(machinesModels.getMachineId());
         machinesModelsDTO.setMachineName(machinesModels.getMachineName());

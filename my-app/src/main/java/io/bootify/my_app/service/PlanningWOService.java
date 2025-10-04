@@ -1,5 +1,7 @@
 package io.bootify.my_app.service;
 
+import io.bootify.my_app.domain.DetailQuantity;
+import io.bootify.my_app.domain.MachinesModels;
 import io.bootify.my_app.domain.PlanningWO;
 import io.bootify.my_app.domain.ProductionOrderModels;
 import io.bootify.my_app.model.*;
@@ -33,6 +35,10 @@ public class PlanningWOService {
     @Autowired
     MachineTypesModelsRepository machineTypesModelsRepository;
     @Autowired
+    MachinesModelsService machinesModelsService;
+    @Autowired
+    MachinesModelsRepository machinesModelsRepository;
+    @Autowired
     ErrorModelService errorModelService;
     @Autowired
     ErrorModelRepository errorModelRepository;
@@ -56,10 +62,29 @@ public class PlanningWOService {
             productionOrderModelsService.mapToDTO(pom, new ProductionOrderModelsDTO());
             // Lấy thông tin Machine Group Detail
             MachineGroupDetail machineGroupDetail = new MachineGroupDetail();
+            List<MachineDetail> machineDetails = new ArrayList<>();
             machineGroupDetail.setMachineTypesModels( machineTypesModelsService.mapToDTO(
                     machineTypesModelsRepository.findById(pom.getMachineGroup().getMachineGroupId()).orElse(null),
                     new MachineTypesModelsDTO()));
             detail.setProductionOrderModels(productionOrderModelsService.mapToDTO(pom, new ProductionOrderModelsDTO()));
+            // Lấy danh sách máy móc thuộc nhóm máy và lineId = 58
+            List<MachinesModels> machinesModelsList = machinesModelsRepository.findByMachineGroupIdAndFixedLineId(
+                    machineGroupDetail.getMachineTypesModels().getMachineGroupId());
+            for (MachinesModels mm : machinesModelsList) {
+                MachineDetail machineDetail = new MachineDetail();
+                // Lấy thông tin của máy
+                machineDetail.setMachine(machinesModelsService.mapToDTO(mm, new MachinesModelsDTO()));
+               //
+                List<DetailQuantity> detailQuantities = detailQuantityRepository.findAllByWorkOrderAndMachineName(
+                        response.getPlanningWO().getWoId(),machineDetail.getMachine().getMachineName());
+                List<DetailQuantityDTO> detailQuantityDTOS = new ArrayList<>();
+                for (DetailQuantity dq : detailQuantities) {
+                    detailQuantityDTOS.add(detailQuantityService.mapToDTO(dq, new DetailQuantityDTO()));
+                }
+                machineDetail.setDetailQuantity(detailQuantityDTOS);
+                machineDetails.add(machineDetail);
+            }
+            machineGroupDetail.setMachineDetails(machineDetails);
             detail.setMachineGroupDetails(machineGroupDetail);
             productionOrderModelDetails.add(detail);
         }
@@ -82,6 +107,9 @@ public class PlanningWOService {
 
         if (filter.getStatus() != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), filter.getStatus()));
+        }
+        if (filter.getWoId() != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("woId"), filter.getWoId()));
         }
         // Add more filters as needed...
 
