@@ -1,6 +1,7 @@
 <div class="p-1">
     <p-table [value]="listWOs" [lazy]="true" [paginator]="true" [rows]="pageSize" [totalRecords]="totalRecords"
-        (onLazyLoad)="onPage($event)" [loading]="loading" [rowsPerPageOptions]="[5,10,20,50]">
+        (onLazyLoad)="onPage($event)" [loading]="loading" [rowsPerPageOptions]="[5,10,20,50]"
+        currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
             <tr>
                 <th>Mã WO</th>
@@ -38,7 +39,7 @@
                 <td>{{ row.productCode }}</td>
                 <td>{{ row.startTime | date:'dd/MM/yyyy' }}</td>
                 <td>
-                    <p-button label="Chọn" class="p-button-sm" (onClick)="selectWO(row)"></p-button>
+                    <p-button label="Chọn" severity="info" class="p-button-sm" (onClick)="selectWO(row)"></p-button>
                 </td>
             </tr>
         </ng-template>
@@ -46,6 +47,6 @@
 
 
     <div class="d-flex justify-content-end gap-2 mt-4">
-        <p-button label="Đóng" (onClick)="close()"></p-button>
+        <p-button label="Đóng" severity="danger" (onClick)="close()"></p-button>
     </div>
 </div>

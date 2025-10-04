@@ -1,10 +1,10 @@
 <div class="bg-sosen">
     <div class="base-table-header my-3 d-flex px-2">
         <h2>Thông tin sản xuất</h2>
-        <p-button label="Thêm" class="p-button-sm" (onClick)="addWODialog()" />
+        <p-button label="Thêm" class="p-button-sm" severity="secondary" (onClick)="addWODialog()" />
     </div>
     <p-table [value]="data" [paginator]="true" [rows]="pageSize" [totalRecords]="totalRecords" [lazy]="true"
-        [loading]="loading" (onLazyLoad)="onPage($event)" [rowsPerPageOptions]="[5,10,20,50]" class="dark-table">
+        [loading]="loading" (onLazyLoad)="onPage($event)" [rowsPerPageOptions]="[5,10,20,50]" class="dark-table" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
         <ng-template pTemplate="caption">
             <div class="row">
                 <div class="col-4">
@@ -18,7 +18,7 @@
                     <p-floatlabel variant="on">
                         <input pInputText type="text" placeholder="productCode" [(ngModel)]="filters.productCode"
                         class="w-100" (keydown.enter)="onSearch()" />
-                        <label for="installationDate">Mã sản phẩm</label>
+                        <label for="installationDate">Mã hàng hóa</label>
                     </p-floatlabel>
                 </div>
                 <div class="col-4">
@@ -35,16 +35,17 @@
                 <th>Planning WO</th>
                 <th>Mã WO Scada</th>
                 <th>Mã PO</th>
-                <th>Đơn vị sản xuất</th>
+                <th>Ngành</th>
+                <th>Mã ngành</th>
                 <th>Tổ</th>
+                <th>Mã tổ</th>
                 <th>Trạng thái</th>
-                <th>Line_Name</th>
                 <th>Mã WO</th>
                 <th>Số Lô</th>
                 <th>Mã hàng hóa</th>
                 <th>Tên hàng hóa</th>
                 <th>Sản lượng kế hoạch</th>
-                <th>Sản lượng đầu vào</th>
+                <!-- <th>Sản lượng đầu vào</th>
                 <th>Sản lượng hoàn thành</th>
                 <th>Tỉ lệ hoàn thành</th>
                 <th>Cycle Time</th>
@@ -53,33 +54,34 @@
                 <th>Ngày tiếp hiện</th>
                 <th>Nguyên nhân</th>
                 <th>Line_Type</th>
-                <th>Line_Id</th>
+                <th>Line_Id</th> -->
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-row>
             <tr class="hover-item" (click)="viewItem(row)">
-                <td>{{ row.planningWorkOrderId }}</td>
+                <td>{{ row.woId }}</td>
                 <td>{{ row.sapWoId }}</td>
                 <td>{{ row.productOrderId }}</td>
                 <td>{{ row.branchName }}</td>
+                <td>{{ row.branchCode }}</td>
                 <td>{{ row.groupName }}</td>
-                <td>{{ row.state }}</td>
-                <td>{{ row.lineName }}</td>
+                <td>{{ row.groupCode }}</td>
+                <td>{{ row.status }}</td>
                 <td>{{ row.woId }}</td>
                 <td>{{ row.lotNumber }}</td>
                 <td>{{ row.productCode }}</td>
                 <td>{{ row.productName }}</td>
                 <td>{{ row.quantityPlan }}</td>
-                <td>{{ row.scadaQuantityOut1 }}</td>
+                <!-- <td>{{ row.scadaQuantityOut1 }}</td>
                 <td>{{ row.quantityActual }}</td>
                 <td>{{ row.quota }}</td>
-                <td>{{ row.cycleTime }}</td>
-                <td>{{ row.startTime }}</td>
-                <td>{{ row.endTime }}</td>
-                <td>{{ row.createTime }}</td>
+                <td>{{ row.cycleTime | date:'dd/MM/yyyy' }}</td>
+                <td>{{ row.startTime | date:'dd/MM/yyyy' }}</td>
+                <td>{{ row.endTime | date:'dd/MM/yyyy' }}</td>
+                <td>{{ row.createTime | date:'dd/MM/yyyy' }}</td>
                 <td>{{ row.reasonId }}</td>
                 <td>{{ row.workOrderTypeName }}</td>
-                <td>{{ row.lineId }}</td>
+                <td>{{ row.lineId }}</td> -->
             </tr>
         </ng-template>
     </p-table>

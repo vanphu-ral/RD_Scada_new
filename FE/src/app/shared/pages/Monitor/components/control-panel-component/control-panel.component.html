@@ -1,0 +1,51 @@
+<div class="widget-content relative" appFullscreen #fs="appFullscreen">
+  <i class="fa-solid fa-expand fullscreen-btn" (click)="fs.toggleFullscreen()"></i>
+  
+  <div class="d-flex flex-column">
+    <span>Tên sản phẩm: {{data.productName}}</span>
+    <span>Mã sản phẩm: {{data.productCode}}</span>
+    <span>SAP-WO: {{data.sapWoId}}</span>
+  </div>
+  <div class="table-note">
+    <table class="table table-dark">
+      <thead>
+        <tr>
+          <th>PO-Planning</th>
+          <th>Số lô</th>
+          <th>Số lượng kế hoạch</th>
+          <th>Đơn hàng</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ data.woId }}</td>
+          <td>{{ data.lotNumber }}</td>
+          <td>{{ data.quantityPlan }}</td>
+          <td>{{ data.productOrderId }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table table-dark">
+      <thead>
+        <tr>
+          <th>Sản lượng đầu vào</th>
+          <th>Sản lượng hoàn thành</th>
+          <th>Tỉ lệ lỗi vật tư</th>
+          <th>Tỉ lệ lỗi</th>
+          <th>CPK-I</th>
+          <th>CPK-P</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ data.totalNumberInput }}</td>
+          <td>{{ data.totalNumberOutput }}</td>
+          <td>{{ (data.totalNumberOutput / data.totalNumberInput) > 0 ? (data.totalNumberOutput / data.totalNumberInput) * 100 : 0 }}</td>
+          <td>1</td>
+          <td>1</td>
+          <td>1</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

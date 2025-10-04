@@ -2,7 +2,7 @@
 .dashboard-container {
     display: grid;
     grid-template-columns: 0.7fr 1.6fr 0.7fr;
-    grid-template-rows: auto 1fr 1fr 1fr;
+    grid-template-rows: auto 1fr 1fr;
     gap: 15px;
 }
 .widget {
@@ -10,4 +10,8 @@
     border: 1px solid #333;
     padding: 10px;
     border-radius: 4px;
+}
+.widget-status {
+    max-height: 200px;
+    overflow-y: scroll;
 }

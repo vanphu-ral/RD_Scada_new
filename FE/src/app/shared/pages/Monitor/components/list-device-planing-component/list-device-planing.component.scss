@@ -1,0 +1,20 @@
+.widget-content {
+  position: relative;
+}
+
+.fullscreen-btn {
+  position: absolute;
+  top: -0;
+  right: 5px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 4px;
+  font-size: 20px;
+  z-index: 10;
+}
+
+.box-device {
+  background-color: #010089;
+  padding: 10px;
+}

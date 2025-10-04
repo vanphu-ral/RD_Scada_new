@@ -31,4 +31,8 @@ export class PlanningWoService extends BaseApiService<any> {
 
     return this.http.get<any>(this['fullBaseUrl'], { params });
   }
+
+  getWoInfor(woId: string): Observable<any> {
+    return this.http.get<any>(`${this['fullBaseUrl']}/info/${woId}`);
+  }
 }

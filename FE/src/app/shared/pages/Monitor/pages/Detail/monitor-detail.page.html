@@ -1,23 +1,33 @@
 <div class="dashboard-container">
   <!-- row 1 -->
   <div class="widget widget-config p-3">
-    <div class="d-grid gap-2">
-      <span>Bảng điều khiển</span>
-      <p-button icon="pi pi-cog" class="p-button-text" severity="secondary" label="Config"></p-button>
-      <span><span class="text-primary fw-bold">Họ và tên:</span> RD00054</span>
-      <span><span class="text-primary fw-bold">Số điện thoại:</span> </span>
-      <span><i class="fa-solid fa-users"></i> 48</span>
-    </div>
+    <app-station-indicators-component [data]="data"></app-station-indicators-component>
   </div>
-  <div class="widget widget-po">Thông tin Đơn hàng</div>
-  <div class="widget widget-status">Trạng thái & Tốc độ</div>
+  <div class="widget widget-po">
+    <app-control-panel-component [data]="model.planningWO"></app-control-panel-component>
+  </div>
+  <div class="widget widget-status">
+    <app-status-device-component [data]="data"></app-status-device-component>
+  </div>
 
 
   <!-- row 2 -->
   <div class="widget widget-chart-1">
     <p-chart type="pie" [data]="data" [options]="options" class="w-full md:w-[30rem]" />
   </div>
-  <div class="widget widget-stations">Các chỉ số trạm</div>
+  <div class="widget widget-stations">
+    <div class="row mb-2">
+      <app-list-device-planing-component [data]="listDevices"></app-list-device-planing-component>
+    </div>
+    <div class="row">
+      <div class="col">
+        <p-chart type="pie" [data]="data" [options]="options" class="w-full md:w-[30rem]" />
+      </div>
+      <div class="col">
+        <h1 class="text-center">500 PPM</h1>
+      </div>
+    </div>
+  </div>
   <div class="widget widget-ppm">500 PPM</div>
 
   <!-- row 3 -->
@@ -29,7 +39,10 @@
 
 
   <!-- row 4 -->
-  <div class="widget widget-serial-list">Danh sách scan serial</div>
+  <!-- <div class="widget widget-serial-list">Danh sách scan serial</div>
   <div class="widget widget-temp-chart">Biểu đồ Nhiệt độ hàn</div>
-  <div class="widget widget-last-chart">Biểu đồ Cuối</div>
+  <div class="widget widget-last-chart">Biểu đồ Cuối</div> -->
+</div>
+<div class="d-flex justify-content-end mt-3">
+  <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
 </div>

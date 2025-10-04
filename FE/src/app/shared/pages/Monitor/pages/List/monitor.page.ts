@@ -69,7 +69,7 @@ export class MonitorPage {
         });
         this.ref.onClose.subscribe((result) => {
             if (result) {
-
+                this.loadData(0, this.pageSize);
             }
         });
     }

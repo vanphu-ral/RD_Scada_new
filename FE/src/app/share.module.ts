@@ -38,6 +38,7 @@ import { DisableIfInvalidDirective } from './shared/directive/disable-invalid.di
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { ChartModule } from 'primeng/chart';
 import { AutoComplete } from 'primeng/autocomplete';
+import { FullscreenDirective } from './shared/directive/fullscreen.directive';
 
 @NgModule({
   imports: [
@@ -78,7 +79,8 @@ import { AutoComplete } from 'primeng/autocomplete';
     DisableIfInvalidDirective,
     RadioButtonModule,
     ChartModule,
-    AutoComplete
+    AutoComplete,
+    FullscreenDirective
   ],
   exports: [
     CommonModule,
@@ -118,7 +120,8 @@ import { AutoComplete } from 'primeng/autocomplete';
     DisableIfInvalidDirective,
     RadioButtonModule,
     ChartModule,
-    AutoComplete
+    AutoComplete,
+    FullscreenDirective
   ],
   providers: [DialogService, MessageService, ConfirmationService]
 })

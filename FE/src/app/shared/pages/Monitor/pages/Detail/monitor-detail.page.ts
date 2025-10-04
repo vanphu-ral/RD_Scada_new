@@ -2,26 +2,77 @@ import { CommonModule, isPlatformBrowser } from '@angular/common'; // <-- THÊM 
 import { SharedModule } from '../../../../../share.module';
 import { ApplicationConfigService } from '../../../../core/config/application-config.service';
 import { ChangeDetectorRef, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { StationIndicatorsComponent } from '../../components/station-indicators-component/station-indicators.component';
+import { ControlPanelComponent } from '../../components/control-panel-component/control-panel.component';
+import { StatusDeviceComponent } from '../../components/status-device-component/status-device.component';
+import { ListDevicePlaningComponent } from '../../components/list-device-planing-component/list-device-planing.component';
+import { BasePageComponent } from '../../../../core/base-page-component/base-page.component';
+import { PlanningWoService } from '../../service/planning-wo.service';
 
 @Component({
     selector: 'app-monitor-detail',
     standalone: true,
     templateUrl: './monitor-detail.page.html',
     styleUrls: ['./monitor-detail.page.scss'],
-    imports: [CommonModule, SharedModule]
+    imports: [CommonModule, SharedModule, StationIndicatorsComponent, ControlPanelComponent, StatusDeviceComponent, ListDevicePlaningComponent]
 })
-export class MonitorDetailPage implements OnInit {
+export class MonitorDetailPage extends BasePageComponent<any> {
+
     data: any;
     options: any;
+    listDevices: any[] = [];
 
     platformId = inject(PLATFORM_ID);
     configService = inject(ApplicationConfigService);
 
-    constructor(private cd: ChangeDetectorRef) { }
+    constructor(protected override apiService: PlanningWoService) {
+        super(apiService);
+    }
 
-    ngOnInit() {
+    override ngOnInit(): void {
+        super.ngOnInit();
+        this.formatData(this.model.productionOrderModelDetails);
+        console.log(this.model);
         this.initChart();
     }
+
+    formatData(data: any[]) {
+        const total = data.reduce(
+            (acc, item) => {
+                const details = item.machineGroupDetails?.machineDetails || [];
+                this.listDevices.push(...details);
+                details.forEach((detail: any) => {
+                    if (detail.errors && detail.errors.length > 0) {
+                        detail.errors.forEach((error: any) => {
+                            acc.quantity += error.quantity || 0;
+                        });
+                    }
+                    if (detail.detailQuantity && detail.detailQuantity.length > 0) {
+                        detail.detailQuantity.forEach((q: any) => {
+                            acc.numberInput += q.numberInput || 0;
+                            acc.numberOutput += q.numberOutput || 0;
+                        });
+                    } else {
+                        acc.numberInput += detail.numberInput || 0;
+                        acc.numberOutput += detail.numberOutput || 0;
+                    }
+                });
+                return acc;
+            },
+            { numberInput: 0, numberOutput: 0, quantity: 0 }
+        );
+
+        this.model.planningWO.totalNumberInput = total.numberInput;
+        this.model.planningWO.totalNumberOutput = total.numberOutput;
+        this.model.planningWO.totalQuantity = total.quantity;
+
+        console.log("Tổng Input:", total.numberInput);
+        console.log("Tổng Output:", total.numberOutput);
+        console.log("Tổng Quantity lỗi:", total.quantity);
+        console.log(this.listDevices);
+        
+    }
+
 
     initChart() {
         if (isPlatformBrowser(this.platformId)) {
@@ -29,7 +80,6 @@ export class MonitorDetailPage implements OnInit {
             const textColor = documentStyle.getPropertyValue('--text-color');
 
             this.data = {
-                labels: ['A', 'B', 'C'],
                 datasets: [
                     {
                         data: [540, 325, 702],
@@ -51,8 +101,12 @@ export class MonitorDetailPage implements OnInit {
                     }
                 }
             };
-            this.cd.markForCheck(); // Giữ lại để đảm bảo cập nhật UI
+            this.cdr.markForCheck(); // Giữ lại để đảm bảo cập nhật UI
         }
     }
 
+
+    override save(): void {
+
+    }
 }

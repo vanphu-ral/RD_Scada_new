@@ -1,0 +1,18 @@
+<div class="widget-content relative" appFullscreen #fs="appFullscreen">
+  <i class="fa-solid fa-expand fullscreen-btn" (click)="fs.toggleFullscreen()"></i>
+  <div class="row">
+    <div class="col" *ngFor="let item of data; let i = index">
+      <div class="box-device d-flex flex-column text-center">
+        <span>{{ item.machine.machineName }}</span>
+        <div class="status d-flex justify-content-around my-1">
+          <span>In: {{ getTotalInput(item.detailQuantity) }}</span>
+          <span>Out: {{ getTotalOutput(item.detailQuantity) }}</span>
+        </div>
+        <div class="status d-flex justify-content-around my-1">
+          <p-button severity="danger" label="Khai báo lỗi"/>
+          <p-button severity="success" label="Chi tiết"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

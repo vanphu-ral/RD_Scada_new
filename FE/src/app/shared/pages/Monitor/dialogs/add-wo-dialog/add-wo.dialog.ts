@@ -69,10 +69,15 @@ export class AddWODialogComponent {
 
 
     selectWO(item: any) {
-        this.planningWOService.create(item).subscribe(res => {
-            Util.toastMessage('Thêm lệnh sản xuất thành công', 'success');
-            this.ref.close(res);
-        })
+        this.planningWOService.create(item).subscribe({
+            next: (res) => {
+                Util.toastMessage('Thêm WO thành công', 'success');
+                this.close();
+            },
+            error: (err) => {
+                console.error(err);
+            }
+        });
     }
 
     close() {

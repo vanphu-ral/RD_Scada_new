@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { MonitorPage } from './pages/List/monitor.page';
 import { MonitorDetailPage } from './pages/Detail/monitor-detail.page';
+import { PlanningWoResolve } from './Resolver/planning-wo.resolver';
 
 
 const monitorRoute: Routes = [
@@ -10,7 +11,11 @@ const monitorRoute: Routes = [
   },
   {
     path: ':id/view',
-    component: MonitorDetailPage
+    component: MonitorDetailPage,
+    data: { mode: 'view' },
+    resolve: {
+      data: PlanningWoResolve,
+    }
   }
 ];
 
