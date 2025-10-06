@@ -14,7 +14,7 @@ import { Util } from '../../../../core/utils/utils-function';
     templateUrl: './add-wo.dialog.html',
     styleUrls: ['./add-wo.dialog.scss'],
 })
-export class AddWODialogComponent {
+export class AddWODialog {
 
     data: any;
     listWOs: any[] = [];

@@ -32,8 +32,6 @@
           <th>Sản lượng hoàn thành</th>
           <th>Tỉ lệ lỗi vật tư</th>
           <th>Tỉ lệ lỗi</th>
-          <th>CPK-I</th>
-          <th>CPK-P</th>
         </tr>
       </thead>
       <tbody>
@@ -41,9 +39,7 @@
           <td>{{ data.totalNumberInput }}</td>
           <td>{{ data.totalNumberOutput }}</td>
           <td>{{ (data.totalNumberOutput / data.totalNumberInput) > 0 ? (data.totalNumberOutput / data.totalNumberInput) * 100 : 0 }}</td>
-          <td>1</td>
-          <td>1</td>
-          <td>1</td>
+          <td>{{ (data.totalQuantity / data.totalNumberInput) > 0 ? (data.totalQuantity / data.totalNumberInput) * 100 : 0 }}</td>
         </tr>
       </tbody>
     </table>

@@ -15,3 +15,24 @@
     max-height: 200px;
     overflow-y: scroll;
 }
+
+.widget-config {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  gap: 10px; 
+}
+
+.widget-config > :first-child {
+  grid-column: 1 / span 2; 
+}
+
+.widget-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.widget-row1 {
+  overflow-x: scroll;
+    width: auto;
+}

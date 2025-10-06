@@ -6,7 +6,7 @@ import { catchError, throwError } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MonitorService } from '../../service/monitor.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { AddWODialogComponent } from '../../dialogs/add-wo-dialog/add-wo.dialog';
+import { AddWODialog } from '../../dialogs/add-wo-dialog/add-wo.dialog';
 import { PlanningWoService } from '../../service/planning-wo.service';
 
 @Component({
@@ -61,7 +61,7 @@ export class MonitorPage {
     }
 
     addWODialog() {
-        this.ref = this.dialogService.open(AddWODialogComponent, {
+        this.ref = this.dialogService.open(AddWODialog, {
             header: 'Danh sách mã WO',
             width: '1200px',
             modal: true,
