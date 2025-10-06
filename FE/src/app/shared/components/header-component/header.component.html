@@ -18,11 +18,11 @@
 
     <div class="layout-topbar-menu hidden lg:block">
       <div class="layout-topbar-menu-content">
-        <a class="layout-topbar-action" routerLink="/qr-code">
+        <!-- <a class="layout-topbar-action" routerLink="/qr-code">
           <i class="fa-solid fa-qrcode"></i>
           <span>QR Code</span>
-        </a>
-        <button type="button" class="layout-topbar-action">
+        </a> -->
+        <button type="button" class="layout-topbar-action" (click)="fullscreenToggle.emit()">
           <i class="fas fa-expand-arrows-alt"></i>
           <span>Full screen</span>
         </button>

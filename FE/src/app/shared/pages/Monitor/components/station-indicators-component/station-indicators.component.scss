@@ -13,3 +13,9 @@
   font-size: 20px;
   z-index: 10;
 }
+.box-information {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+  justify-items: start;
+}

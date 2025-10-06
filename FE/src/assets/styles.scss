@@ -15,3 +15,37 @@ div:where(.swal2-container) {
 .bg-sosen {
   background-color: black !important;
 }
+.fullscreen-active {
+  width: 100vw !important;
+  height: 100vh !important;
+  overflow: auto !important;
+  background: var(--surface-ground, #fff);
+  display: block;
+  position: relative;
+  z-index: 9999;
+}
+
+.exit-fullscreen-btn {
+  position: fixed;
+  top: 15px;
+  right: 50%;
+  z-index: 99999;
+  background: #dadee3;
+  color: #20262e;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.exit-fullscreen-btn:hover {
+  background: #dadee3;
+  color: #20262e;
+}
+

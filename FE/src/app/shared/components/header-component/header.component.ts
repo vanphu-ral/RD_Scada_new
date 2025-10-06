@@ -19,6 +19,7 @@ import * as _ from 'lodash';
 export class AppHeaderComponent {
   @Input() pageTitle = 'Dashboard - QLTB';
   @Output() toggleDrawer = new EventEmitter<void>();
+  @Output() fullscreenToggle = new EventEmitter<void>();
   userMenuItems: MenuItem[] = [];
   notifications = [
     { id: 1, message: 'Kế hoạch bảo trì mới được tạo', read: false },

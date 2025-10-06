@@ -7,23 +7,39 @@ import { AppFooterComponent } from '../components/footer-component/footer.compon
 import { AppSidenavComponent } from '../components/sidenav-component/sidenav.component';
 import { AppHeaderComponent } from '../components/header-component/header.component';
 import { BreadcrumbComponent } from '../components/breadcrumb-component/breadcrumb.component';
+import { FullscreenDirective } from '../directive/fullscreen.directive';
 
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [CommonModule, RouterModule, AppHeaderComponent, AppSidenavComponent, AppFooterComponent, BreadcrumbComponent],
+    imports: [CommonModule, RouterModule, AppHeaderComponent, AppSidenavComponent, AppFooterComponent, BreadcrumbComponent, FullscreenDirective],
     template: `<div class="layout-wrapper" [ngClass]="containerClass">
-        <app-header></app-header>
-        <app-sidenav></app-sidenav>
-        <div class="layout-main-container">
-            <app-breadcrumb></app-breadcrumb>
-            <div class="layout-main">
-                <router-outlet></router-outlet>
-            </div>
-            <app-footer></app-footer>
-        </div>
-        <div class="layout-mask animate-fadein"></div>
-    </div> `,
+  <app-header (fullscreenToggle)="onFullscreenToggle()"></app-header>
+  <app-sidenav *ngIf="!isFullscreen"></app-sidenav>
+
+  <div class="layout-main-container">
+    <app-breadcrumb *ngIf="!isFullscreen"></app-breadcrumb>
+
+    <!-- Gắn sự kiện fullscreenChange -->
+    <div class="layout-main" appFullscreen #fs="appFullscreen" (fullscreenChange)="onFullscreenChange($event)">
+      <router-outlet></router-outlet>
+
+      <!-- Nút thoát fullscreen -->
+      <button
+        *ngIf="isFullscreen"
+        class="exit-fullscreen-btn"
+        (click)="onFullscreenToggle()"
+        title="Thoát chế độ toàn màn hình">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+
+    <app-footer *ngIf="!isFullscreen"></app-footer>
+  </div>
+
+  <div class="layout-mask animate-fadein"></div>
+</div>
+ `,
     styles: [`
         app-breadcrumb {
         display: flex;
@@ -40,6 +56,9 @@ export class AppLayout {
     @ViewChild(AppSidenavComponent) appSidebar!: AppSidenavComponent;
 
     @ViewChild(AppHeaderComponent) appTopBar!: AppHeaderComponent;
+
+    @ViewChild('fs') fullscreenDirective!: any;
+    isFullscreen = false;
 
     constructor(
         public layoutService: LayoutService,
@@ -116,5 +135,13 @@ export class AppLayout {
         if (this.menuOutsideClickListener) {
             this.menuOutsideClickListener();
         }
+    }
+
+    onFullscreenToggle() {
+        this.fullscreenDirective.toggleFullscreen();
+    }
+
+    onFullscreenChange(state: boolean) {
+        this.isFullscreen = state;
     }
 }
