@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common'; // <-- THÊM isPlatformBrowser
+import { CommonModule, isPlatformBrowser } from '@angular/common'; 
 import { SharedModule } from '../../../../../share.module';
 import { ApplicationConfigService } from '../../../../core/config/application-config.service';
 import { ChangeDetectorRef, Component, inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
@@ -12,12 +12,11 @@ import { ChangeDetectorRef, Component, inject, Input, OnInit, PLATFORM_ID } from
 })
 export class ConventionalTableComponent implements OnInit {
 
-    @Input() data: any
+    @Input() data: any[] = []
 
     constructor(private cd: ChangeDetectorRef) { }
 
     ngOnInit() {
-
     }
 
     

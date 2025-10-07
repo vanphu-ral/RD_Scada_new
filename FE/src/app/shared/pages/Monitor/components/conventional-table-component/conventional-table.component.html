@@ -14,13 +14,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+        <tr *ngFor="let row of data">
+          <td>{{ row.stageNum }}</td>
+          <td>{{ row.machineName }}</td>
+          <td>{{ row.serialBoard }}</td>
+          <td>{{ row.serialItem }}</td>
+          <td>{{ row.timeScan }}</td>
+          <td>{{ row.serialStatus }}</td>
         </tr>
       </tbody>
     </table>

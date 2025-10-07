@@ -43,5 +43,7 @@ export class BaseChartComponent implements OnInit {
 
     }
 
+    
+
 
 }

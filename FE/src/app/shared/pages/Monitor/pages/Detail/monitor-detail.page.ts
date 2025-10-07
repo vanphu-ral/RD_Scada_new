@@ -31,6 +31,9 @@ export class MonitorDetailPage extends BasePageComponent<any> {
     platformId = inject(PLATFORM_ID);
     configService = inject(ApplicationConfigService);
 
+    chartData: any;
+    chartOptions: any;
+
     constructor(protected override apiService: PlanningWoService) {
         super(apiService);
     }
@@ -40,6 +43,25 @@ export class MonitorDetailPage extends BasePageComponent<any> {
         this.formatData(this.model.productionOrderModelDetails);
         console.log(this.model);
         this.initChart();
+        this.chartData = this.getChartData(this.model.errorCommonScadas); // Gọi hàm chuyển đổi ở trên
+
+        this.chartOptions = {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context: any) {
+                            const label = context.label || '';
+                            const value = context.raw;
+                            return `${label}: ${value}`;
+                        }
+                    }
+                }
+            }
+        };
     }
 
     formatData(data: any[]) {
@@ -109,6 +131,34 @@ export class MonitorDetailPage extends BasePageComponent<any> {
             this.cdr.markForCheck(); // Giữ lại để đảm bảo cập nhật UI
         }
     }
+
+    getChartData(errorCommonScadas: any[]) {
+        const countByGroup: { [key: string]: number } = {};
+      
+        for (const item of errorCommonScadas) {
+          const group = item.errGroup || 'Không xác định';
+          countByGroup[group] = (countByGroup[group] || 0) + 1;
+        }
+      
+        const labels = Object.keys(countByGroup);
+        const data = Object.values(countByGroup);
+      
+        const backgroundColors = [
+          '#42A5F5', '#66BB6A', '#FFA726', '#FF6384',
+          '#AA66CC', '#FF4444', '#0099CC', '#00C851'
+        ];
+      
+        return {
+          labels,
+          datasets: [
+            {
+              data,
+              backgroundColor: backgroundColors.slice(0, labels.length)
+            }
+          ]
+        };
+      }
+      
 
 
     override save(): void {

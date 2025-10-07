@@ -1,5 +1,6 @@
 package io.bootify.my_app.rest;
 
+import io.bootify.my_app.domain.ErrorCommonScada;
 import io.bootify.my_app.domain.PlanningWO;
 import io.bootify.my_app.model.*;
 import lombok.Getter;
@@ -13,4 +14,5 @@ public class ProductOrderModelsResponse {
     private PlanningWO planningWO;
     private List<ProductionOrderModelDetail> productionOrderModelDetails;
     private List<ScanSerialChecksResponse> scanSerialChecks;
+    private List<ErrorCommonScada> errorCommonScadas;
 }

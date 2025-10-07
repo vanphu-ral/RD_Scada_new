@@ -50,9 +50,12 @@ public class PlanningWOService {
     ScanSerialCheckService scanSerialCheckService;
     @Autowired
     ScanSerialCheckRepository scanSerialCheckRepository;
+    @Autowired
+    ErrorCommonScadaRepository errorCommonScadaRepository;
     public ProductOrderModelsResponse getWoInfo (Long id){
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
         // Lấy thông tin Work Order
+        response.setErrorCommonScadas(errorCommonScadaRepository.findAll());
         response.setPlanningWO(planningwoRepository.findById(id).orElse(null));
         // Lấy thông tin Production Order Models
         List<ProductionOrderModelDetail> productionOrderModelDetails = new ArrayList<>();
