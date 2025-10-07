@@ -13,7 +13,7 @@
 
   <!-- row 2 -->
   <div class="widget widget-chart-1">
-    <base-chart-component [data]="chartData" [options]="chartOptions" [title]="'Biểu đồ lỗi theo nhóm lỗi'"></base-chart-component>
+    <base-chart-component [data]="chartDataErorrGroup" [options]="chartOptionErorrGroup" [title]="'Biểu đồ lỗi theo nhóm lỗi'"></base-chart-component>
   </div>
   <div class=" widget-config">
     <div class="widget widget-row1">
@@ -30,7 +30,7 @@
 
   <!-- row 3 -->
   <div class="widget widget-chart-2">
-    <base-chart-component [data]="data" [options]="options" [title]="'Lỗi chi tiết'"></base-chart-component>
+    <base-chart-component [data]="chartDataErorrByMechine" [options]="chartOptionErorrByMechine" [title]="'Lỗi chi tiết'"></base-chart-component>
   </div>
   <div class="widget widget-progress">
     <app-conventional-table-component [data]="model.scanSerialChecks"></app-conventional-table-component>

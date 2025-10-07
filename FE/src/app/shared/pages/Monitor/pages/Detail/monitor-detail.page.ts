@@ -18,8 +18,8 @@ import { ConventionalTableComponent } from '../../components/conventional-table-
     standalone: true,
     templateUrl: './monitor-detail.page.html',
     styleUrls: ['./monitor-detail.page.scss'],
-    imports: [CommonModule, SharedModule, StationIndicatorsComponent, ControlPanelComponent, 
-        StatusDeviceComponent, ListDevicePlaningComponent, BaseChartComponent, 
+    imports: [CommonModule, SharedModule, StationIndicatorsComponent, ControlPanelComponent,
+        StatusDeviceComponent, ListDevicePlaningComponent, BaseChartComponent,
         GauGePointPpmComponent, ConventionalTableComponent]
 })
 export class MonitorDetailPage extends BasePageComponent<any> {
@@ -31,8 +31,11 @@ export class MonitorDetailPage extends BasePageComponent<any> {
     platformId = inject(PLATFORM_ID);
     configService = inject(ApplicationConfigService);
 
-    chartData: any;
-    chartOptions: any;
+    chartDataErorrGroup: any;
+    chartOptionErorrGroup: any;
+
+    chartDataErorrByMechine: any;
+    chartOptionErorrByMechine: any;
 
     constructor(protected override apiService: PlanningWoService) {
         super(apiService);
@@ -43,9 +46,29 @@ export class MonitorDetailPage extends BasePageComponent<any> {
         this.formatData(this.model.productionOrderModelDetails);
         console.log(this.model);
         this.initChart();
-        this.chartData = this.getChartData(this.model.errorCommonScadas); // Gọi hàm chuyển đổi ở trên
+        this.chartDataErorrGroup = this.getChartDataErorrGroup(this.model.errorCommonScadas); // Gọi hàm chuyển đổi ở trên
 
-        this.chartOptions = {
+        this.chartOptionErorrGroup = {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context: any) {
+                            const label = context.label || '';
+                            const value = context.raw;
+                            return `${label}: ${value}`;
+                        }
+                    }
+                }
+            }
+        };
+
+        this.chartDataErorrByMechine = this.convertErrorDataToChart(this.model.productionOrderModelDetails);
+
+        this.chartOptionErorrByMechine = {
             responsive: true,
             plugins: {
                 legend: {
@@ -132,21 +155,54 @@ export class MonitorDetailPage extends BasePageComponent<any> {
         }
     }
 
-    getChartData(errorCommonScadas: any[]) {
+    getChartDataErorrGroup(errorCommonScadas: any[]) {
         const countByGroup: { [key: string]: number } = {};
-      
+
         for (const item of errorCommonScadas) {
-          const group = item.errGroup || 'Không xác định';
-          countByGroup[group] = (countByGroup[group] || 0) + 1;
+            const group = item.errGroup || 'Không xác định';
+            countByGroup[group] = (countByGroup[group] || 0) + 1;
         }
-      
+
         const labels = Object.keys(countByGroup);
         const data = Object.values(countByGroup);
-      
+
         const backgroundColors = [
-          '#42A5F5', '#66BB6A', '#FFA726', '#FF6384',
+            '#42A5F5', '#66BB6A', '#FFA726', '#FF6384',
+            '#AA66CC', '#FF4444', '#0099CC', '#00C851'
+        ];
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data,
+                    backgroundColor: backgroundColors.slice(0, labels.length)
+                }
+            ]
+        };
+    }
+
+    convertErrorDataToChart(productionOrderModelDetails: any[]): any {
+        const labels: string[] = [];
+        const data: number[] = [];
+        const backgroundColors = [
+          '#42A5F5', '#66BB6A', '#FFA726', '#FF6384', 
           '#AA66CC', '#FF4444', '#0099CC', '#00C851'
         ];
+      
+        for (const item of productionOrderModelDetails) {
+          const machine = item?.machineGroupDetails?.machineDetails?.[0]?.machine;
+          const errors = item?.machineGroupDetails?.machineDetails?.[0]?.errors || [];
+      
+          if (!machine) continue;
+      
+          const totalQuantity = errors.reduce((sum: number, err: any) => {
+            return sum + (err?.quantity || 0);
+          }, 0);
+      
+          labels.push(machine.machineName);
+          data.push(totalQuantity);
+        }
       
         return {
           labels,
@@ -159,6 +215,9 @@ export class MonitorDetailPage extends BasePageComponent<any> {
         };
       }
       
+
+
+
 
 
     override save(): void {
