@@ -21,13 +21,16 @@ public interface ErrorModelRepository extends JpaRepository<ErrorModel, Integer>
             "    e.ErrorName AS errorName, \n" +
             "    e.StageID AS stageID, \n" +
             "    e.HMIErrID AS hmiErrID, \n" +
-            "    COUNT(d.detailEID) AS quantity\n" +
+            "    COUNT(d.detailEID) AS quantity," +
+                    "e.error_group as errorGroup," +
+                    "e.json_name as errorCode \n" +
             "FROM \n" +
             "    ErrorModel e\n" +
             "LEFT JOIN \n" +
             "    DetailError d ON d.errorName = e.ErrorName \n" +
             "                 AND d.workOrder = ?1 \n" +
             "                 AND d.machineName = ?2\n" +
+                    "inner join error_common_scada e on e.name = d.errorName " +
             "WHERE \n" +
             "    e.StageID = ?3  \n" +
             "    AND e.ProductTypeGroupID = 36\n" +

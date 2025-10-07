@@ -7,4 +7,6 @@ public interface ErrorResponse {
     Integer getQuantity();
     Integer getStageID();
     Integer getHmiErrID();
+    String getErrorGroup();
+    String getErrorCode();
 }
