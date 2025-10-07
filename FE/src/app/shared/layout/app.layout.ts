@@ -16,15 +16,10 @@ import { FullscreenDirective } from '../directive/fullscreen.directive';
     template: `<div class="layout-wrapper" [ngClass]="containerClass">
   <app-header (fullscreenToggle)="onFullscreenToggle()"></app-header>
   <app-sidenav *ngIf="!isFullscreen"></app-sidenav>
-
   <div class="layout-main-container">
-    <app-breadcrumb *ngIf="!isFullscreen"></app-breadcrumb>
-
-    <!-- Gắn sự kiện fullscreenChange -->
+    <app-breadcrumb></app-breadcrumb>
     <div class="layout-main" appFullscreen #fs="appFullscreen" (fullscreenChange)="onFullscreenChange($event)">
       <router-outlet></router-outlet>
-
-      <!-- Nút thoát fullscreen -->
       <button
         *ngIf="isFullscreen"
         class="exit-fullscreen-btn"

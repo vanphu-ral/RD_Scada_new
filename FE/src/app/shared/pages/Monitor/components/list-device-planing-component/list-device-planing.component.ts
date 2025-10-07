@@ -2,6 +2,8 @@ import { CommonModule, isPlatformBrowser } from '@angular/common'; // <-- THÊM 
 import { SharedModule } from '../../../../../share.module';
 import { ApplicationConfigService } from '../../../../core/config/application-config.service';
 import { ChangeDetectorRef, Component, inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ListErorrByDeviceDialog } from '../../dialogs/list-erorr-by-device-dialog/list-erorr-by-device.dialog';
 
 @Component({
     selector: 'app-list-device-planing-component',
@@ -14,7 +16,9 @@ export class ListDevicePlaningComponent implements OnInit {
 
     @Input() data: any[] = []
 
-    constructor(private cd: ChangeDetectorRef) { }
+    ref?: DynamicDialogRef;
+
+    constructor(private cd: ChangeDetectorRef, private dialogService: DialogService) { }
 
     ngOnInit() {
         
@@ -24,8 +28,6 @@ export class ListDevicePlaningComponent implements OnInit {
         if (!detailQuantity || detailQuantity.length === 0) {
             return 0;
         }
-
-        // Sử dụng phương thức 'reduce' để tính tổng
         return detailQuantity.reduce((sum, quatity) => sum + quatity.numberInput, 0);
     }
 
@@ -33,9 +35,22 @@ export class ListDevicePlaningComponent implements OnInit {
         if (!detailQuantity || detailQuantity.length === 0) {
             return 0;
         }
-
-        // Sử dụng phương thức 'reduce' để tính tổng
         return detailQuantity.reduce((sum, quatity) => sum + quatity.numberOutput, 0);
+    }
+
+    openErrorDialog(data: any) {
+        console.log(data);
+        
+        this.ref = this.dialogService.open(ListErorrByDeviceDialog, {
+            header: 'Danh sách lỗi',
+            width: '1200px',
+            modal: true,
+            data: data,
+        });
+        this.ref.onClose.subscribe((result) => {
+            if (result) {
+            }
+        });
     }
     
 }

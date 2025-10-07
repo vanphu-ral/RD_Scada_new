@@ -13,35 +13,31 @@
 
   <!-- row 2 -->
   <div class="widget widget-chart-1">
-    <p-chart type="pie" [data]="data" [options]="options" class="w-full md:w-[30rem]" />
+    <base-chart-component [data]="data" [options]="options" [title]="'Biểu đồ lỗi theo nhóm lỗi'"></base-chart-component>
   </div>
-  <div class="widget widget-stations">
-    <div class="row mb-2">
+  <div class=" widget-config">
+    <div class="widget widget-row1">
       <app-list-device-planing-component [data]="listDevices"></app-list-device-planing-component>
     </div>
-    <div class="row">
-      <div class="col">
-        <p-chart type="pie" [data]="data" [options]="options" class="w-full md:w-[30rem]" />
-      </div>
-      <div class="col">
-        <h1 class="text-center">500 PPM</h1>
-      </div>
+    <div class="widget widget-left">
+      <base-chart-component [data]="data" [options]="options" [title]="'Tiết độ sản lượng'"></base-chart-component>
+    </div>
+    <div class="widget widget-right">
+      <gauge-point-ppm-component [data]="model"></gauge-point-ppm-component>
     </div>
   </div>
-  <div class="widget widget-ppm">500 PPM</div>
+  <div class="widget widget-ppm">Danh sách công đoạn</div>
 
   <!-- row 3 -->
   <div class="widget widget-chart-2">
-    <p-chart type="pie" [data]="data" [options]="options" class="w-full md:w-[30rem]" />
+    <base-chart-component [data]="data" [options]="options" [title]="'Lỗi chi tiết'"></base-chart-component>
   </div>
-  <div class="widget widget-progress">Kế hoạch/Thời gian</div>
-  <div class="widget widget-frequency">Tần số & Biểu đồ Tròn 3</div>
-
-
-  <!-- row 4 -->
-  <!-- <div class="widget widget-serial-list">Danh sách scan serial</div>
-  <div class="widget widget-temp-chart">Biểu đồ Nhiệt độ hàn</div>
-  <div class="widget widget-last-chart">Biểu đồ Cuối</div> -->
+  <div class="widget widget-progress">
+    <app-conventional-table-component [data]="data"></app-conventional-table-component>
+  </div>
+  <div class="widget widget-frequency">
+    <base-chart-component [data]="data" [options]="options" [title]="'Lỗi theo công đoạn'"></base-chart-component>
+  </div>
 </div>
 <div class="d-flex justify-content-end mt-3">
   <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>

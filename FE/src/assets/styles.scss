@@ -19,8 +19,10 @@ div:where(.swal2-container) {
   width: 100vw !important;
   height: 100vh !important;
   overflow: auto !important;
-  background: var(--surface-ground, #fff);
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   position: relative;
   z-index: 9999;
 }

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "RD_QLTB_FE": {
+    "RD_QLSX": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -74,10 +74,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "RD_QLTB_FE:build:production"
+              "buildTarget": "RD_QLSX:build:production"
             },
             "development": {
-              "buildTarget": "RD_QLTB_FE:build:development"
+              "buildTarget": "RD_QLSX:build:development"
             }
           },
           "defaultConfiguration": "development"

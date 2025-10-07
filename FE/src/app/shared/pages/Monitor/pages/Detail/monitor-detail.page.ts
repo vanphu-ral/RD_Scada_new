@@ -8,13 +8,19 @@ import { StatusDeviceComponent } from '../../components/status-device-component/
 import { ListDevicePlaningComponent } from '../../components/list-device-planing-component/list-device-planing.component';
 import { BasePageComponent } from '../../../../core/base-page-component/base-page.component';
 import { PlanningWoService } from '../../service/planning-wo.service';
+import { BaseChartComponent } from '../../components/base-chart-component/base-chart.component';
+import { NgxGaugeModule } from 'ngx-gauge';
+import { GauGePointPpmComponent } from '../../components/gauge-point-ppm-component/gauge-point-ppm.component';
+import { ConventionalTableComponent } from '../../components/conventional-table-component/conventional-table.component';
 
 @Component({
     selector: 'app-monitor-detail',
     standalone: true,
     templateUrl: './monitor-detail.page.html',
     styleUrls: ['./monitor-detail.page.scss'],
-    imports: [CommonModule, SharedModule, StationIndicatorsComponent, ControlPanelComponent, StatusDeviceComponent, ListDevicePlaningComponent]
+    imports: [CommonModule, SharedModule, StationIndicatorsComponent, ControlPanelComponent, 
+        StatusDeviceComponent, ListDevicePlaningComponent, BaseChartComponent, 
+        GauGePointPpmComponent, ConventionalTableComponent]
 })
 export class MonitorDetailPage extends BasePageComponent<any> {
 
@@ -70,9 +76,8 @@ export class MonitorDetailPage extends BasePageComponent<any> {
         console.log("Tổng Output:", total.numberOutput);
         console.log("Tổng Quantity lỗi:", total.quantity);
         console.log(this.listDevices);
-        
-    }
 
+    }
 
     initChart() {
         if (isPlatformBrowser(this.platformId)) {
