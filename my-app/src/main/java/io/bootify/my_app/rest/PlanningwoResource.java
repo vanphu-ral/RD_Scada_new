@@ -23,6 +23,14 @@ public class PlanningwoResource {
     public ResponseEntity<?> getWoInfo(@PathVariable Long id) {
         return ResponseEntity.ok(planningWOService.getWoInfo(id));
     }
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> getWoDetailInfo(@PathVariable Long id) {
+        return ResponseEntity.ok(planningWOService.getWoDetaillnfo(id));
+    }
+    @GetMapping("/error/info/{id}")
+    public ResponseEntity<?> getWoErroeInfo(@PathVariable Long id) {
+        return ResponseEntity.ok(planningWOService.getWoErrorInfo(id));
+    }
     @GetMapping
     public ResponseEntity<Page<PlanningWO>> getPlanningWOs(
             @RequestParam(required = false) String branchCode,
