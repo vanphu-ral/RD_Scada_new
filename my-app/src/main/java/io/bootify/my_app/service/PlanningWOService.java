@@ -97,10 +97,19 @@ public class PlanningWOService {
 //        response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(planningWO.getWoId()));
         return response;
     }
-    public  ProductOrderModelsResponse getWoErrorCommonScadaInfo (String serialBoard, String serialItem){
+    public  ProductOrderModelsResponse getWoErrorCommonScadaInfoserialBoard (String serialBoard){
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
         // Lấy thông tin Work Order
-        ScanSerialCheck scanSerialCheck = scanSerialCheckRepository.findFirstBySerialBoardOrSerialItem(serialBoard,serialItem);
+        ScanSerialCheck scanSerialCheck = scanSerialCheckRepository.findFirstBySerialBoard(serialBoard);
+        PlanningWO planningWO = planningwoRepository.findFirstByWoId(scanSerialCheck.getWorkOrder());
+        response.setPlanningWO(planningWO);
+        response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(planningWO.getWoId()));
+        return response;
+    }
+    public  ProductOrderModelsResponse getWoErrorCommonScadaInfoserialItem (String serialItem){
+        ProductOrderModelsResponse response = new ProductOrderModelsResponse();
+        // Lấy thông tin Work Order
+        ScanSerialCheck scanSerialCheck = scanSerialCheckRepository.findFirstBySerialItem(serialItem);
         PlanningWO planningWO = planningwoRepository.findFirstByWoId(scanSerialCheck.getWorkOrder());
         response.setPlanningWO(planningWO);
         response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(planningWO.getWoId()));

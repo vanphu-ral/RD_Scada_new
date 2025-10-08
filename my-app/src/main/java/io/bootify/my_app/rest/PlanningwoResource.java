@@ -53,17 +53,26 @@ public class PlanningwoResource {
     public ResponseEntity<?> createPlanningWO(@RequestBody PlanningWO planningWO) {
         return planningWOService.create(planningWO);
     }
-    @GetMapping("/wo-error")
-    public ResponseEntity<ProductOrderModelsResponse> getWoErrorInfo(
-            @RequestParam(required = false) String serialBoard,
+    @GetMapping("/serial-item")
+    public ResponseEntity<ProductOrderModelsResponse> getWoErrorInfoSerialItem(
             @RequestParam(required = false) String serialItem) {
 
-        if ((serialBoard == null || serialBoard.isEmpty()) &&
-                (serialItem == null || serialItem.isEmpty())) {
+        if ((serialItem == null || serialItem.isEmpty())) {
             return ResponseEntity.badRequest().body(null);
         }
 
-        ProductOrderModelsResponse response = planningWOService.getWoErrorCommonScadaInfo(serialBoard, serialItem);
+        ProductOrderModelsResponse response = planningWOService.getWoErrorCommonScadaInfoserialItem(serialItem);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/serial-board")
+    public ResponseEntity<ProductOrderModelsResponse> getWoErrorInfoSerialBoard(
+            @RequestParam(required = false) String serialBoard) {
+
+        if ((serialBoard == null || serialBoard.isEmpty())) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        ProductOrderModelsResponse response = planningWOService.getWoErrorCommonScadaInfoserialBoard(serialBoard);
         return ResponseEntity.ok(response);
     }
 }

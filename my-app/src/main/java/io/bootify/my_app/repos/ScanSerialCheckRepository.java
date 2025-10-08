@@ -34,5 +34,6 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "  left join MachinesModels b on b.MachineID =a.machineID\n" +
             "  where a.workOrder =?1 ;",nativeQuery = true)
     List<ScanSerialChecksResponse> getAllByWorkOrder(String workOrder);
-    ScanSerialCheck findFirstBySerialBoardOrSerialItem(String serialBoard, String serialItem);
+    ScanSerialCheck findFirstBySerialItem( String serialItem);
+    ScanSerialCheck findFirstBySerialBoard(String serialBoard);
 }
