@@ -35,4 +35,28 @@ export class PlanningWoService extends BaseApiService<any> {
   getWoInfor(woId: string): Observable<any> {
     return this.http.get<any>(`${this['fullBaseUrl']}/info/${woId}`);
   }
+
+  getWoDetailInfor(woId: string): Observable<any> {
+    return this.http.get<any>(`${this['fullBaseUrl']}/detail/${woId}`);
+  }
+
+  getWoErrorInfor(woId: string): Observable<any> {
+    return this.http.get<any>(`${this['fullBaseUrl']}/error/info/${woId}`);
+  }
+
+  filterBySerialItem(serialItem: any): Observable<any> {
+    let params = new HttpParams();
+    if (serialItem) {
+      params = params.set('serialItem', serialItem);
+    }
+    return this.http.get<any>(`${this['fullBaseUrl']}/serial-item`, { params });
+  }
+
+  filterBySerialBoard(serialBoard: any): Observable<any> {
+    let params = new HttpParams();
+    if (serialBoard) {
+      params = params.set('serialBoard', serialBoard);
+    }
+    return this.http.get<any>(`${this['fullBaseUrl']}/serial-board`, { params });
+  }
 }

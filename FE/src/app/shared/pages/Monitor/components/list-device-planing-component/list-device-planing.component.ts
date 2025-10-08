@@ -39,8 +39,6 @@ export class ListDevicePlaningComponent implements OnInit {
     }
 
     openErrorDialog(data: any) {
-        console.log(data);
-        
         this.ref = this.dialogService.open(ListErorrByDeviceDialog, {
             header: 'Danh sách lỗi',
             width: '1200px',

@@ -1,28 +1,46 @@
 <div class="widget-content relative" appFullscreen #fs="appFullscreen">
   <i class="fa-solid fa-expand fullscreen-btn" (click)="fs.toggleFullscreen()"></i>
   <h5>Bảng thống kê công đoạn</h5>
-  <div class="table-note">
-    <table class="table table-dark">
-      <thead>
-        <tr>
-          <th>Stage num</th>
-          <th>Machine</th>
-          <th>Serial board</th>
-          <th>Serial PCS</th>
-          <th>Time</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let row of data">
-          <td>{{ row.stageNum }}</td>
-          <td>{{ row.machineName }}</td>
-          <td>{{ row.serialBoard }}</td>
-          <td>{{ row.serialItem }}</td>
-          <td>{{ row.timeScan }}</td>
-          <td>{{ row.serialStatus }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <p-table class="dark-table" [value]="data" [paginator]="true" [rowsPerPageOptions]="[5,10,20,50]" [rows]="50">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Stage num</th>
+        <th>Machine</th>
+        <th>Serial board</th>
+        <th>Serial PCS</th>
+        <th>Time</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <th style="padding: 0">
+          <p-columnFilter type="text" field="stageNum" placeholder="Search"></p-columnFilter>
+        </th>
+        <th style="padding: 0">
+          <p-columnFilter type="text" field="machineName" placeholder="Search"></p-columnFilter>
+        </th>
+        <th style="padding: 0">
+          <p-columnFilter type="text" field="serialBoard" placeholder="Search"></p-columnFilter>
+        </th>
+        <th style="padding: 0">
+          <p-columnFilter type="text" field="serialItem" placeholder="Search"></p-columnFilter>
+        </th>
+        <th style="padding: 0">
+          <p-columnFilter type="date" field="createdAt" placeholder="Search"></p-columnFilter>
+        </th>
+        <th style="padding: 0">
+          <p-columnFilter type="text" field="serialStatus" placeholder="Search"></p-columnFilter>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-row>
+      <tr class="hover-item">
+        <td>{{ row.stageNum }}</td>
+        <td>{{ row.machineName }}</td>
+        <td>{{ row.serialBoard }}</td>
+        <td>{{ row.serialItem }}</td>
+        <td>{{ row.timeScan | date:'dd/MM/yyyy'}}</td>
+        <td>{{ row.serialStatus }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>

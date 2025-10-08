@@ -30,8 +30,8 @@ export class ListErorrByDeviceDialog {
     }
 
     ngOnInit() {
-        console.log(this.data);
         this.listErorrs = _.get(this.data, 'errors', []);
+        this.cdr.detectChanges();
     }
 
 

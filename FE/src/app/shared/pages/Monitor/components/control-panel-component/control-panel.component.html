@@ -1,6 +1,6 @@
 <div class="widget-content relative" appFullscreen #fs="appFullscreen">
   <i class="fa-solid fa-expand fullscreen-btn" (click)="fs.toggleFullscreen()"></i>
-  
+
   <div class="d-flex flex-column">
     <span>Tên sản phẩm: {{data.productName}}</span>
     <span>Mã sản phẩm: {{data.productCode}}</span>
@@ -38,8 +38,15 @@
         <tr>
           <td>{{ data.totalNumberInput }}</td>
           <td>{{ data.totalNumberOutput }}</td>
-          <td>{{ (data.totalNumberOutput / data.totalNumberInput) > 0 ? (data.totalNumberOutput / data.totalNumberInput) * 100 : 0 }}</td>
-          <td>{{ (data.totalQuantity / data.totalNumberInput) > 0 ? (data.totalQuantity / data.totalNumberInput) * 100 : 0 }}</td>
+          <td>{{ (data.totalNumberOutput / data.totalNumberInput) > 0 ? (data.totalNumberOutput / data.totalNumberInput)
+            * 100 : 0 }}</td>
+          <td>
+            {{
+            (data.totalQuantity > 0 && data.totalNumberInput > 0)
+            ? (data.totalQuantity / data.totalNumberInput) * 100
+            : 0
+            }}
+          </td>
         </tr>
       </tbody>
     </table>

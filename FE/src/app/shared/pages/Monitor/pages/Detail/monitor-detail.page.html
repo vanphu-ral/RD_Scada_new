@@ -1,5 +1,4 @@
 <div class="dashboard-container">
-  <!-- row 1 -->
   <div class="widget widget-config p-3">
     <app-station-indicators-component [data]="data"></app-station-indicators-component>
   </div>
@@ -7,36 +6,33 @@
     <app-control-panel-component [data]="model.planningWO"></app-control-panel-component>
   </div>
   <div class="widget widget-status">
-    <app-status-device-component [data]="data"></app-status-device-component>
+    <app-status-device-component [data]="model.planningWO"></app-status-device-component>
   </div>
 
 
-  <!-- row 2 -->
-  <div class="widget widget-chart-1">
+  <div class="widget widget-chart-1 d-flex justify-content-center align-items-center">
     <base-chart-component [data]="chartDataErorrGroup" [options]="chartOptionErorrGroup" [title]="'Biểu đồ lỗi theo nhóm lỗi'"></base-chart-component>
   </div>
   <div class=" widget-config">
-    <div class="widget widget-row1">
-      <app-list-device-planing-component [data]="listDevices"></app-list-device-planing-component>
+    <div class="widget d-flex justify-content-center align-items-center">
+      <gauge-production-output-component [data]="model"></gauge-production-output-component>
     </div>
-    <div class="widget widget-left">
-      <base-chart-component [data]="data" [options]="options" [title]="'Tiết độ sản lượng'"></base-chart-component>
-    </div>
-    <div class="widget widget-right">
+    <div class="widget d-flex justify-content-center align-items-center">
       <gauge-point-ppm-component [data]="model"></gauge-point-ppm-component>
     </div>
   </div>
-  <div class="widget widget-ppm">Danh sách công đoạn</div>
+  <div class="widget widget-ppm">
+    <app-list-device-planing-component [data]="listDevices"></app-list-device-planing-component>
+  </div>
 
-  <!-- row 3 -->
-  <div class="widget widget-chart-2">
+  <div class="widget widget-chart-2 d-flex justify-content-center align-items-center">
     <base-chart-component [data]="chartDataErorrByMechine" [options]="chartOptionErorrByMechine" [title]="'Lỗi chi tiết'"></base-chart-component>
   </div>
   <div class="widget widget-progress">
-    <app-conventional-table-component [data]="model.scanSerialChecks"></app-conventional-table-component>
+    <app-conventional-table-component [data]="scanSerialChecks"></app-conventional-table-component>
   </div>
-  <div class="widget widget-frequency">
-    <base-chart-component [data]="data" [options]="options" [title]="'Lỗi theo công đoạn'"></base-chart-component>
+  <div class="widget widget-frequency d-flex justify-content-center align-items-center">
+    <base-chart-component [data]="chartDataErorrByStage" [options]="chartOptionErorrByStage" [title]="'Lỗi theo công đoạn'"></base-chart-component>
   </div>
 </div>
 <div class="d-flex justify-content-end mt-3">

@@ -1,38 +1,36 @@
-
 .dashboard-container {
-    display: grid;
-    grid-template-columns: 0.7fr 1.6fr 0.7fr;
-    grid-template-rows: auto 1fr 1fr;
-    gap: 15px;
+  display: grid;
+  grid-template-columns: 0.7fr 1.6fr 0.7fr;
+  grid-template-rows: auto 1fr 1fr;
+  gap: 10px;
 }
+
 .widget {
-    background-color: black;
-    border: 1px solid #333;
-    padding: 10px;
-    border-radius: 4px;
+  background-color: black;
+  border: 1px solid #333;
+  padding: 10px;
+  border-radius: 4px;
+  max-height: 400px;
+  overflow-y: auto;
 }
+
 .widget-status {
-    max-height: 200px;
-    overflow-y: scroll;
+  max-height: 230px;
+  overflow-y: scroll;
 }
 
 .widget-config {
   display: grid;
-  grid-template-columns: 1fr 1fr; 
-  gap: 10px; 
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
-.widget-config > :first-child {
-  grid-column: 1 / span 2; 
-}
+// .widget-progress {
+//   max-height: 543px;
+//   overflow-y: scroll;
+// }
 
-.widget-right {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.widget-row1 {
-  overflow-x: scroll;
-    width: auto;
-}
+// .widget-ppm {
+//   max-height: 543px;
+//   overflow-y: scroll;
+// }

@@ -14,3 +14,49 @@
   font-size: 20px;
   z-index: 10;
 }
+
+::ng-deep .p-table {
+  background-color: #1e1e1e !important; /* nền đen */
+  color: #f5f5f5 !important; /* chữ trắng */
+  border-radius: 8px;
+}
+
+/* Header */
+::ng-deep .p-datatable-thead > tr > th {
+  background-color: #2a2a2a !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid #444 !important;
+  padding: 8px;
+}
+
+/* Body */
+::ng-deep .p-datatable-tbody > tr > td {
+  background-color: #1e1e1e !important;
+  color: #f5f5f5 !important;
+  border-bottom: 1px solid #333 !important;
+  padding: 6px 10px;
+}
+
+/* Hover */
+::ng-deep .p-datatable-tbody > tr:hover {
+  background-color: #333 !important;
+  cursor: pointer;
+}
+
+/* Bộ lọc input */
+::ng-deep .p-column-filter input {
+  background-color: #2a2a2a !important;
+  color: #fff !important;
+  border: 1px solid #555 !important;
+}
+
+::ng-deep .p-column-filter input::placeholder {
+  color: #aaa !important;
+}
+
+/* Dropdown filter (nếu có) */
+::ng-deep .p-dropdown {
+  background-color: #2a2a2a !important;
+  color: #fff !important;
+  border: 1px solid #555 !important;
+}

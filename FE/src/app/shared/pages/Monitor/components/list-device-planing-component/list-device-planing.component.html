@@ -1,7 +1,7 @@
 <div class="widget-content relative" appFullscreen #fs="appFullscreen">
   <i class="fa-solid fa-expand fullscreen-btn" (click)="fs.toggleFullscreen()"></i>
-  <div class="d-flex">
-    <div class="mx-2" *ngFor="let item of data; let i = index">
+  <div class="d-flex flex-column">
+    <div class="my-2" *ngFor="let item of data; let i = index">
       <div class="box-device d-flex flex-column text-center">
         <span>{{ item.machine.machineName }}</span>
         <div class="status d-flex justify-content-around my-1">
