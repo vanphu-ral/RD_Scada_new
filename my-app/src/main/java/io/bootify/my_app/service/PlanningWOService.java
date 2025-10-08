@@ -1,9 +1,6 @@
 package io.bootify.my_app.service;
 
-import io.bootify.my_app.domain.DetailQuantity;
-import io.bootify.my_app.domain.MachinesModels;
-import io.bootify.my_app.domain.PlanningWO;
-import io.bootify.my_app.domain.ProductionOrderModels;
+import io.bootify.my_app.domain.*;
 import io.bootify.my_app.model.*;
 import io.bootify.my_app.repos.*;
 import io.bootify.my_app.rest.ProductOrderModelsResponse;
@@ -98,6 +95,15 @@ public class PlanningWOService {
 //        response.setProductionOrderModelDetails(productionOrderModelDetails);
 //        //
 //        response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(planningWO.getWoId()));
+        return response;
+    }
+    public  ProductOrderModelsResponse getWoErrorCommonScadaInfo (String serialBoard, String serialItem){
+        ProductOrderModelsResponse response = new ProductOrderModelsResponse();
+        // Lấy thông tin Work Order
+        ScanSerialCheck scanSerialCheck = scanSerialCheckRepository.findFirstBySerialBoardOrSerialItem(serialBoard,serialItem);
+        PlanningWO planningWO = planningwoRepository.findFirstByWoId(scanSerialCheck.getWorkOrder());
+        response.setPlanningWO(planningWO);
+        response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(planningWO.getWoId()));
         return response;
     }
     public ProductOrderModelsResponse getWoDetaillnfo (Long id){

@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PlanningwoRepository  extends JpaRepository<PlanningWO, Long> {
     Page<PlanningWO> findAll(Specification<PlanningWO> spec, Pageable pageable);
+    PlanningWO findFirstByWoId(String workOrder);
 }

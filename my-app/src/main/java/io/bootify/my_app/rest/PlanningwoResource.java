@@ -53,4 +53,17 @@ public class PlanningwoResource {
     public ResponseEntity<?> createPlanningWO(@RequestBody PlanningWO planningWO) {
         return planningWOService.create(planningWO);
     }
+    @GetMapping("/wo-error")
+    public ResponseEntity<ProductOrderModelsResponse> getWoErrorInfo(
+            @RequestParam(required = false) String serialBoard,
+            @RequestParam(required = false) String serialItem) {
+
+        if ((serialBoard == null || serialBoard.isEmpty()) &&
+                (serialItem == null || serialItem.isEmpty())) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        ProductOrderModelsResponse response = planningWOService.getWoErrorCommonScadaInfo(serialBoard, serialItem);
+        return ResponseEntity.ok(response);
+    }
 }
