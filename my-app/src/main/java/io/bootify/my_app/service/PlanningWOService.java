@@ -59,7 +59,7 @@ public class PlanningWOService {
         response.setPlanningWO(planningwoRepository.findById(id).orElse(null));
 //        // Lấy thông tin Production Order Models
 //        List<ProductionOrderModelDetail> productionOrderModelDetails = new ArrayList<>();
-//        List<ProductionOrderModels> productionOrderModelsList = productionOrderModelsRepository.findAllByWorkOrder(response.getPlanningWO().getWoId());
+//        List<ProductionOrderModels> productionOrderModelsList = productionOrderModelsRepository.findAllByWorkOrder(planningWO.getWoId());
 //        for (ProductionOrderModels pom : productionOrderModelsList) {
 //            ProductionOrderModelDetail detail = new ProductionOrderModelDetail();
 //            productionOrderModelsService.mapToDTO(pom, new ProductionOrderModelsDTO());
@@ -79,14 +79,14 @@ public class PlanningWOService {
 //                machineDetail.setMachine(machinesModelsService.mapToDTO(mm, new MachinesModelsDTO()));
 //               //   Lấy thông tin quantity của máy
 //                List<DetailQuantity> detailQuantities = detailQuantityRepository.findAllByWorkOrderAndMachineName(
-//                        response.getPlanningWO().getWoId(),machineDetail.getMachine().getMachineName());
+//                        planningWO.getWoId(),machineDetail.getMachine().getMachineName());
 //                List<DetailQuantityDTO> detailQuantityDTOS = new ArrayList<>();
 //                for (DetailQuantity dq : detailQuantities) {
 //                    detailQuantityDTOS.add(detailQuantityService.mapToDTO(dq, new DetailQuantityDTO()));
 //                }
 //                // Lấy thông tin lỗi của máy
 //                List<ErrorResponse> errorModels = errorModelRepository.getErrorResponsesByWorkOrderAndMachineNameAndStageID(
-//                        response.getPlanningWO().getWoId(),machineDetail.getMachine().getMachineName(),machineDetail.getMachine().getStageId());
+//                        planningWO.getWoId(),machineDetail.getMachine().getMachineName(),machineDetail.getMachine().getStageId());
 //                machineDetail.setDetailQuantity(detailQuantityDTOS);
 //                machineDetail.setErrors(errorModels);
 //                machineDetails.add(machineDetail);
@@ -97,16 +97,17 @@ public class PlanningWOService {
 //        }
 //        response.setProductionOrderModelDetails(productionOrderModelDetails);
 //        //
-//        response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(response.getPlanningWO().getWoId()));
+//        response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(planningWO.getWoId()));
         return response;
     }
     public ProductOrderModelsResponse getWoDetaillnfo (Long id){
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
         // Lấy thông tin Work Order
-        response.setPlanningWO(planningwoRepository.findById(id).orElse(null));
+        PlanningWO planningWO = planningwoRepository.findById(id).orElse(null);
+//        response.setPlanningWO(planningWO);
         // Lấy thông tin Production Order Models
         List<ProductionOrderModelDetail> productionOrderModelDetails = new ArrayList<>();
-        List<ProductionOrderModels> productionOrderModelsList = productionOrderModelsRepository.findAllByWorkOrder(response.getPlanningWO().getWoId());
+        List<ProductionOrderModels> productionOrderModelsList = productionOrderModelsRepository.findAllByWorkOrder(planningWO.getWoId());
         for (ProductionOrderModels pom : productionOrderModelsList) {
             ProductionOrderModelDetail detail = new ProductionOrderModelDetail();
             productionOrderModelsService.mapToDTO(pom, new ProductionOrderModelsDTO());
@@ -126,14 +127,14 @@ public class PlanningWOService {
                 machineDetail.setMachine(machinesModelsService.mapToDTO(mm, new MachinesModelsDTO()));
                 //   Lấy thông tin quantity của máy
                 List<DetailQuantity> detailQuantities = detailQuantityRepository.findAllByWorkOrderAndMachineName(
-                        response.getPlanningWO().getWoId(),machineDetail.getMachine().getMachineName());
+                        planningWO.getWoId(),machineDetail.getMachine().getMachineName());
                 List<DetailQuantityDTO> detailQuantityDTOS = new ArrayList<>();
                 for (DetailQuantity dq : detailQuantities) {
                     detailQuantityDTOS.add(detailQuantityService.mapToDTO(dq, new DetailQuantityDTO()));
                 }
                 // Lấy thông tin lỗi của máy
                 List<ErrorResponse> errorModels = errorModelRepository.getErrorResponsesByWorkOrderAndMachineNameAndStageID(
-                        response.getPlanningWO().getWoId(),machineDetail.getMachine().getMachineName(),machineDetail.getMachine().getStageId());
+                        planningWO.getWoId(),machineDetail.getMachine().getMachineName(),machineDetail.getMachine().getStageId());
                 machineDetail.setDetailQuantity(detailQuantityDTOS);
                 machineDetail.setErrors(errorModels);
                 machineDetails.add(machineDetail);
@@ -148,9 +149,11 @@ public class PlanningWOService {
     public ProductOrderModelsResponse getWoErrorInfo (Long id){
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
         // Lấy thông tin Work Order
-        response.setPlanningWO(planningwoRepository.findById(id).orElse(null));
+//        response.setPlanningWO(planningwoRepository.findById(id).orElse(null));
+        PlanningWO planningWO = planningwoRepository.findById(id).orElse(null);
+        
         //
-        response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(response.getPlanningWO().getWoId()));
+        response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(planningWO.getWoId()));
         return response;
     }
     public Page<PlanningWO> getFilteredPlanningWOs(PlanningWOFilter filter, Pageable pageable) {
