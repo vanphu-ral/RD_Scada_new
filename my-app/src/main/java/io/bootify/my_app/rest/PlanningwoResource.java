@@ -31,6 +31,7 @@ public class PlanningwoResource {
     public ResponseEntity<?> getWoErroeInfo(@PathVariable Long id) {
         return ResponseEntity.ok(planningWOService.getWoErrorInfo(id));
     }
+
     @GetMapping
     public ResponseEntity<Page<PlanningWO>> getPlanningWOs(
             @RequestParam(required = false) String branchCode,
@@ -64,6 +65,16 @@ public class PlanningwoResource {
         ProductOrderModelsResponse response = planningWOService.getWoErrorCommonScadaInfoserialItem(serialItem);
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/check")
+    public ResponseEntity<String> checkSerialItemExist(
+            @RequestParam String serialItem,
+            @RequestParam String machineName,
+            @RequestParam Integer stage,
+            @RequestParam String workOrder) {
+
+        String result = planningWOService.checkSerialItemExist(serialItem, machineName, stage, workOrder);
+        return ResponseEntity.ok(result);
+    }
     @GetMapping("/serial-board")
     public ResponseEntity<ProductOrderModelsResponse> getWoErrorInfoSerialBoard(
             @RequestParam(required = false) String serialBoard) {
@@ -75,4 +86,5 @@ public class PlanningwoResource {
         ProductOrderModelsResponse response = planningWOService.getWoErrorCommonScadaInfoserialBoard(serialBoard);
         return ResponseEntity.ok(response);
     }
+
 }

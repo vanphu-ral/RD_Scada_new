@@ -117,6 +117,37 @@ public class PlanningWOService {
         response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(planningWO.getWoId()));
         return response;
     }
+    public String checkSerialItemExist (String serialItem,String machineName,Integer stage,String workOrder){
+        if(stage >1){
+            List<MachinesModels> machinesModels = machinesModelsRepository.findAllByMachineNameAndStageId(machineName,stage-1);
+            if (machinesModels.isEmpty()){
+                return "Không tìm thấy máy ở stage trước: "+(stage-1);
+            }else {
+                for (MachinesModels machinesModels1 : machinesModels){
+                    List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.findAllByWorkOrderAndMachineId(
+                            workOrder,machinesModels1.getMachineId());
+                    boolean found = false;
+                    for (ScanSerialCheck ssc : scanSerialCheck){
+                        if (ssc.getSerialItem().equals(serialItem)){
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found){
+                        return "Tìm thấy Serial Item: "+serialItem+" ở máy: "+machinesModels1.getMachineName()+" stage: "+(stage-1);
+                    }
+                }
+            }
+        }else{
+            return "Stage hiện tại là 1, không cần kiểm tra stage trước";
+        }
+        List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.findAllBySerialItem(serialItem);
+        if (scanSerialCheck.isEmpty()){
+            return "Không tìm thấy Serial Item: "+serialItem;
+        }else {
+            return "Tìm thấy Serial Item: "+serialItem;
+        }
+    }
     public ProductOrderModelsResponse getWoDetaillnfo (Long id){
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
         // Lấy thông tin Work Order

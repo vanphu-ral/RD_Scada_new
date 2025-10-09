@@ -42,5 +42,6 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
 
     // Lấy 1 bản ghi theo serialBoard
     List<ScanSerialCheck> findAllBySerialBoard(String serialBoard);
+    List<ScanSerialCheck> findAllByWorkOrderAndMachineId(String workOrder, Integer machineId);
 
 }
