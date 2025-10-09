@@ -217,8 +217,32 @@ public class PlanningWOService {
         if (filter.getStatus() != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), filter.getStatus()));
         }
+        if (filter.getSapWoId() != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("sapWoId"), filter.getSapWoId()));
+        }
+        if (filter.getProductOrderId() != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("productOrderId"), filter.getProductOrderId()));
+        }
+        if (filter.getGroupName() != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("groupName"), filter.getGroupName()));
+        }
+        if (filter.getGroupCode() != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("groupCode"), filter.getGroupCode()));
+        }
+        if (filter.getProductName() != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("productName"), filter.getProductName()));
+        }
+        if (filter.getBranchName() != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("branchName"), filter.getBranchName()));
+        }
+        if (filter.getLotNumber() != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("lotNumber"), filter.getLotNumber()));
+        }
         if (filter.getWoId() != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("woId"), filter.getWoId()));
+        }
+        if (filter.getQuantityPlan() != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("quantityPlan"), filter.getQuantityPlan()));
         }
         // Add more filters as needed...
 
