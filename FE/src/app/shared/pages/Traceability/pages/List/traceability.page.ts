@@ -34,8 +34,6 @@ export class TraceabilityPage {
     }
 
     search() {
-        if (Util.isEmpty(this.filter.serial) || Util.isEmpty(this.filter.option)) return;
-
         const apiCall =
             this.filter.option === 'serialBoard'
                 ? this.planningWoService.filterBySerialBoard(this.filter.serial)
@@ -44,11 +42,11 @@ export class TraceabilityPage {
         apiCall.subscribe({
             next: (res: any) => {
                 this.data = res ? { ...res } : null;
-                this.cdr.detectChanges();
+                this.cdr.markForCheck();
             },
-            error: (err) => {
+            error: () => {
                 this.data = null;
-                this.cdr.detectChanges();
+                this.cdr.markForCheck();
             }
         });
     }
