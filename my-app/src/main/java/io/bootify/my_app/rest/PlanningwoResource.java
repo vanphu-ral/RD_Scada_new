@@ -66,7 +66,7 @@ public class PlanningwoResource {
         ProductOrderModelsResponse response = planningWOService.getWoErrorCommonScadaInfoserialItem(serialItem);
         return ResponseEntity.ok(response);
     }
-    @GetMapping("/check")
+    @PostMapping("/check")
     public ResponseEntity<String> checkSerialItemExist(
             @RequestBody SerialCheckRequest request) {
 
