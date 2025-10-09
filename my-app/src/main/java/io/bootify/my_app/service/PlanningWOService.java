@@ -121,10 +121,11 @@ public class PlanningWOService {
     public ResponseEntity<SerialCheckResponse> checkSerialItemExist (SerialCheckRequest request){
         Integer code = 0;
         String result = "Kết quả kiểm tra Serial : ";
-        if(request.getStage() >1){
+        if(request.getStage() >0){
             List<MachinesModels> machinesModels = machinesModelsRepository.findAllByMachineNameAndStageId(request.getMachineName(), request.getStage()-1);
             if (machinesModels.isEmpty()){
-                return "Không tìm thấy máy ở stage trước: "+(request.getStage()-1);
+                result +=  "Không tìm thấy máy ở stage trước: "+(request.getStage()-1);
+                code = 1;
             }else {
                 for (MachinesModels machinesModels1 : machinesModels){
                     List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.getAllByWorkOrderAndMachineId(
@@ -143,7 +144,7 @@ public class PlanningWOService {
                 }
             }
         }else{
-            result += "\n Stage hiện tại là 1, không cần kiểm tra stage trước";
+            result += "\n Stage hiện tại là 0, không cần kiểm tra stage trước";
         }
         return ResponseEntity.ok(new SerialCheckResponse(code,result));
     }
