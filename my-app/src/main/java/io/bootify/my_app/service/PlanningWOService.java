@@ -118,7 +118,8 @@ public class PlanningWOService {
         response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(planningWO.getWoId()));
         return response;
     }
-    public String checkSerialItemExist (SerialCheckRequest request){
+    public ResponseEntity<SerialCheckResponse> checkSerialItemExist (SerialCheckRequest request){
+        Integer code = 0;
         String result = "Kết quả kiểm tra Serial : ";
         if(request.getStage() >1){
             List<MachinesModels> machinesModels = machinesModelsRepository.findAllByMachineNameAndStageId(request.getMachineName(), request.getStage()-1);
@@ -136,6 +137,7 @@ public class PlanningWOService {
                             }
                         }
                         if (!found){
+                            code = 1;
                              result += "\n Không tìm thấy Serial Item: "+request.getSerialItems()+" ở máy: "+machinesModels1.getMachineName()+" stage: "+(request.getStage()-1);
                         }
                 }
@@ -143,13 +145,7 @@ public class PlanningWOService {
         }else{
             result += "\n Stage hiện tại là 1, không cần kiểm tra stage trước";
         }
-//        List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.findAllBySerialItem(serialItem);
-//        if (scanSerialCheck.isEmpty()){
-//            return "Không tìm thấy Serial Item: "+serialItem;
-//        }else {
-//            return "Tìm thấy Serial Item: "+serialItem;
-//        }
-        return result;
+        return ResponseEntity.ok(new SerialCheckResponse(code,result));
     }
     public ProductOrderModelsResponse getWoDetaillnfo (Long id){
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
