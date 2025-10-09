@@ -42,6 +42,23 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
 
     // Lấy 1 bản ghi theo serialBoard
     List<ScanSerialCheck> findAllBySerialBoard(String serialBoard);
-//    List<ScanSerialCheck> findAllByWorkOrderAndMachineId(String workOrder, Integer machineId);
+    @Query(value = "SELECT\n" +
+            "\t\ta.serialID as serialId\n" +
+            "      ,a.productionOrderID as productionOrderId\n" +
+            "      ,a.machineID as machineId\n" +
+            "      ,a.serialBoard as serialBoard\n" +
+            "      ,a.serialItem as serialItem\n" +
+            "      ,a.serialStatus as serialStatus\n" +
+            "      ,a.serialCheck as serialCheck\n" +
+            "      ,a.timeScan as timeScan\n" +
+            "      ,a.timeCheck as timeCheck\n" +
+            "      ,a.resultCheck as resultCheck\n" +
+            "      ,a.workOrder as workOrder\n" +
+            "\t  ,b.MachineName as machineName\n" +
+            "\t  ,b.StageID as stageNum\n" +
+            "  FROM ScanSerialCheck a\n" +
+            "  left join MachinesModels b on b.MachineID =a.machineID\n" +
+            "  where a.workOrder =?1 and a.machineID =?2 ;",nativeQuery = true)
+    List<ScanSerialCheck> getAllByWorkOrderAndMachineId(String workOrder, Integer machineId);
 
 }
