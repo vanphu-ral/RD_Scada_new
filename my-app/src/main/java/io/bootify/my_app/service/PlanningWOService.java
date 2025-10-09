@@ -129,17 +129,15 @@ public class PlanningWOService {
                     List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.getAllByWorkOrderAndMachineId(
                             request.getWorkOrder(),machinesModels1.getMachineId());
                     boolean found = false;
-                    for (String serialItem : request.getSerialItems()){
                         for (ScanSerialCheck ssc : scanSerialCheck){
-                            if (ssc.getSerialItem().equals(serialItem)){
+                            if (ssc.getSerialItem().equals(request.getSerialItems())){
                                 found = true;
                                 break;
                             }
                         }
                         if (!found){
-                             result += "\n Không tìm thấy Serial Item: "+serialItem+" ở máy: "+machinesModels1.getMachineName()+" stage: "+(request.getStage()-1);
+                             result += "\n Không tìm thấy Serial Item: "+request.getSerialItems()+" ở máy: "+machinesModels1.getMachineName()+" stage: "+(request.getStage()-1);
                         }
-                    }
                 }
             }
         }else{

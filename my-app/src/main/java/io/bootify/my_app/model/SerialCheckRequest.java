@@ -12,5 +12,5 @@ public class SerialCheckRequest {
     private String machineName;
     private String workOrder;
     private Integer stage;
-    private List<String> serialItems;
+    private String serialItems;
 }
