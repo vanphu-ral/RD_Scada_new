@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping(value = "/api/planningwo", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PlanningwoResource {
@@ -38,6 +40,16 @@ public class PlanningwoResource {
             @RequestParam(required = false) String branchCode,
             @RequestParam(required = false) String productCode,
             @RequestParam(required = false) String status,
+            @RequestParam(required = false) String planningWorkOrderId,
+            @RequestParam(required = false) String sapWoId,
+            @RequestParam(required = false) String productOrderId,
+            @RequestParam(required = false) String groupName,
+            @RequestParam(required = false) String groupCode,
+            @RequestParam(required = false) String productName,
+            @RequestParam(required = false) String branchName,
+            @RequestParam(required = false) String lotNumber,
+            @RequestParam(required = false) String woId,
+            @RequestParam(required = false) BigDecimal quantityPlan,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -45,6 +57,17 @@ public class PlanningwoResource {
         filter.setBranchCode(branchCode);
         filter.setProductCode(productCode);
         filter.setStatus(status);
+        filter.setPlanningWorkOrderId(planningWorkOrderId);
+        filter.setSapWoId(sapWoId);
+        filter.setProductOrderId(productOrderId);
+        filter.setGroupName(groupName);
+        filter.setGroupCode(groupCode);
+        filter.setProductName(productName);
+        filter.setBranchName(branchName);
+        filter.setLotNumber(lotNumber);
+        filter.setWoId(woId);
+        filter.setQuantityPlan(quantityPlan);
+
 
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("startTime").descending());
