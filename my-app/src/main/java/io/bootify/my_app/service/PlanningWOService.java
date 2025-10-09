@@ -216,7 +216,9 @@ public class PlanningWOService {
         if (filter.getProductCode() != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("productCode"), filter.getProductCode()));
         }
-
+        if (filter.getPlanningWorkOrderId() != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("planningWorkOrderId"), filter.getPlanningWorkOrderId()));
+        }
         if (filter.getStatus() != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), filter.getStatus()));
         }
