@@ -23,9 +23,19 @@ export class MonitorPage {
     ref?: DynamicDialogRef;
     loading: boolean = false;
     filters = {
+        planningWorkOrderId: '',
+        sapWoId: '',
+        productOrderId: '',
+        branchName: '',
         branchCode: '',
-        productCode: '',
+        groupName: '',
+        groupCode: '',
         status: '',
+        woId: '',
+        lotNumber: '',
+        productCode: '',
+        productName: '',
+        quantityPlan: ''
     }
 
     constructor(private router: Router, private route: ActivatedRoute, private planningWoService: PlanningWoService, private cdr: ChangeDetectorRef, private dialogService: DialogService) { }

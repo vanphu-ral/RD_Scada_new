@@ -24,6 +24,9 @@
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
+.hidden-overflow {
+  overflow: hidden;
+}
 
 // .widget-progress {
 //   max-height: 543px;

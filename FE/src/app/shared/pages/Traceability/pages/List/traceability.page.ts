@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, signal } from '@angular/core';
 import { SharedModule } from '../../../../../share.module';
 import { HttpClient } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlanningWoService } from '../../../Monitor/service/planning-wo.service';
+import { Util } from '../../../../core/utils/utils-function';
+import { ProductOrderModel } from '../../../../models/Traceability/product-order.model';
 
 @Component({
     selector: 'app-traceability',
@@ -15,7 +17,7 @@ import { PlanningWoService } from '../../../Monitor/service/planning-wo.service'
 })
 export class TraceabilityPage {
 
-    data: any[] = [];
+    data: any = { planningWO: null, scanSerialChecks: [] };
     filter: any = {
         serialBoard: '',
         serialItem: '',
@@ -24,79 +26,36 @@ export class TraceabilityPage {
         { name: 'Serial Board', value: 'serialBoard' },
         { name: 'Serial Item', value: 'serialItem' },
     ];
-    products!: any[];
-    constructor(private router: Router, private route: ActivatedRoute, private planningWoService: PlanningWoService) { }
+
+
+    constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute, private planningWoService: PlanningWoService) { }
 
     ngOnInit(): void {
-        this.products = [
-            {
-                id: '1000',
-                code: 'f230fh0g3',
-                name: 'Bamboo Watch',
-                description: 'Product Description',
-                image: 'bamboo-watch.jpg',
-                price: 65,
-                category: 'Accessories',
-                quantity: 24,
-                inventoryStatus: 'INSTOCK',
-                rating: 5
-            },
-            {
-                id: '1000',
-                code: 'f230fh0g3',
-                name: 'Bamboo Watch',
-                description: 'Product Description',
-                image: 'bamboo-watch.jpg',
-                price: 65,
-                category: 'Accessories',
-                quantity: 24,
-                inventoryStatus: 'INSTOCK',
-                rating: 5
-            },
-            {
-                id: '1000',
-                code: 'f230fh0g3',
-                name: 'Bamboo Watch',
-                description: 'Product Description',
-                image: 'bamboo-watch.jpg',
-                price: 65,
-                category: 'Accessories',
-                quantity: 24,
-                inventoryStatus: 'INSTOCK',
-                rating: 5
-            },
-            {
-                id: '1000',
-                code: 'f230fh0g3',
-                name: 'Bamboo Watch',
-                description: 'Product Description',
-                image: 'bamboo-watch.jpg',
-                price: 65,
-                category: 'Accessories',
-                quantity: 24,
-                inventoryStatus: 'INSTOCK',
-                rating: 5
-            },
-        ]
     }
 
     search() {
-        if (this.filter.option == 'serialBoard') {
-            this.filter.serialBoard = this.filter.serial;
+        if (Util.isEmpty(this.filter.serial) || Util.isEmpty(this.filter.option)) return;
 
-            this.planningWoService.filterBySerialBoard(this.filter.serialBoard).subscribe((res: any) => {
-                console.log(res);
+        const apiCall =
+            this.filter.option === 'serialBoard'
+                ? this.planningWoService.filterBySerialBoard(this.filter.serial)
+                : this.planningWoService.filterBySerialItem(this.filter.serial);
 
-                // this.products = res.data;
-            })
-        } else {
-            this.filter.serialItem = this.filter.serial;
-            this.planningWoService.filterBySerialItem(this.filter.serialItem).subscribe((res: any) => {
-                console.log(res);
+        apiCall.subscribe({
+            next: (res: any) => {
+                this.data = res ? { ...res } : null;
+                this.cdr.detectChanges();
+            },
+            error: (err) => {
+                this.data = null;
+                this.cdr.detectChanges();
+            }
+        });
+    }
 
-                // this.products = res.data;
-            })
-        }
+    clearData() {
+        this.data = null;
+        this.cdr.detectChanges();
     }
 
 }

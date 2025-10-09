@@ -18,15 +18,44 @@ export class PlanningWoService extends BaseApiService<any> {
     let params = new HttpParams()
       .set('page', page)
       .set('size', size);
-
-    if (filters.branchCode) {
+    if(filters.planningWorkOrderId) {
+      params = params.set('planningWorkOrderId', filters.planningWorkOrderId);
+    }
+    if(filters.sapWoId) {
+      params = params.set('sapWoId', filters.sapWoId);
+    }
+    if(filters.productOrderId) {
+      params = params.set('productOrderId', filters.productOrderId);
+    }
+    if(filters.branchName) {
+      params = params.set('branchName', filters.branchName);
+    }
+    if(filters.branchCode) {
       params = params.set('branchCode', filters.branchCode);
     }
-    if (filters.productCode) {
+    if(filters.groupName) {
+      params = params.set('groupName', filters.groupName);
+    }
+    if(filters.groupCode) {
+      params = params.set('groupCode', filters.groupCode);
+    }
+    if(filters.status) {
+      params = params.set('status', filters.status);
+    }
+    if(filters.woId) {
+      params = params.set('woId', filters.woId);
+    }
+    if(filters.lotNumber) {
+      params = params.set('lotNumber', filters.lotNumber);
+    }
+    if(filters.productCode) {
       params = params.set('productCode', filters.productCode);
     }
-    if (filters.status) {
-      params = params.set('status', filters.status);
+    if(filters.productName) {
+      params = params.set('productName', filters.productName);
+    }
+    if(filters.quantityPlan) {
+      params = params.set('quantityPlan', filters.quantityPlan);
     }
 
     return this.http.get<any>(this['fullBaseUrl'], { params });

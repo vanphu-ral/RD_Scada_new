@@ -216,7 +216,9 @@ public class PlanningWOService {
         if (filter.getProductCode() != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("productCode"), filter.getProductCode()));
         }
-
+        if (filter.getPlanningWorkOrderId() != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("planningWorkOrderId"), filter.getPlanningWorkOrderId()));
+        }
         if (filter.getStatus() != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), filter.getStatus()));
         }
@@ -252,6 +254,14 @@ public class PlanningWOService {
         return planningwoRepository.findAll(spec, pageable);
     }
     public ResponseEntity<?> create(PlanningWO planningWO) {
+        if (planningwoRepository.findByWoId(planningWO.getWoId()) != null) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Map.of(
+                            "message", "Work Order đã tồn tại",
+                            "data", planningWO
+                    ));
+        }else {
         try {
             PlanningWO savedWO = planningwoRepository.save(planningWO);
             return ResponseEntity
@@ -269,4 +279,5 @@ public class PlanningWOService {
                     ));
         }
     }
+        }
 }
