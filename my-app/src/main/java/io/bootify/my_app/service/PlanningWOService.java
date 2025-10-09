@@ -254,6 +254,14 @@ public class PlanningWOService {
         return planningwoRepository.findAll(spec, pageable);
     }
     public ResponseEntity<?> create(PlanningWO planningWO) {
+        if (planningwoRepository.findByWoId(planningWO.getWoId()) != null) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Map.of(
+                            "message", "Work Order đã tồn tại",
+                            "data", planningWO
+                    ));
+        }else {
         try {
             PlanningWO savedWO = planningwoRepository.save(planningWO);
             return ResponseEntity
@@ -271,4 +279,5 @@ public class PlanningWOService {
                     ));
         }
     }
+        }
 }
