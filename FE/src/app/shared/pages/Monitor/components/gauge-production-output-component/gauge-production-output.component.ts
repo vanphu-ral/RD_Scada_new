@@ -12,17 +12,17 @@ import { NgxGaugeModule } from 'ngx-gauge';
   <h5>Tiến độ sản lượng</h5>
         <ngx-gauge
   [type]="'full'"
-  [value]="data.planningWO.scadaQuantityOut > 0 ? data.planningWO.scadaQuantityOut / data.planningWO.quantityPlan : 0"
+  [value]="data.planningWO.totalNumberOutput > 0 ? (data.planningWO.totalNumberOutput / data.planningWO.quantityPlan) * 100 : 0"
   [min]="0"
   [max]="100"
   [size]="300" 
   [thick]="12"
   [cap]="'round'"
   [thresholds]="gaugeThresholds"
-  [thresholds]="gaugeOptions"        [foregroundColor]="'#E91E63'"   [backgroundColor]="backgroundColor" >
+  [thresholds]="gaugeOptions"        [foregroundColor]="'#2ce91eff'"   [backgroundColor]="backgroundColor" >
   <ngx-gauge-value>
-    <div style="font-size: 40px; font-weight: bold; color: white;">
-      {{ data.planningWO.scadaQuantityOut > 0 ? data.planningWO.scadaQuantityOut / data.planningWO.quantityPlan : 0 }} %
+    <div style="font-size: 40px; font-weight: bold; color: #0D6EFD;">
+      {{ data.planningWO.totalNumberOutput > 0 ? ((data.planningWO.totalNumberOutput / data.planningWO.quantityPlan) * 100).toFixed(3) : 0 }} %
     </div>
   </ngx-gauge-value>
 </ngx-gauge>
@@ -85,7 +85,6 @@ export class GaugeProductionOutputComponent implements OnInit {
   constructor(private cd: ChangeDetectorRef) { }
 
   ngOnInit() {
-
   }
 
 

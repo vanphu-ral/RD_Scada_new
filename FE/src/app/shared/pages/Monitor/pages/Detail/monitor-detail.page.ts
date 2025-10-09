@@ -15,6 +15,7 @@ import { NgxGaugeModule } from 'ngx-gauge';
 import { GaugeProductionOutputComponent } from '../../components/gauge-production-output-component/gauge-production-output.component';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
+import { Util } from '../../../../core/utils/utils-function';
 
 @Component({
     selector: 'app-monitor-detail',
@@ -84,6 +85,7 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
     }
 
     formatData(data: any[]): void {
+        if(!data) return;
         const total = data.reduce(
             (acc, item) => {
                 const details = item.machineGroupDetails?.machineDetails || [];

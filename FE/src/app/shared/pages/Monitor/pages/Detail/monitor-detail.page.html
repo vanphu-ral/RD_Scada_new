@@ -14,10 +14,10 @@
     <base-chart-component [data]="chartDataErorrGroup" [options]="chartOptionErorrGroup" [title]="'Biểu đồ lỗi theo nhóm lỗi'"></base-chart-component>
   </div>
   <div class=" widget-config">
-    <div class="widget d-flex justify-content-center align-items-center">
+    <div class="widget d-flex justify-content-center align-items-center hidden-overflow">
       <gauge-production-output-component [data]="model"></gauge-production-output-component>
     </div>
-    <div class="widget d-flex justify-content-center align-items-center">
+    <div class="widget d-flex justify-content-center align-items-center hidden-overflow">
       <gauge-point-ppm-component [data]="model"></gauge-point-ppm-component>
     </div>
   </div>

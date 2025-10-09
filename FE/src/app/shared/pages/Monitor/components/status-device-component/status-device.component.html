@@ -5,11 +5,10 @@
   </div>
   <div class="status-box d-flex flex-column">
     <span class="my-1">Thời gian bắt đầu chạy: {{ data.startTime | date : 'dd/MM/yyyy : HH:mm'}}</span>
-    <span class="my-1">Thời gian chạy máy: 100</span>
-    <span class="my-1">Dừng máy: 100</span>
+    <span class="my-1">Dừng máy: {{ data.endTime | date : 'dd/MM/yyyy : HH:mm' }}</span>
     <span class="my-1">Năng xuất thực tính: 100</span>
     <span class="my-1">Năng xuất mặc định: 100</span>
-    <span class="my-1">Tổng lỗi: 100</span>
+    <span class="my-1">Tổng lỗi: {{ data.totalQuantity }}</span>
     <span class="my-1">PWI Reflow: 100</span>
     <span class="my-1">Pick up ERR: 100</span>
     <span class="my-1">Độ tin cậy: 100</span>

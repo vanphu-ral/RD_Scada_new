@@ -1,7 +1,7 @@
 <div class="widget-content relative" appFullscreen #fs="appFullscreen">
   <i class="fa-solid fa-expand fullscreen-btn" (click)="fs.toggleFullscreen()"></i>
   <h5>Bảng thống kê công đoạn</h5>
-  <p-table class="dark-table" [value]="data" [paginator]="true" [rowsPerPageOptions]="[5,10,20,50]" [rows]="50">
+  <p-table class="dark-table" [value]="data" [paginator]="true" [rowsPerPageOptions]="[5,10,20,50]" [rows]="50" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
     <ng-template pTemplate="header">
       <tr>
         <th>Stage num</th>
@@ -25,7 +25,7 @@
           <p-columnFilter type="text" field="serialItem" placeholder="Search"></p-columnFilter>
         </th>
         <th style="padding: 0">
-          <p-columnFilter type="date" field="createdAt" placeholder="Search"></p-columnFilter>
+          <p-columnFilter type="date" field="timeScan" placeholder="Search"></p-columnFilter>
         </th>
         <th style="padding: 0">
           <p-columnFilter type="text" field="serialStatus" placeholder="Search"></p-columnFilter>
@@ -38,7 +38,7 @@
         <td>{{ row.machineName }}</td>
         <td>{{ row.serialBoard }}</td>
         <td>{{ row.serialItem }}</td>
-        <td>{{ row.timeScan | date:'dd/MM/yyyy'}}</td>
+        <td>{{ row.timeScan | date:'dd/MM/yyyy HH:mm'}}</td>
         <td>{{ row.serialStatus }}</td>
       </tr>
     </ng-template>

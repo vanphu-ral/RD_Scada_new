@@ -38,14 +38,15 @@
         <tr>
           <td>{{ data.totalNumberInput }}</td>
           <td>{{ data.totalNumberOutput }}</td>
-          <td>{{ (data.totalNumberOutput / data.totalNumberInput) > 0 ? (data.totalNumberOutput / data.totalNumberInput)
-            * 100 : 0 }}</td>
+          <!-- <td>{{ (data.totalNumberOutput / data.totalNumberInput) > 0 ? (data.totalNumberOutput / data.totalNumberInput)
+            * 100 : 0 }}</td> -->
+            <td>0</td>
           <td>
             {{
             (data.totalQuantity > 0 && data.totalNumberInput > 0)
-            ? (data.totalQuantity / data.totalNumberInput) * 100
+            ? ((data.totalQuantity / data.totalNumberInput) * 100).toFixed(3)
             : 0
-            }}
+            }} %
           </td>
         </tr>
       </tbody>

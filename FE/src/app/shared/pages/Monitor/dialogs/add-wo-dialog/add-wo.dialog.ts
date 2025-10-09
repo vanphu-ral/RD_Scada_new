@@ -76,6 +76,10 @@ export class AddWODialog {
             },
             error: (err) => {
                 console.error(err);
+                if(err.status === 409) {
+                    Util.toastMessage(err.error.message, 'error');
+                    this.close();
+                }
             }
         });
     }
