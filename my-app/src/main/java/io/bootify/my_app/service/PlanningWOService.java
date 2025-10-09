@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -117,36 +118,40 @@ public class PlanningWOService {
         response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(planningWO.getWoId()));
         return response;
     }
-    public String checkSerialItemExist (String serialItem,String machineName,Integer stage,String workOrder){
-        if(stage >1){
-            List<MachinesModels> machinesModels = machinesModelsRepository.findAllByMachineNameAndStageId(machineName,stage-1);
+    public String checkSerialItemExist (SerialCheckRequest request){
+        String result = "Kết quả kiểm tra Serial : ";
+        if(request.getStage() >1){
+            List<MachinesModels> machinesModels = machinesModelsRepository.findAllByMachineNameAndStageId(request.getMachineName(), request.getStage()-1);
             if (machinesModels.isEmpty()){
-                return "Không tìm thấy máy ở stage trước: "+(stage-1);
+                return "Không tìm thấy máy ở stage trước: "+(request.getStage()-1);
             }else {
                 for (MachinesModels machinesModels1 : machinesModels){
                     List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.getAllByWorkOrderAndMachineId(
-                            workOrder,machinesModels1.getMachineId());
+                            request.getWorkOrder(),machinesModels1.getMachineId());
                     boolean found = false;
-                    for (ScanSerialCheck ssc : scanSerialCheck){
-                        if (ssc.getSerialItem().equals(serialItem)){
-                            found = true;
-                            break;
+                    for (String serialItem : request.getSerialItems()){
+                        for (ScanSerialCheck ssc : scanSerialCheck){
+                            if (ssc.getSerialItem().equals(serialItem)){
+                                found = true;
+                                break;
+                            }
                         }
-                    }
-                    if (found){
-                        return "Tìm thấy Serial Item: "+serialItem+" ở máy: "+machinesModels1.getMachineName()+" stage: "+(stage-1);
+                        if (!found){
+                             result += "\n Không tìm thấy Serial Item: "+serialItem+" ở máy: "+machinesModels1.getMachineName()+" stage: "+(request.getStage()-1);
+                        }
                     }
                 }
             }
         }else{
-            return "Stage hiện tại là 1, không cần kiểm tra stage trước";
+            result += "\n Stage hiện tại là 1, không cần kiểm tra stage trước";
         }
-        List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.findAllBySerialItem(serialItem);
-        if (scanSerialCheck.isEmpty()){
-            return "Không tìm thấy Serial Item: "+serialItem;
-        }else {
-            return "Tìm thấy Serial Item: "+serialItem;
-        }
+//        List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.findAllBySerialItem(serialItem);
+//        if (scanSerialCheck.isEmpty()){
+//            return "Không tìm thấy Serial Item: "+serialItem;
+//        }else {
+//            return "Tìm thấy Serial Item: "+serialItem;
+//        }
+        return result;
     }
     public ProductOrderModelsResponse getWoDetaillnfo (Long id){
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();

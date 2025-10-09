@@ -2,6 +2,7 @@ package io.bootify.my_app.rest;
 
 import io.bootify.my_app.domain.PlanningWO;
 import io.bootify.my_app.model.PlanningWOFilter;
+import io.bootify.my_app.model.SerialCheckRequest;
 import io.bootify.my_app.service.PlanningWOService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -67,12 +68,9 @@ public class PlanningwoResource {
     }
     @GetMapping("/check")
     public ResponseEntity<String> checkSerialItemExist(
-            @RequestParam String serialItem,
-            @RequestParam String machineName,
-            @RequestParam Integer stage,
-            @RequestParam String workOrder) {
+            @RequestBody SerialCheckRequest request) {
 
-        String result = planningWOService.checkSerialItemExist(serialItem, machineName, stage, workOrder);
+        String result = planningWOService.checkSerialItemExist(request);
         return ResponseEntity.ok(result);
     }
     @GetMapping("/serial-board")
