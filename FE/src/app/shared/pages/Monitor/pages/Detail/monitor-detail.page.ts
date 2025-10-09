@@ -79,13 +79,16 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
             this.cdr.detectChanges();
         });
         this.apiService.getWoErrorInfor(id).subscribe((data: any) => {
-            this.scanSerialChecks = data.scanSerialChecks;
+            this.scanSerialChecks = data.scanSerialChecks.map((x: any) => ({
+                ...x,
+                timeScan: x.timeScan ? new Date(x.timeScan) : null
+            }));
             this.cdr.detectChanges();
         });
     }
 
     formatData(data: any[]): void {
-        if(!data) return;
+        if (!data) return;
         const total = data.reduce(
             (acc, item) => {
                 const details = item.machineGroupDetails?.machineDetails || [];
