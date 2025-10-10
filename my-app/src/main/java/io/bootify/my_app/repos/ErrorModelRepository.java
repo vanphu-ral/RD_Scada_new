@@ -20,19 +20,22 @@ public interface ErrorModelRepository extends JpaRepository<ErrorModel, Integer>
             "    e.ProductTypeGroupID AS productTypeGroupID, \n" +
             "    e.ErrorName AS errorName, \n" +
             "    e.StageID AS stageID, \n" +
-            "    e.HMIErrID AS hmiErrID, \n" +
+            "    e.HMIErrID AS hmiErrID, " +
+                    "a.err_group as errorGroup, " +
+                    "a.json_name as errorCode, \n" +
             "    COUNT(d.detailEID) AS quantity " +
             "FROM \n" +
             "    ErrorModel e\n" +
             "LEFT JOIN \n" +
             "    DetailError d ON d.errorName = e.ErrorName \n" +
             "                 AND d.workOrder = ?1 \n" +
-            "                 AND d.machineName = ?2\n" +
+            "                 AND d.machineName = ?2" +
+                    " Left join error_common_scada a on a.name = d.errHMI \n" +
             "WHERE \n" +
             "    e.StageID = ?3  \n" +
             "    AND e.ProductTypeGroupID = 36\n" +
             "GROUP BY \n" +
-            "    e.ErrorID, e.ProductTypeGroupID, e.ErrorName, e.StageID, e.HMIErrID;",nativeQuery = true)
+            "    e.ErrorID, e.ProductTypeGroupID, e.ErrorName, e.StageID, e.HMIErrID,a.err_group,a.json_name;",nativeQuery = true)
     public List<ErrorResponse> getErrorResponsesByWorkOrderAndMachineNameAndStageID(String workOrder, String machineName, Integer stageID);
 
 }
