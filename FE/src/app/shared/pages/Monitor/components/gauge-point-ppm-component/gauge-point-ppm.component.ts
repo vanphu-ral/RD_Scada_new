@@ -12,7 +12,7 @@ import { NgxGaugeModule } from 'ngx-gauge';
   <h5>Chỉ số PPM</h5>
         <ngx-gauge
   [type]="'arch'"
-  [value]="data.planningWO.quantityPlan > 0 ? (data.planningWO.totalQuantity * 1000000) / (data.planningWO.quantityPlan * data.planningWO.quota) : 0"
+  [value]="data.planningWO.totalNumberOutput > 0 ? (data.planningWO.totalQuantity * 1000000) / (data.planningWO.totalNumberOutput * data.planningWO.quota) : 0"
   [min]="gaugeMin"
   [max]="gaugeMax"
   [size]="350" 
@@ -23,7 +23,7 @@ import { NgxGaugeModule } from 'ngx-gauge';
   [thresholds]="gaugeOptions"        [foregroundColor]="'#2ce91eff'"   [backgroundColor]="backgroundColor" >
   <ngx-gauge-value>
     <div style="font-size: 40px; font-weight: bold; color: #0D6EFD;">
-      {{ data.planningWO.quantityPlan > 0 ? ((data.planningWO.totalQuantity * 1000000) / (data.planningWO.quantityPlan * data.planningWO.quota)).toFixed(2) : 0 }} PPM
+      {{ data.planningWO.totalNumberOutput > 0 ? ((data.planningWO.totalQuantity * 1000000) / (data.planningWO.totalNumberOutput * data.planningWO.quota)).toFixed(2) : 0 }} PPM
     </div>
   </ngx-gauge-value>
 </ngx-gauge>

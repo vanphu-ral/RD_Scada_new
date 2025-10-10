@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -7,8 +7,14 @@ import Lara from '@primeng/themes/lara';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { APP_INITIALIZER } from '@angular/core';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { initializeKeycloak } from './shared/core/auth/keycloak/keycloak-init.factory';
+
+import { inject } from '@angular/core';
+import { InMemoryCache, ApolloClientOptions } from '@apollo/client/core';
+import { provideApollo } from 'apollo-angular'; // ✅ Quan trọng
+import { HttpLink } from 'apollo-angular/http';
 import { AccountService } from './shared/core/auth/account/account.service';
-import { LoginService } from './shared/core/auth/login/login.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -51,6 +57,20 @@ export const appConfig: ApplicationConfig = {
         // multi select
         selectionMessage: '{0} cột được chọn'
       }
-    })
+    }),
+    importProvidersFrom(KeycloakAngularModule),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeKeycloak,
+      multi: true,
+      deps: [KeycloakService, AccountService]
+    },
+    provideApollo((): ApolloClientOptions<any> => {
+      const httpLink = inject(HttpLink); // 👈 inject thủ công HttpLink
+      return {
+        cache: new InMemoryCache(),
+        link: httpLink.create({ uri: 'http://192.168.68.61:8081/graphql' }),
+      };
+    }),
   ]
 };

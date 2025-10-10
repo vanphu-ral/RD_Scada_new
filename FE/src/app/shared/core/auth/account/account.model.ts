@@ -9,5 +9,6 @@ export class Account {
     public fullName: string | null,
     public login: string,
     public imageUrl: string | null,
+    public token: string | null
   ) {}
 }

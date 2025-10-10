@@ -77,6 +77,22 @@ export class AppLayout {
         this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
             this.hideMenu();
         });
+
+        this.router.events
+            .pipe(filter(event => event instanceof NavigationEnd))
+            .subscribe(() => {
+                if (window.location.hash) {
+                    const cleanUrl = window.location.href.split('#')[0];
+                    window.history.replaceState({}, document.title, cleanUrl);
+                }
+            });
+    }
+
+    ngOnInit() {
+        if (window.location.hash.includes('code=')) {
+            // Xóa đoạn hash sau khi Keycloak xử lý xong
+            window.history.replaceState({}, document.title, window.location.origin);
+        }
     }
 
     isOutsideClicked(event: MouseEvent) {
