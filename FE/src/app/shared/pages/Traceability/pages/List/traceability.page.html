@@ -54,22 +54,17 @@
     </div>
 
     <div class="mt-5" *ngIf="true">
-        <p-table class="dark-table" [value]="data?.scanSerialChecks || []">
+        <p-table class="dark-table" [value]="data?.scanSerialChecks || []" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
             <ng-template pTemplate="caption">
                 <span class="text-xl font-bold text-white">Thông tin chi tiết các công đoạn sản xuất</span>
             </ng-template>
 
             <ng-template pTemplate="header">
                 <tr>
-                    <th>Mã sản phẩm</th>
-                    <th>Tên sản phẩm</th>
-                    <th>Version</th>
-                    <th>Mã WO</th>
-                    <th>Số Lô</th>
-                    <th>Mã lệnh SAP</th>
                     <th>Serial board / Product</th>
                     <th>Serial PCS</th>
                     <th>Công đoạn sản xuất</th>
+                    <th>Machine</th>
                     <th>Trạng thái</th>
                     <th>Thời gian</th>
                 </tr>
@@ -77,15 +72,10 @@
 
             <ng-template pTemplate="body" let-item>
                 <tr>
-                    <td>{{ data?.planningWO?.productCode }}</td>
-                    <td>{{ data?.planningWO?.productName }}</td>
-                    <td>{{ data?.planningWO?.bomVersion }}</td>
-                    <td>{{ data?.planningWO?.woId }}</td>
-                    <td>{{ data?.planningWO?.lotNumber }}</td>
-                    <td>{{ data?.planningWO?.sapWoId }}</td>
                     <td>{{ item.serialBoard }}</td>
                     <td>{{ item.serialItem }}</td>
                     <td>{{ item.stageNum }}</td>
+                    <td>{{ item.machineName }}</td>
                     <td>{{ item.serialStatus }}</td>
                     <td>{{ item.timeScan | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
                 </tr>
