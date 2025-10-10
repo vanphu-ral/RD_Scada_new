@@ -33,9 +33,11 @@ public interface ErrorModelRepository extends JpaRepository<ErrorModel, Integer>
                     " Left join error_common_scada a on a.name = d.errHMI \n" +
             "WHERE \n" +
             "    e.StageID = ?3  \n" +
-            "    AND e.ProductTypeGroupID = 36\n" +
+            "    AND e.ProductTypeGroupID = 36 " +
             "GROUP BY \n" +
-            "    e.ErrorID, e.ProductTypeGroupID, e.ErrorName, e.StageID, e.HMIErrID,a.err_group,a.json_name;",nativeQuery = true)
+            "    e.ErrorID, e.ProductTypeGroupID, e.ErrorName, e.StageID, e.HMIErrID,a.err_group,a.json_name" +
+                    " HAVING  \n" +
+                    "    COUNT(d.detailEID) > 0 ;",nativeQuery = true)
     public List<ErrorResponse> getErrorResponsesByWorkOrderAndMachineNameAndStageID(String workOrder, String machineName, Integer stageID);
 
 }
