@@ -1,10 +1,7 @@
 package io.bootify.my_app.rest;
 
 import io.bootify.my_app.domain.PlanningWO;
-import io.bootify.my_app.model.MachinesModelsDTO;
-import io.bootify.my_app.model.PlanningWOFilter;
-import io.bootify.my_app.model.SerialCheckRequest;
-import io.bootify.my_app.model.SerialCheckResponse;
+import io.bootify.my_app.model.*;
 import io.bootify.my_app.service.PlanningWOService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -100,9 +97,9 @@ public class PlanningwoResource {
         return result;
     }
     @PostMapping("/insert")
-    public ResponseEntity<String> insertMachine(
+    public ResponseEntity<InsertMachineResultDTO> insertMachine(
             @RequestBody List<MachinesModelsDTO> request) {
-        ResponseEntity<String> result = planningWOService.insertMachine(request);
+        ResponseEntity<InsertMachineResultDTO> result = planningWOService.insertMachine(request);
         return result;
     }
     @GetMapping("/serial-board")
