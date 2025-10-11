@@ -124,7 +124,7 @@ public class PlanningWOService {
     public ResponseEntity<String> insertMachine(List<MachinesModelsDTO> machinesModels){
         StringBuilder result = new StringBuilder();
         for (MachinesModelsDTO mm : machinesModels){
-            MachinesModels existingMachine = machinesModelsRepository.findFirstByMachineName(mm.getMachineName());
+            MachinesModels existingMachine = machinesModelsRepository.findByMachineName(mm.getMachineName());
             try {
                 machinesModelsRepository.insertMachine(
                         mm.getMachineName(),

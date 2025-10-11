@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface MachinesModelsRepository extends JpaRepository<MachinesModels, Integer> {
-    MachinesModels findFirstByMachineName(String machineName);
+    MachinesModels findByMachineName(String machineName);
     MachinesModels findFirstByMachineGroupMachineGroupId(Integer machineGroupId);
 
     MachinesModels findFirstByLineLineId(Integer lineId);
