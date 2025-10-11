@@ -36,7 +36,8 @@ export class ListDeviceAcceptWODialogDialog {
         this.listDeviceAndStage = _.map(_.get(this.data, 'listDevices'), item => {
             return {
                 ...item.machine,
-                woId: this.data.data.woId
+                woId: this.data.data.woId,
+                status: 1
             }
         })
         console.log(this.listDeviceAndStage);
@@ -45,8 +46,17 @@ export class ListDeviceAcceptWODialogDialog {
 
     save() {
         console.log(this.listDeviceAndStage);
-        
-        // this.ref.close(this.listDeviceAndStage);
+        const data = _.map(this.listDeviceAndStage, item => {
+            return {
+                machineName: item.machineName,
+                stageId: item.stageId,
+                status: item.status
+            }
+        })
+        this.planningWOService.insertListDevietoWo(data).subscribe(res => {
+            Util.toastMessage('Thêm thư viện cho WO thành công', 'success');
+            this.close();
+        })
     }
 
     close() {

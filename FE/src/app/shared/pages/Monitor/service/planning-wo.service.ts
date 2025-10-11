@@ -88,4 +88,8 @@ export class PlanningWoService extends BaseApiService<any> {
     }
     return this.http.get<any>(`${this['fullBaseUrl']}/serial-board`, { params });
   }
+
+  insertListDevietoWo(listDevices: any[]): Observable<any> {
+    return this.http.post<any>(`${this['fullBaseUrl']}/insert`, listDevices);
+  }
 }
