@@ -113,12 +113,10 @@ export class TraceabilityPage {
     }
 
     getRowSpan(checkPerson: string): number {
-        // Đếm số lần xuất hiện của CheckPerson
         return this.listMaterialCheck.filter(x => x.CheckPerson === checkPerson).length;
     }
 
     shouldShowPerson(index: number): boolean {
-        // Nếu là dòng đầu tiên hoặc khác người kiểm tra dòng trước thì hiển thị
         if (index === 0) return true;
         return this.listMaterialCheck[index].CheckPerson !== this.listMaterialCheck[index - 1].CheckPerson;
     }
