@@ -12,7 +12,7 @@
 
     </div>
     <div class="mt-5" *ngIf="true">
-        <p-table class="dark-table mb-5" [value]="data?.planningWO ? [data?.planningWO] : []">
+        <p-table [loading]="loading" class="dark-table mb-5" [value]="data?.planningWO ? [data?.planningWO] : []">
             <ng-template pTemplate="caption">
                 <span class="text-xl font-bold text-white">Thông tin sản xuất</span>
             </ng-template>
@@ -54,7 +54,7 @@
     </div>
 
     <div class="mt-5" *ngIf="true">
-        <p-table class="dark-table" [value]="data?.scanSerialChecks || []" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
+        <p-table [loading]="loading" class="dark-table" [value]="data?.scanSerialChecks || []" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
             <ng-template pTemplate="caption">
                 <span class="text-xl font-bold text-white">Thông tin chi tiết các công đoạn sản xuất</span>
             </ng-template>
@@ -90,7 +90,7 @@
     </div>
 
     <div class="mt-5">
-        <p-table class="dark-table" [value]="listBOMInfo" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
+        <p-table [loading]="loading" class="dark-table" [value]="listBOMInfo" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
             <ng-template pTemplate="caption">
                 <span class="text-xl font-bold text-white">Thông tin BOM sản phẩm</span>
             </ng-template>
@@ -129,7 +129,7 @@
     </div>
 
     <div class="mt-5">
-        <p-table class="dark-table" [value]="listMaterialCheck" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
+        <p-table [loading]="loading" class="dark-table" [value]="listMaterialCheck" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
             <ng-template pTemplate="caption">
                 <span class="text-xl font-bold text-white">Thông tin kiểm tra vật tư</span>
             </ng-template>
@@ -150,15 +150,21 @@
                     <th>Ngày kiểm tra</th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-item>
+            <ng-template pTemplate="body" let-item let-i="rowIndex">
                 <tr>
                     <td>{{ data.planningWO.woId }}</td>
                     <td>{{ item.itemCode }}</td>
                     <td>{{ item.itemName }}</td>
                     <td>{{ item.vendor }}</td>
                     <td>{{ item.partNumber }}</td>
-                    <td>{{ item.serialStatus }}</td>
-                    <td>{{ item.timeScan | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+                    <td>{{ item.sampleQuantity }}</td>
+                    <td>{{ item.regulationCheck }}</td>
+                    <td>{{ item.allowResult }}</td>
+                    <td>{{ item.realResult }}</td>
+                    <td>{{ item.returnDay | date : 'dd/MM/yyyy' }}</td>
+                    <td style="border-top: 1px solid; border-left: 1px solid;" *ngIf="shouldShowPerson(i)" [attr.rowspan]="getRowSpan(item.CheckPerson)">{{ item.CheckPerson }}</td>
+                    <td style="border-top: 1px solid;" *ngIf="shouldShowPerson(i)" [attr.rowspan]="getRowSpan(item.CheckPerson)">{{ item.conclude }}</td>
+                    <td style="border-top: 1px solid;" *ngIf="shouldShowPerson(i)" [attr.rowspan]="getRowSpan(item.CheckPerson)">{{ item.checkDate | date : 'dd/MM/yyyy' }}</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="empty">
@@ -170,7 +176,7 @@
     </div>
 
     <div class="mt-5">
-        <p-table class="dark-table" [value]="listMaterialUse" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
+        <p-table [loading]="loading" class="dark-table" [value]="listMaterialUse" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
             <ng-template pTemplate="caption">
                 <span class="text-xl font-bold text-white">Thông tin sử dụng vật tư</span>
             </ng-template>
@@ -189,12 +195,13 @@
             <ng-template pTemplate="body" let-item>
                 <tr>
                     <td>{{ data.planningWO.woId }}</td>
-                    <td>{{ item.itemCode }}</td>
-                    <td>{{ item.itemName }}</td>
-                    <td>{{ item.vendor }}</td>
-                    <td>{{ item.partNumber }}</td>
-                    <td>{{ item.serialStatus }}</td>
-                    <td>{{ item.timeScan | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+                    <td>{{ item.machine }}</td>
+                    <td>{{ item.feeder }}</td>
+                    <td>{{ getPartNumber(item.qr) }}</td>
+                    <td>{{ item.material }}</td>
+                    <td>{{ item.qr }}</td>
+                    <td>{{ item.createdAt | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+                    <td>{{ item.user_check }}</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="empty">
@@ -206,7 +213,7 @@
     </div>
 
     <div class="mt-5">
-        <p-table class="dark-table" [value]="listMaterialNotRecommend" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
+        <p-table [loading]="loading" class="dark-table" [value]="listMaterialNotRecommend" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
             <ng-template pTemplate="caption">
                 <span class="text-xl font-bold text-white">Danh sách vật tư không thuộc khuyến nghị</span>
             </ng-template>
@@ -225,12 +232,13 @@
             <ng-template pTemplate="body" let-item>
                 <tr>
                     <td>{{ data.planningWO.woId }}</td>
-                    <td>{{ item.itemCode }}</td>
-                    <td>{{ item.itemName }}</td>
-                    <td>{{ item.vendor }}</td>
-                    <td>{{ item.partNumber }}</td>
-                    <td>{{ item.serialStatus }}</td>
-                    <td>{{ item.timeScan | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+                    <td>{{ item.machine }}</td>
+                    <td>{{ item.feeder }}</td>
+                    <td>{{ getPartNumber(item.qr) }}</td>
+                    <td>{{ item.material }}</td>
+                    <td>{{ item.qr }}</td>
+                    <td>{{ item.createdAt | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+                    <td>{{ item.user_check }}</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="empty">

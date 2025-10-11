@@ -8,11 +8,16 @@
                     <th>Tổng số lỗi</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody *ngIf="listErorrs.length > 0">
                 <tr *ngFor="let row of listErorrs">
                     <td>{{ row.errorId }}</td>
                     <td>{{ row.errorName }}</td>
                     <td>{{ row.quantity }}</td>
+                </tr>
+            </tbody>
+            <tbody *ngIf="listErorrs.length == 0">
+                <tr>
+                    <td colspan="3" class="text-center">Không có lỗi</td>
                 </tr>
             </tbody>
         </table>

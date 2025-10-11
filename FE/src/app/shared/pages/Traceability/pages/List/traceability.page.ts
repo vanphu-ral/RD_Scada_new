@@ -31,6 +31,8 @@ export class TraceabilityPage {
     listpqcBomQuantity: any[] = [];
     listpqcBomErrorDetail: any[] = [];
 
+    loading: boolean = false;
+
 
     constructor(private cdr: ChangeDetectorRef, private grapSqlService: GrapSqlService, private planningWoService: PlanningWoService) { }
 
@@ -39,6 +41,7 @@ export class TraceabilityPage {
 
     search() {
         if (!this.filter.serial || !this.filter.option) return;
+        this.loading = true;
         const apiCall =
             this.filter.option === 'serialBoard'
                 ? this.planningWoService.filterBySerialBoard(this.filter.serial)
@@ -47,20 +50,17 @@ export class TraceabilityPage {
         apiCall.subscribe({
             next: (res: any) => {
                 this.data = res ? { ...res } : null;
-                console.log(res);
                 this.grapSqlService.QmsToDoiTraInfoByLotNumber(_.get(res, 'planningWO.lotNumber')).subscribe(res => {
-                    console.log(res);
                     this.listBOMInfo = _.get(res, 'data.qmsToDoiTraInfoByLotNumber.pqcBomWorkOrder') || [];
                     this.listMaterialCheck = this.mergePqcData(
                         _.get(res, 'data.qmsToDoiTraInfoByLotNumber.pqcCheckNVL') || [],
                         _.get(res, 'data.qmsToDoiTraInfoByLotNumber.pqcCheckTestNVL') || []
                     );
-                    console.log(this.listMaterialCheck);
-                    
                     this.listMaterialUse = _.get(res, 'data.qmsToDoiTraInfoByLotNumber.pqcScan100Pass') || [];
                     this.listMaterialNotRecommend = _.get(res, 'data.qmsToDoiTraInfoByLotNumber.pqcScan100Fail') || [];
                     this.listpqcBomQuantity = _.get(res, 'data.qmsToDoiTraInfoByLotNumber.pqcBomQuantity') || [];
                     this.listpqcBomErrorDetail = _.get(res, 'data.qmsToDoiTraInfoByLotNumber.pqcBomErrorDetail') || [];
+                    this.loading = false;
                     this.cdr.detectChanges();
                 })
                 this.cdr.detectChanges();
@@ -86,10 +86,10 @@ export class TraceabilityPage {
             const generalInfo = checkInfoMap.get(String(item.pqcDrawNvlId));
             if (generalInfo) {
                 const infoToAdd = { ...generalInfo };
-                delete infoToAdd.id; 
+                delete infoToAdd.id;
                 return {
-                    ...item,      
-                    ...infoToAdd 
+                    ...item,
+                    ...infoToAdd
                 };
             }
             return item;
@@ -105,6 +105,22 @@ export class TraceabilityPage {
     getError(id: number) {
         const quantity = this.listpqcBomErrorDetail.find(item => item.pqcBomWorkOrderId === id);
         return quantity ? _.get(quantity, 'quantity', 0) : 0;
+    }
+
+    getPartNumber(qr: string) {
+        const parts = qr.split('#');
+        return parts[1] || '';
+    }
+
+    getRowSpan(checkPerson: string): number {
+        // Đếm số lần xuất hiện của CheckPerson
+        return this.listMaterialCheck.filter(x => x.CheckPerson === checkPerson).length;
+    }
+
+    shouldShowPerson(index: number): boolean {
+        // Nếu là dòng đầu tiên hoặc khác người kiểm tra dòng trước thì hiển thị
+        if (index === 0) return true;
+        return this.listMaterialCheck[index].CheckPerson !== this.listMaterialCheck[index - 1].CheckPerson;
     }
 
 }
