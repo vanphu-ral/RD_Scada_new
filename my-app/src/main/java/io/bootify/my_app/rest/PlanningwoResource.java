@@ -102,7 +102,6 @@ public class PlanningwoResource {
     @PostMapping("/insert")
     public ResponseEntity<String> insertMachine(
             @RequestBody List<MachinesModelsDTO> request) {
-
         ResponseEntity<String> result = planningWOService.insertMachine(request);
         return result;
     }
