@@ -19,5 +19,7 @@ public class MachinesModelsDTO {
     private Integer machineGroup;
 
     private Integer line;
-
+    private Integer status;
+    private Integer lineId;
+    private Integer machineGroupId;
 }

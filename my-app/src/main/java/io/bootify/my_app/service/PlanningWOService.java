@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -117,6 +118,26 @@ public class PlanningWOService {
         response.setPlanningWO(planningWO);
         response.setScanSerialChecks(scanSerialCheck);
         return response;
+    }
+    @Transactional
+    public ResponseEntity<String> insertMachine(List<MachinesModelsDTO> machinesModels){
+        StringBuilder result = new StringBuilder();
+        for (MachinesModelsDTO mm : machinesModels){
+            MachinesModels existingMachine = machinesModelsRepository.findFirstByMachineName(mm.getMachineName());
+            try {
+                machinesModelsRepository.insertMachine(
+                        mm.getMachineName(),
+                        existingMachine.getMachineGroup().getMachineGroupId(),
+                        existingMachine.getStageId(),
+                        existingMachine.getLine().getLineId(),
+                        mm.getStatus()
+                );
+                result.append("Thêm máy thành công: ").append(mm.getMachineName()).append("\n");
+            }catch (Exception e){
+                result.append("Lỗi khi thêm máy: ").append(mm.getMachineName()).append(" - ").append(e.getMessage()).append("\n");
+            }
+        }
+        return ResponseEntity.ok(result.toString());
     }
     public ResponseEntity<SerialCheckResponse> checkSerialItemExist (SerialCheckRequest request){
         Integer code = 0;

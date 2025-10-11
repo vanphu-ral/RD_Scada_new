@@ -1,6 +1,7 @@
 package io.bootify.my_app.rest;
 
 import io.bootify.my_app.domain.PlanningWO;
+import io.bootify.my_app.model.MachinesModelsDTO;
 import io.bootify.my_app.model.PlanningWOFilter;
 import io.bootify.my_app.model.SerialCheckRequest;
 import io.bootify.my_app.model.SerialCheckResponse;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/planningwo", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -95,6 +97,13 @@ public class PlanningwoResource {
             @RequestBody SerialCheckRequest request) {
 
         ResponseEntity<SerialCheckResponse> result = planningWOService.checkSerialItemExist(request);
+        return result;
+    }
+    @PostMapping("/insert")
+    public ResponseEntity<String> insertMachine(
+            @RequestBody List<MachinesModelsDTO> request) {
+
+        ResponseEntity<String> result = planningWOService.insertMachine(request);
         return result;
     }
     @GetMapping("/serial-board")
