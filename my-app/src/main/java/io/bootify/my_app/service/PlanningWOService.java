@@ -56,6 +56,7 @@ public class PlanningWOService {
         // Lấy thông tin Work Order
         response.setErrorCommonScadas(errorCommonScadaRepository.findAll());
         response.setPlanningWO(planningwoRepository.findById(id).orElse(null));
+        response.setMachinesDetailResponses(machinesModelsRepository.getMachinesByWorkOrder(response.getPlanningWO().getWoId()));
 //        // Lấy thông tin Production Order Models
 //        List<ProductionOrderModelDetail> productionOrderModelDetails = new ArrayList<>();
 //        List<ProductionOrderModels> productionOrderModelsList = productionOrderModelsRepository.findAllByWorkOrder(planningWO.getWoId());
@@ -130,7 +131,8 @@ public class PlanningWOService {
                         existingMachine.getMachineGroup().getMachineGroupId(),
                         existingMachine.getStageId(),
                         existingMachine.getLine().getLineId(),
-                        mm.getStatus()
+                        mm.getStatus(),
+                        mm.getWorkOrder()
                 );
                 result.append("Thêm máy thành công: ").append(mm.getMachineName()).append("\n");
             }catch (Exception e){

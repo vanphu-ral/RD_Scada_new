@@ -15,4 +15,5 @@ public class ProductOrderModelsResponse {
     private List<ProductionOrderModelDetail> productionOrderModelDetails;
     private List<ScanSerialChecksResponse> scanSerialChecks;
     private List<ErrorCommonScada> errorCommonScadas;
+    private List<MachinesDetailResponse> machinesDetailResponses;
 }

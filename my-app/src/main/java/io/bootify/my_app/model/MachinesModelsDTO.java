@@ -22,4 +22,5 @@ public class MachinesModelsDTO {
     private Integer status;
     private Integer lineId;
     private Integer machineGroupId;
+    private String workOrder;
 }
