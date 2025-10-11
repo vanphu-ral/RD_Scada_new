@@ -56,7 +56,7 @@ export class GauGePointPpmComponent implements OnInit {
   private lastData: any;
 
   public gaugeMin = 0;
-  public gaugeMax = 1500;
+  public gaugeMax = 100;
   public gaugeLabel = 'PPM';
   public gaugeType = 'arch';
   public gaugeThresholds = {
@@ -76,12 +76,11 @@ export class GauGePointPpmComponent implements OnInit {
 
   public markets = {
     '0': { color: '#00000000', size: 0, label: '0', font: '10px arial' },
-    '250': { color: 'gray', type: 'triangle', size: 5, label: '250', font: '10px arial' },
-    '500': { color: 'gray', type: 'triangle', size: 5, label: '500', font: '10px arial' },
-    '705': { color: 'gray', type: 'triangle', size: 5, label: '705', font: '10px arial' },
-    '910': { color: 'gray', type: 'triangle', size: 5, label: '910', font: '10px arial' },
-    '1205': { color: 'gray', type: 'triangle', size: 5, label: '1205', font: '10px arial' },
-    '1500': { color: '#00000000', size: 0, label: '1500', font: '10px arial' },
+    '25': { color: 'gray', type: 'triangle', size: 5, label: '25', font: '10px arial' },
+    '50': { color: 'gray', type: 'triangle', size: 5, label: '50', font: '10px arial' },
+    '75': { color: 'gray', type: 'triangle', size: 5, label: '75', font: '10px arial' },
+    '85': { color: 'gray', type: 'triangle', size: 5, label: '85', font: '10px arial' },
+    '100': { color: 'gray', type: 'triangle', size: 5, label: '100', font: '10px arial' },
   };
 
   ppmValue = 0;
