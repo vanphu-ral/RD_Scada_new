@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serial;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -121,9 +122,12 @@ public class PlanningWOService {
         return response;
     }
     @Transactional
-    public ResponseEntity<String> insertMachine(List<MachinesModelsDTO> machinesModels){
-        StringBuilder result = new StringBuilder();
-        for (MachinesModelsDTO mm : machinesModels){
+    public ResponseEntity<InsertMachineResultDTO> insertMachine(List<MachinesModelsDTO> machinesModels) {
+        InsertMachineResultDTO result = new InsertMachineResultDTO();
+        result.setSuccessMachines(new ArrayList<>());
+        result.setFailedMachines(new HashMap<>());
+
+        for (MachinesModelsDTO mm : machinesModels) {
             MachinesModels existingMachine = machinesModelsRepository.findByMachineName(mm.getMachineName());
             try {
                 machinesModelsRepository.insertMachine(
@@ -134,13 +138,15 @@ public class PlanningWOService {
                         mm.getStatus(),
                         mm.getWorkOrder()
                 );
-                result.append("Thêm máy thành công: ").append(mm.getMachineName()).append("\n");
-            }catch (Exception e){
-                result.append("Lỗi khi thêm máy: ").append(mm.getMachineName()).append(" - ").append(e.getMessage()).append("\n");
+                result.getSuccessMachines().add(mm.getMachineName());
+            } catch (Exception e) {
+                result.getFailedMachines().put(mm.getMachineName(), e.getMessage());
             }
         }
-        return ResponseEntity.ok(result.toString());
+
+        return ResponseEntity.ok(result);
     }
+
     public ResponseEntity<SerialCheckResponse> checkSerialItemExist (SerialCheckRequest request){
         Integer code = 0;
         String result = "Kết quả kiểm tra Serial : ";
