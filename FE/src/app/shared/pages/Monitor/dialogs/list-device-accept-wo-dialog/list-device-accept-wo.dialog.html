@@ -2,12 +2,6 @@
     <p-table [value]="listDeviceAndStage" [paginator]="true" [rowsPerPageOptions]="[5,10,20,50]" [rows]="20"
         currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục"
         [showCurrentPageReport]="true">
-        <ng-template pTemplate="caption">
-            <p-floatlabel variant="on">
-                <p-select [options]="listLines" [(ngModel)]="selectLine" optionLabel="name" optionValue="id"
-                    placeholder="Chọn dây chuyền" class="w-full"></p-select>
-            </p-floatlabel>
-        </ng-template>
         <ng-template pTemplate="header">
             <tr>
                 <th>STT</th>
@@ -22,7 +16,7 @@
                 <td>{{ item.machineName }}</td>
                 <td>{{ item.stageId }}</td>
                 <td>
-                    <p-checkbox [binary]="true" [ngModel]="item.status === 1"
+                    <p-checkbox [binary]="true" [ngModel]="item.status === 1" [disabled]="!isNewListDevice"
                         (onChange)="item.status = $event.checked ? 1 : 0" [ngModelOptions]="{standalone: true}"
                         name="status-{{ rowIndex }}">
                     </p-checkbox>
@@ -31,7 +25,7 @@
         </ng-template>
     </p-table>
     <div class="d-flex justify-content-end gap-2 mt-4">
-        <p-button label="Lưu" severity="success" (onClick)="save()"></p-button>
+        <p-button *ngIf="isNewListDevice" label="Lưu" severity="success" (onClick)="save()"></p-button>
         <p-button label="Đóng" severity="danger" (onClick)="close()"></p-button>
     </div>
 </div>
