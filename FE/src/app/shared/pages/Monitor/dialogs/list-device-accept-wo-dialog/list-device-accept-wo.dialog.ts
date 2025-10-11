@@ -18,8 +18,7 @@ export class ListDeviceAcceptWODialogDialog {
 
     data: any;
     listDeviceAndStage: any[] = [];
-    listLines: any[] = [];
-    selectLine: any = {};
+    isNewListDevice: boolean = false;
 
     constructor(
         public ref: DynamicDialogRef,
@@ -33,24 +32,29 @@ export class ListDeviceAcceptWODialogDialog {
 
     ngOnInit() {
         this.cdr.detectChanges();
-        this.listDeviceAndStage = _.map(_.get(this.data, 'listDevices'), item => {
-            return {
-                ...item.machine,
-                woId: this.data.data.woId,
-                status: 1
-            }
-        })
-        console.log(this.listDeviceAndStage);
-        
+        this.isNewListDevice = _.get(this.data, 'isNewList');
+        if(this.isNewListDevice) {
+            this.listDeviceAndStage = _.map(_.get(this.data, 'listDevices'), item => {
+                return {
+                    ...item.machine,
+                    machineName: item.machine.machineName,
+                    stageId: item.machine.stageId,
+                    workOrder: this.data.data.woId,
+                    status: 0
+                }
+            })
+        } else {
+            this.listDeviceAndStage = _.get(this.data, 'listDevices');
+        }
     }
 
     save() {
-        console.log(this.listDeviceAndStage);
         const data = _.map(this.listDeviceAndStage, item => {
             return {
                 machineName: item.machineName,
                 stageId: item.stageId,
-                status: item.status
+                status: item.status,
+                workOrder: item.workOrder
             }
         })
         this.planningWOService.insertListDevietoWo(data).subscribe(res => {

@@ -17,6 +17,7 @@ export class StationIndicatorsComponent implements OnInit {
 
     @Input() data: any
     @Input() listDevices: any[] = []
+    @Input() isNewList: boolean = false
     ref?: DynamicDialogRef;
     account: any
 
@@ -37,7 +38,8 @@ export class StationIndicatorsComponent implements OnInit {
             modal: true,
             data: {
                 data: this.data,
-                listDevices: this.listDevices
+                listDevices: this.listDevices,
+                isNewList: this.isNewList
             },
         });
         this.ref.onClose.subscribe((result) => {

@@ -1,6 +1,6 @@
 <div class="dashboard-container">
   <div class="widget widget-config p-3">
-    <app-station-indicators-component [data]="model.planningWO" [listDevices]="listDevices"></app-station-indicators-component>
+    <app-station-indicators-component [data]="model.planningWO" [listDevices]="(model.machinesDetailResponses?.length ?? 0) > 0 ? model.machinesDetailResponses : listDevices" [isNewList]="(model.machinesDetailResponses?.length ?? 0) > 0 ? false : true"></app-station-indicators-component>
   </div>
   <div class="widget widget-po">
     <app-control-panel-component [data]="model.planningWO"></app-control-panel-component>
