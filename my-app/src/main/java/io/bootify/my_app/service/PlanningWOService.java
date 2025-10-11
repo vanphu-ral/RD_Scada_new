@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +53,10 @@ public class PlanningWOService {
     ScanSerialCheckRepository scanSerialCheckRepository;
     @Autowired
     ErrorCommonScadaRepository errorCommonScadaRepository;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    KafkaProducer kafkaProducer;
     public ProductOrderModelsResponse getWoInfo (Long id){
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
         // Lấy thông tin Work Order
@@ -171,6 +176,17 @@ public class PlanningWOService {
                              result += "\n Không tìm thấy Serial Item: "+request.getSerialItems()+" ở máy: "+machinesModels1.getMachineName()+" stage: "+(request.getStage()-1);
                         }
                 }
+            }
+            if(code == 1){
+                ChatMessage message = new ChatMessage();
+                message.setType(ChatMessage.MessageType.CHAT);
+                message.setSender("Server");
+                message.setContent(result);
+                message.setWorkOrder(request.getWorkOrder());
+
+                kafkaProducer.sendMessage("scada-giam-sat", result);
+                messagingTemplate.convertAndSend("/topic/public", message);
+                System.out.println("Đã gửi: " + message.getWorkOrder());
             }
         }else{
             result += "\n Stage hiện tại là 0, không cần kiểm tra stage trước";
