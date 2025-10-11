@@ -4,7 +4,8 @@
         [showCurrentPageReport]="true">
         <ng-template pTemplate="caption">
             <p-floatlabel variant="on">
-                <p-select [options]="listLines" [(ngModel)]="selectLine" optionLabel="name" optionValue="id" placeholder="Chọn dây chuyền" class="w-full"></p-select>
+                <p-select [options]="listLines" [(ngModel)]="selectLine" optionLabel="name" optionValue="id"
+                    placeholder="Chọn dây chuyền" class="w-full"></p-select>
             </p-floatlabel>
         </ng-template>
         <ng-template pTemplate="header">
@@ -12,24 +13,25 @@
                 <th>STT</th>
                 <th>Công đoạn</th>
                 <th>Stage num</th>
-                <th>Thiết bị</th>
                 <th>Trạng thái</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
             <tr>
                 <td>{{ rowIndex + 1 }}</td>
-                <td>{{ item.stage }}</td>
-                <td>{{ item.stageNum }}</td>
-                <td>{{ item.device }}</td>
+                <td>{{ item.machineName }}</td>
+                <td>{{ item.stageId }}</td>
                 <td>
-                    <p-checkBox [(ngModel)]="item.isAccept" [binary]="true" [ngModelOptions]="{standalone: true}" name="isAccept-{{ rowIndex }}"></p-checkBox>
+                    <p-checkbox [binary]="true" [ngModel]="item.status === 1"
+                        (onChange)="item.status = $event.checked ? 1 : 0" [ngModelOptions]="{standalone: true}"
+                        name="status-{{ rowIndex }}">
+                    </p-checkbox>
                 </td>
             </tr>
         </ng-template>
     </p-table>
     <div class="d-flex justify-content-end gap-2 mt-4">
-        <p-button label="Lưu" severity="success"></p-button>
+        <p-button label="Lưu" severity="success" (onClick)="save()"></p-button>
         <p-button label="Đóng" severity="danger" (onClick)="close()"></p-button>
     </div>
 </div>

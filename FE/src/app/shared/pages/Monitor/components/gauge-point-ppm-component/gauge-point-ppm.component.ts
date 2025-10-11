@@ -8,26 +8,27 @@ import { NgxGaugeModule } from 'ngx-gauge';
   standalone: true,
   template: `
   <div class="widget-content relative" appFullscreen #fs="appFullscreen">
-  <i class="fa-solid fa-expand fullscreen-btn" (click)="fs.toggleFullscreen()"></i>
-  <h5>Chỉ số PPM</h5>
-        <ngx-gauge
-  [type]="'arch'"
-  [value]="data.planningWO.totalNumberOutput > 0 ? (data.planningWO.totalQuantity * 1000000) / (data.planningWO.totalNumberOutput * data.planningWO.quota) : 0"
-  [min]="gaugeMin"
-  [max]="gaugeMax"
-  [size]="350" 
-  [thick]="12"
-  [cap]="'round'"
-  [markers]="markets"
-  [thresholds]="gaugeThresholds"
-  [thresholds]="gaugeOptions"        [foregroundColor]="'#2ce91eff'"   [backgroundColor]="backgroundColor" >
-  <ngx-gauge-value>
-    <div style="font-size: 40px; font-weight: bold; color: #0D6EFD;">
-      {{ data.planningWO.totalNumberOutput > 0 ? ((data.planningWO.totalQuantity * 1000000) / (data.planningWO.totalNumberOutput * data.planningWO.quota)).toFixed(2) : 0 }} PPM
-    </div>
-  </ngx-gauge-value>
-</ngx-gauge>
-</div>
+    <i class="fa-solid fa-expand fullscreen-btn" (click)="fs.toggleFullscreen()"></i>
+    <h5>Chỉ số PPM</h5>
+    <ngx-gauge
+        [type]="'arch'"
+        [value]="ppmValue"
+        [min]="gaugeMin"
+        [max]="gaugeMax"
+        [size]="350" 
+        [thick]="12"
+        [cap]="'round'"
+        [markers]="markets"
+        [thresholds]="gaugeThresholds"
+        [foregroundColor]="'#2ce91eff'"
+        [backgroundColor]="backgroundColor">
+        <ngx-gauge-value>
+          <div style="font-size: 40px; font-weight: bold;" [style.color]="textColor">
+            {{ ppmValue.toFixed(2) }} PPM
+          </div>
+        </ngx-gauge-value>
+    </ngx-gauge>
+  </div>
     `,
   imports: [CommonModule, SharedModule, NgxGaugeModule],
   styles: [`
@@ -47,19 +48,21 @@ import { NgxGaugeModule } from 'ngx-gauge';
         font-size: 20px;
         z-index: 10;
       }`
-    ]
+  ]
 })
 export class GauGePointPpmComponent implements OnInit {
 
   @Input() data: any
+  private lastData: any;
+
   public gaugeMin = 0;
   public gaugeMax = 1500;
   public gaugeLabel = 'PPM';
   public gaugeType = 'arch';
   public gaugeThresholds = {
-    '0': { color: 'green' },
-    '500': { color: 'yellow' },
-    '910': { color: 'red' }
+    '0': { color: 'red' },
+    '75': { color: 'yellow' },
+    '85': { color: 'green' }
   };
 
   public gaugeOptions = {
@@ -81,12 +84,43 @@ export class GauGePointPpmComponent implements OnInit {
     '1500': { color: '#00000000', size: 0, label: '1500', font: '10px arial' },
   };
 
+  ppmValue = 0;
+  textColor = '#0D6EFD';
+
   public backgroundColor = 'white';
 
   constructor(private cd: ChangeDetectorRef) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
 
+  }
+
+  ngOnChanges() {
+    if (this.data && this.data !== this.lastData) {
+      this.lastData = this.data;
+      this.calculatePPM();
+    }
+  }
+
+  calculatePPM() {
+    if (this.data?.planningWO?.totalNumberOutput > 0) {
+      this.ppmValue =
+        (this.data.planningWO.totalQuantity * 1000000) /
+        (this.data.planningWO.totalNumberOutput * this.data.planningWO.quota);
+    } else {
+      this.ppmValue = 0;
+    }
+    this.updateTextColor();
+  }
+
+  updateTextColor() {
+    if (this.ppmValue < 75) {
+      this.textColor = 'red';
+    } else if (this.ppmValue < 85) {
+      this.textColor = 'orange';
+    } else {
+      this.textColor = 'green';
+    }
   }
 
 

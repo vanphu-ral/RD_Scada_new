@@ -33,41 +33,21 @@ export class ListDeviceAcceptWODialogDialog {
 
     ngOnInit() {
         this.cdr.detectChanges();
-        this.listDeviceAndStage = [
-            {
-                stage: 'LR-01',
-                stageNum: 1,
-                device: 'IOT-01',
-                isAccept: true
-            },
-            {
-                stage: 'LR-02',
-                stageNum: 2,
-                device: 'IOT-02',
-                isAccept: true
-            },
-            {
-                stage: 'LR-03',
-                stageNum: 3,
-                device: 'IOT-03',
-                isAccept: true
-            },
-            {
-                stage: 'LR-04',
-                stageNum: 4,
-                device: 'IOT-04',
-                isAccept: true
-            },
-            {
-                stage: 'LR-05',
-                stageNum: 5,
-                device: 'IOT-05',
-                isAccept: true
-            },
-        ]
+        this.listDeviceAndStage = _.map(_.get(this.data, 'listDevices'), item => {
+            return {
+                ...item.machine,
+                woId: this.data.data.woId
+            }
+        })
+        console.log(this.listDeviceAndStage);
+        
     }
 
-
+    save() {
+        console.log(this.listDeviceAndStage);
+        
+        // this.ref.close(this.listDeviceAndStage);
+    }
 
     close() {
         this.ref.close();

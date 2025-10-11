@@ -16,6 +16,7 @@ import { AccountService } from '../../../../core/auth/account/account.service';
 export class StationIndicatorsComponent implements OnInit {
 
     @Input() data: any
+    @Input() listDevices: any[] = []
     ref?: DynamicDialogRef;
     account: any
 
@@ -34,7 +35,10 @@ export class StationIndicatorsComponent implements OnInit {
             header: 'Cấu hình thiết bị tham gia vào lệnh sản xuất',
             width: '1200px',
             modal: true,
-            data: {},
+            data: {
+                data: this.data,
+                listDevices: this.listDevices
+            },
         });
         this.ref.onClose.subscribe((result) => {
             if (result) {

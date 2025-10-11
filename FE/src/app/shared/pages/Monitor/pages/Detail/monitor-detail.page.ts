@@ -114,29 +114,8 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
         this.model.planningWO.totalNumberInput = total.numberInput;
         this.model.planningWO.totalNumberOutput = total.numberOutput;
         this.model.planningWO.totalQuantity = total.quantity;
-    }
 
-    getChartDataErorrGroup(errorCommonScadas: any[]) {
-        const countByGroup: Record<string, number> = {};
-        for (const item of errorCommonScadas) {
-            const group = item.errGroup || 'Không xác định';
-            countByGroup[group] = (countByGroup[group] || 0) + 1;
-        }
-        const labels = Object.keys(countByGroup);
-        const data = Object.values(countByGroup);
-        const colors = [
-            '#42A5F5', '#66BB6A', '#FFA726', '#FF6384',
-            '#AA66CC', '#FF4444', '#0099CC', '#00C851'
-        ];
-        return {
-            labels,
-            datasets: [
-                {
-                    data,
-                    backgroundColor: colors.slice(0, labels.length)
-                }
-            ]
-        };
+        this.model = { ...this.model };
     }
 
     getChartDataErrorByGroup(
@@ -252,15 +231,24 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
         return {
             responsive: true,
             plugins: {
-                legend: { position: 'bottom' },
+                legend: {
+                    display: false
+                },
                 tooltip: {
                     callbacks: {
-                        label: (context: any) => `${context.label}: ${context.raw}`
+                        label: (context: any) => {
+                            const dataset = context.dataset.data;
+                            const total = dataset.reduce((sum: number, val: number) => sum + val, 0);
+                            const value = context.raw;
+                            const percent = ((value / total) * 100).toFixed(1);
+                            return `${context.label}: ${percent}%`;
+                        }
                     }
                 }
             }
         };
     }
+
 
     override save(): void { }
 }

@@ -4,7 +4,7 @@
   <p-table class="dark-table" [value]="data" [paginator]="true" [rowsPerPageOptions]="[5,10,20,50]" [rows]="50" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
     <ng-template pTemplate="header">
       <tr>
-        <th>Stage num</th>
+        <th>StageNum</th>
         <th>Machine</th>
         <th>Serial board</th>
         <th>Serial PCS</th>
@@ -12,23 +12,23 @@
         <th>Status</th>
       </tr>
       <tr>
-        <th style="padding: 0">
-          <p-columnFilter type="text" field="stageNum" placeholder="Search"></p-columnFilter>
+        <th style="padding: 0; max-width: 88px; overflow: hidden;">
+          <p-columnFilter type="text" field="stageNum" placeholder="Search" [showMenu]="false"></p-columnFilter>
         </th>
-        <th style="padding: 0">
-          <p-columnFilter type="text" field="machineName" placeholder="Search"></p-columnFilter>
+        <th style="padding: 0; max-width: 100px; overflow: hidden;">
+          <p-columnFilter type="text" field="machineName" placeholder="Search" [showMenu]="false"></p-columnFilter>
         </th>
-        <th style="padding: 0">
-          <p-columnFilter type="text" field="serialBoard" placeholder="Search"></p-columnFilter>
+        <th style="padding: 0; max-width: 100px; overflow: hidden;">
+          <p-columnFilter type="text" field="serialBoard" placeholder="Search" [showMenu]="false"></p-columnFilter>
         </th>
-        <th style="padding: 0">
-          <p-columnFilter type="text" field="serialItem" placeholder="Search"></p-columnFilter>
+        <th style="padding: 0; max-width: 100px; overflow: hidden;">
+          <p-columnFilter type="text" field="serialItem" placeholder="Search" [showMenu]="false"></p-columnFilter>
         </th>
-        <th style="padding: 0">
-          <p-columnFilter type="date" field="timeScan" placeholder="Search"></p-columnFilter>
+        <th style="padding: 0; max-width: 100px; overflow: hidden;">
+          <p-columnFilter type="date" field="timeScan" placeholder="Search" [showMenu]="false"></p-columnFilter>
         </th>
-        <th style="padding: 0">
-          <p-columnFilter type="text" field="serialStatus" placeholder="Search"></p-columnFilter>
+        <th style="padding: 0; max-width: 88px; overflow: hidden;">
+          <p-columnFilter type="text" field="serialStatus" placeholder="Search" [showMenu]="false"></p-columnFilter>
         </th>
       </tr>
     </ng-template>
