@@ -2,8 +2,8 @@
   <i class="fa-solid fa-expand fullscreen-btn" (click)="fs.toggleFullscreen()"></i>
   <div class="box-information">
     <span>Bảng điều khiển</span>
-    <p-button icon="pi pi-cog" class="p-button-text" severity="secondary" label="Config"></p-button>
-    <span><span class="text-primary fw-bold">Họ và tên:</span> RD00054</span>
+    <p-button icon="pi pi-cog" class="p-button-text" severity="secondary" label="Config" (onClick)="openConfigDialog()"></p-button>
+    <span><span class="text-primary fw-bold">Họ và tên:</span> {{ account.fullName }}</span>
     <span><span class="text-primary fw-bold">Số điện thoại:</span> </span>
     <span><i class="fa-solid fa-users"></i> 48</span>
   </div>

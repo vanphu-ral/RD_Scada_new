@@ -1,21 +1,24 @@
 import { Routes } from '@angular/router';
-import { AppComponent } from './app';
 import { AppLayout } from './shared/layout/app.layout';
 import { CallbackComponent } from './shared/core/auth/callback.component';
+import { AuthGuard } from './shared/core/auth/auth.guard';
+import { HomeComponent } from './shared/pages/Home/home.component';
 
 export const routes: Routes = [
-    {
-        path: '',
-        component: AppLayout,
-        // children: [
-        //     { path: '', component: MonitorPage }
-        // ]
-        loadChildren: () => import('./shared/pages/Monitor/monitor.routes')
-    },
-    {
-        path: 'Traceability',
-        component: AppLayout,
-        loadChildren: () => import('./shared/pages/Traceability/traceability.routes')
-    },
-    { path: 'callback', component: CallbackComponent }
+  {
+    path: '',
+    component: AppLayout,
+    canActivate: [AuthGuard],             // <- bảo vệ route chính
+    loadChildren: () => import('./shared/pages/Monitor/monitor.routes')
+  },
+  {
+    path: 'Traceability',
+    component: AppLayout,
+    canActivate: [AuthGuard],             // nếu muốn bảo vệ Traceability
+    loadChildren: () => import('./shared/pages/Traceability/traceability.routes')
+  },
+  { path: 'login', component: HomeComponent }, // trang login nội bộ
+  { path: 'callback', component: CallbackComponent },
+  // tùy chọn: redirect unknown
+  { path: '**', redirectTo: '' }
 ];

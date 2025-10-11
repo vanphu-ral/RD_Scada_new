@@ -7,7 +7,7 @@
         <p-select [options]="optionSerial" [(ngModel)]="filter.option" optionLabel="name" placeholder="Chọn loại serial"
             class="w-full md:w-56 mx-2" optionValue="value" />
         <p-button icon="pi pi-search" class="p-button-text" severity="secondary" clas="mx-2" label="Search"
-            (onBlur)="search()"></p-button>
+            (onClick)="search()"></p-button>
         <p-button label="Clear Data" class="mx-2" (onClick)="clearData()" />
 
     </div>
@@ -58,9 +58,9 @@
             <ng-template pTemplate="caption">
                 <span class="text-xl font-bold text-white">Thông tin chi tiết các công đoạn sản xuất</span>
             </ng-template>
-
             <ng-template pTemplate="header">
                 <tr>
+                    <th>Mã WO</th>
                     <th>Serial board / Product</th>
                     <th>Serial PCS</th>
                     <th>Công đoạn sản xuất</th>
@@ -69,9 +69,9 @@
                     <th>Thời gian</th>
                 </tr>
             </ng-template>
-
             <ng-template pTemplate="body" let-item>
                 <tr>
+                    <td>{{ data.planningWO.woId }}</td>
                     <td>{{ item.serialBoard }}</td>
                     <td>{{ item.serialItem }}</td>
                     <td>{{ item.stageNum }}</td>
@@ -81,6 +81,158 @@
                 </tr>
             </ng-template>
 
+            <ng-template pTemplate="empty">
+                <tr>
+                    <td colspan="11" class="text-center text-white py-3">Không tìm thấy dữ liệu</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="mt-5">
+        <p-table class="dark-table" [value]="listBOMInfo" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
+            <ng-template pTemplate="caption">
+                <span class="text-xl font-bold text-white">Thông tin BOM sản phẩm</span>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Mã WO</th>
+                    <th>Mã hàng hóa</th>
+                    <th>Tên hàng hóa</th>
+                    <th>Vendor</th>
+                    <th>PartNumber</th>
+                    <th>Số lượng cơ bản</th>
+                    <th>Số lượng cần sx</th>
+                    <th>Tổng lỗi</th>
+                    <th>Tổng thực nhập sx</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td>{{ data.planningWO.woId }}</td>
+                    <td>{{ item.itemCode }}</td>
+                    <td>{{ item.itemName }}</td>
+                    <td>{{ item.vendor }}</td>
+                    <td>{{ item.partNumber }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.workOrderQuantity }}</td>
+                    <td>{{ getQuantity(item.id) }}</td>
+                    <td>{{ getError(item.id) }}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="empty">
+                <tr>
+                    <td colspan="11" class="text-center text-white py-3">Không tìm thấy dữ liệu</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="mt-5">
+        <p-table class="dark-table" [value]="listMaterialCheck" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
+            <ng-template pTemplate="caption">
+                <span class="text-xl font-bold text-white">Thông tin kiểm tra vật tư</span>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Mã WO</th>
+                    <th>Mã hàng hóa</th>
+                    <th>Tên hàng hóa</th>
+                    <th>Vendor</th>
+                    <th>PartNumber</th>
+                    <th>Số mẫu kiểm tra</th>
+                    <th>Quy định kiểm tra</th>
+                    <th>Số lỗi cho phép</th>
+                    <th>Số lỗi thực tế</th>
+                    <th>Ngày về</th>
+                    <th>Người kiểm tra</th>
+                    <th>Kết luận</th>
+                    <th>Ngày kiểm tra</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td>{{ data.planningWO.woId }}</td>
+                    <td>{{ item.itemCode }}</td>
+                    <td>{{ item.itemName }}</td>
+                    <td>{{ item.vendor }}</td>
+                    <td>{{ item.partNumber }}</td>
+                    <td>{{ item.serialStatus }}</td>
+                    <td>{{ item.timeScan | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="empty">
+                <tr>
+                    <td colspan="11" class="text-center text-white py-3">Không tìm thấy dữ liệu</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="mt-5">
+        <p-table class="dark-table" [value]="listMaterialUse" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
+            <ng-template pTemplate="caption">
+                <span class="text-xl font-bold text-white">Thông tin sử dụng vật tư</span>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Mã WO</th>
+                    <th>Mã máy</th>
+                    <th>Mã Feeder/Station</th>
+                    <th>Partnumber</th>
+                    <th>Material</th>
+                    <th>QR Detail</th>
+                    <th>Thời gian Scan</th>
+                    <th>Người vận hành</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td>{{ data.planningWO.woId }}</td>
+                    <td>{{ item.itemCode }}</td>
+                    <td>{{ item.itemName }}</td>
+                    <td>{{ item.vendor }}</td>
+                    <td>{{ item.partNumber }}</td>
+                    <td>{{ item.serialStatus }}</td>
+                    <td>{{ item.timeScan | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="empty">
+                <tr>
+                    <td colspan="11" class="text-center text-white py-3">Không tìm thấy dữ liệu</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="mt-5">
+        <p-table class="dark-table" [value]="listMaterialNotRecommend" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
+            <ng-template pTemplate="caption">
+                <span class="text-xl font-bold text-white">Danh sách vật tư không thuộc khuyến nghị</span>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Mã WO</th>
+                    <th>Mã máy</th>
+                    <th>Mã Feeder/Station</th>
+                    <th>Partnumber</th>
+                    <th>Material</th>
+                    <th>QR Detail</th>
+                    <th>Thời gian Scan</th>
+                    <th>Người vận hành</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td>{{ data.planningWO.woId }}</td>
+                    <td>{{ item.itemCode }}</td>
+                    <td>{{ item.itemName }}</td>
+                    <td>{{ item.vendor }}</td>
+                    <td>{{ item.partNumber }}</td>
+                    <td>{{ item.serialStatus }}</td>
+                    <td>{{ item.timeScan | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+                </tr>
+            </ng-template>
             <ng-template pTemplate="empty">
                 <tr>
                     <td colspan="11" class="text-center text-white py-3">Không tìm thấy dữ liệu</td>

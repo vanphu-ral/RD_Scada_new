@@ -28,9 +28,20 @@ export class BreadcrumbComponent {
     this.buildRouteLabelMap(MENU_ITEMS);
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => {
-        this.generateBreadcrumbFromUrl(this.router.url);
+      .subscribe((ev: any) => {
+        const rawUrl = ev?.urlAfterRedirects ?? this.router.url;
+        const cleanUrl = this.cleanUrl(rawUrl);
+        this.generateBreadcrumbFromUrl(cleanUrl);
       });
+  }
+
+   private cleanUrl(url: string): string {
+    if (!url) return '/';
+    // bỏ fragment (#...) và query (?) — chỉ giữ phần path
+    const beforeHash = url.split('#')[0];
+    const beforeQuery = beforeHash.split('?')[0];
+    // đảm bảo bắt đầu bằng '/'
+    return beforeQuery || '/';
   }
 
   private buildRouteLabelMap(menuItems: MenuItem[]) {
