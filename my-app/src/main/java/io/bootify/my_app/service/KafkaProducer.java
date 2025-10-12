@@ -13,7 +13,7 @@ public class KafkaProducer {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
     @Autowired
-    DetailErrorService detailErrorService;
+    WoErrorHistoryService woErrorHistoryService;
     public void sendMessage(String topic, String message) {
         kafkaTemplate.send(topic, message);
         ChatMessage messages = new ChatMessage();
@@ -22,7 +22,7 @@ public class KafkaProducer {
         messages.setContent(message);
         messages.setWorkOrder("WO-146247-1");
         messages.setStatus(0);
-        messages.setId(detailErrorService.insertError(messages));
+        messages.setId(woErrorHistoryService.insertError(messages));
         messagingTemplate.convertAndSend("/topic/public", messages);
     }
 }
