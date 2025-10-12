@@ -23,7 +23,7 @@ public class WoErrorHistoryService {
         woErrorHistory.setStatus(0);
         return Math.toIntExact(woErrorHistoryRepository.save(woErrorHistory).getId());
     }
-    public List<ChatMessage> findByWorkOrder(String workOrder) {
+    public List<WoErrorHistory> findByWorkOrder(String workOrder) {
         return woErrorHistoryRepository.findByWorkOrder(workOrder);
     }
     public void updateError(ChatMessage message) {

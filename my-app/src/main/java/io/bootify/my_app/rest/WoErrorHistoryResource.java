@@ -1,5 +1,6 @@
 package io.bootify.my_app.rest;
 
+import io.bootify.my_app.domain.WoErrorHistory;
 import io.bootify.my_app.model.ChatMessage;
 import io.bootify.my_app.service.WoErrorHistoryService;
 import jakarta.validation.Valid;
@@ -16,7 +17,7 @@ public class WoErrorHistoryResource {
     @Autowired
     WoErrorHistoryService woErrorHistoryService;
     @GetMapping("/history/workOrder/{workOrder}")
-    public ResponseEntity<List<ChatMessage>> getAllDetailErrorsByWorkOrder(@PathVariable(name = "workOrder") final String workOrder) {
+    public ResponseEntity<List<WoErrorHistory>> getAllDetailErrorsByWorkOrder(@PathVariable(name = "workOrder") final String workOrder) {
         return ResponseEntity.ok(woErrorHistoryService.findByWorkOrder(workOrder));
     }
     @PostMapping("/history/update")
