@@ -28,24 +28,11 @@ export class ListDeviceAcceptWODialogDialog {
         private cdr: ChangeDetectorRef
     ) {
         this.data = config.data;
+        this.listDeviceAndStage = config.data.listDevices
+        this.isNewListDevice = _.get(this.data, 'isNewList');
     }
 
     ngOnInit() {
-        this.cdr.detectChanges();
-        this.isNewListDevice = _.get(this.data, 'isNewList');
-        if(this.isNewListDevice) {
-            this.listDeviceAndStage = _.map(_.get(this.data, 'listDevices'), item => {
-                return {
-                    ...item.machine,
-                    machineName: item.machine.machineName,
-                    stageId: item.machine.stageId,
-                    workOrder: this.data.data.woId,
-                    status: 0
-                }
-            })
-        } else {
-            this.listDeviceAndStage = _.get(this.data, 'listDevices');
-        }
     }
 
     save() {
@@ -58,8 +45,8 @@ export class ListDeviceAcceptWODialogDialog {
             }
         })
         this.planningWOService.insertListDevietoWo(data).subscribe(res => {
-            Util.toastMessage('Thêm thư viện cho WO thành công', 'success');
-            this.close();
+            Util.toastMessage('Khởi tạo danh sách công đoạn cho WO thành công', 'success');
+            this.ref.close(true);
         })
     }
 

@@ -14,9 +14,14 @@ import { ConventionalTableComponent } from '../../components/conventional-table-
 import { NgxGaugeModule } from 'ngx-gauge';
 import { GaugeProductionOutputComponent } from '../../components/gauge-production-output-component/gauge-production-output.component';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { interval, Subscription } from 'rxjs';
+import { filter, interval, Subscription } from 'rxjs';
 import { Util } from '../../../../core/utils/utils-function';
-
+import { SocketService } from '../../../../service/socket.service';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import _ from 'lodash';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { WarningDialog } from '../../dialogs/warning-dialog/warning.dialog';
+import { WOHistoryErrorService } from '../../service/wo-history-error.service';
 @Component({
     selector: 'app-monitor-detail',
     standalone: true,
@@ -32,7 +37,7 @@ import { Util } from '../../../../core/utils/utils-function';
         BaseChartComponent,
         GauGePointPpmComponent,
         ConventionalTableComponent,
-        GaugeProductionOutputComponent
+        GaugeProductionOutputComponent,
     ]
 })
 export class MonitorDetailPage extends BasePageComponent<any> implements OnInit {
@@ -50,16 +55,50 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
     platformId = inject(PLATFORM_ID);
     private refreshSub?: Subscription;
 
-    constructor(protected override apiService: PlanningWoService, private router: ActivatedRoute) {
+    messages: any[] = [];
+    private sub!: Subscription;
+
+    showWarning = false;
+    warningMessage = '';
+    private ref?: DynamicDialogRef;
+
+    constructor(protected override apiService: PlanningWoService, private socketService: SocketService,
+        private dialogService: DialogService, private woHistoryError: WOHistoryErrorService) {
         super(apiService);
     }
 
     override ngOnInit(): void {
         super.ngOnInit();
         this.callDataFrequency();
+        this.socketService.connect();
         this.refreshSub = interval(180000).subscribe(() => {
             this.callDataFrequency();
         });
+        this.woHistoryError.getErrorByWoId(this.model.planningWO.woId).subscribe((data: any) => {
+            this.messages = _.filter(data, { status: 0 });
+            if (this.messages.length > 0) {
+                this.openWarningDialog();
+            }
+        });
+        this.sub = this.socketService.currentMessage$
+            .pipe(filter((msg) => !!msg)) // chỉ xử lý khi có dữ liệu thật
+            .subscribe((msg) => {
+                console.log('📩 Nhận message realtime từ Kafka:', msg);
+                this.messages.push(msg);
+                if (this.ref) {
+                    const instance = (this.ref as any)._componentRef?.instance;
+                    if (instance?.updateMessages) {
+                        instance.updateMessages(this.messages);
+                    }
+                } else {
+                    this.openWarningDialog();
+                }
+            });
+    }
+
+    ngOnDestroy() {
+        this.sub.unsubscribe();
+        this.socketService.disconnect();
     }
 
     callDataFrequency(): void {
@@ -225,8 +264,6 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
     }
 
 
-
-
     getDefaultChartOption() {
         return {
             responsive: true,
@@ -248,6 +285,30 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
             }
         };
     }
+
+    openWarningDialog() {
+        if (this.ref) {
+            (this.ref as any).componentRef.instance.message = this.messages;
+            return;
+        }
+        this.ref = this.dialogService.open(WarningDialog, {
+            header: 'Cảnh báo hệ thống',
+            width: 'auto',
+            modal: true,
+            closable: false,
+            data: { message: this.messages }
+        });
+        this.ref.onClose.subscribe((confirmed) => {
+            if (confirmed) {
+                console.log('✅ Người dùng đã xác nhận cảnh báo');
+                this.messages = [];
+            } else {
+                console.log('❌ Người dùng đã đóng cảnh báo');
+            }
+            this.ref = undefined;
+        });
+    }
+
 
 
     override save(): void { }
