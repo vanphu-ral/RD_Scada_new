@@ -21,6 +21,6 @@ public class KafkaProducer {
         messages.setContent(message);
         messages.setWorkOrder("WO-146247-1");
 
-        messagingTemplate.convertAndSend("/topic/public", message);
+        messagingTemplate.convertAndSend("/topic/public", messages);
     }
 }
