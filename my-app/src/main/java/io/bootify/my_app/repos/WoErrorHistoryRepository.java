@@ -29,6 +29,6 @@ public interface WoErrorHistoryRepository  extends JpaRepository<WoErrorHistory,
                               @Param("workOrder") String workOrder,
                               @Param("type") String type,
                               @Param("status") Integer status);
-    @Query(value = "SELECT * FROM woErrorHistory WHERE workOrder = :workOrder", nativeQuery = true)
+    @Query(value = "SELECT * FROM woErrorHistory WHERE workOrder = :workOrder and status = 0 ;", nativeQuery = true)
     List<ChatMessage> findByWorkOrder(@Param("workOrder") String workOrder);
 }

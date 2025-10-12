@@ -26,14 +26,27 @@ public class WoErrorHistoryService {
     public List<ChatMessage> findByWorkOrder(String workOrder) {
         return woErrorHistoryRepository.findByWorkOrder(workOrder);
     }
-    @Transactional
     public void updateError(ChatMessage message) {
-        woErrorHistoryRepository.updateWoErrorHistory(message.getSender(), message.getContent(), message.getWorkOrder(), message.getType().name(), message.getStatus());
+        WoErrorHistory woErrorHistory = new WoErrorHistory();
+        woErrorHistory.setSender(message.getSender());
+        woErrorHistory.setContent(message.getContent());
+        woErrorHistory.setWorkOrder(message.getWorkOrder());
+        woErrorHistory.setType(message.getType().name());
+        woErrorHistory.setStatus(message.getStatus());
+        woErrorHistory.setId(Long.valueOf(message.getId()));
+        woErrorHistoryRepository.save(woErrorHistory);
     }
     @Transactional
     public void updateErrors(List<ChatMessage> messages) {
         for (ChatMessage message : messages){
-        woErrorHistoryRepository.updateWoErrorHistory(message.getSender(), message.getContent(), message.getWorkOrder(), message.getType().name(), message.getStatus());
+            WoErrorHistory woErrorHistory = new WoErrorHistory();
+            woErrorHistory.setSender(message.getSender());
+            woErrorHistory.setContent(message.getContent());
+            woErrorHistory.setWorkOrder(message.getWorkOrder());
+            woErrorHistory.setType(message.getType().name());
+            woErrorHistory.setStatus(message.getStatus());
+            woErrorHistory.setId(Long.valueOf(message.getId()));
+            woErrorHistoryRepository.save(woErrorHistory);
         }
     }
 }
