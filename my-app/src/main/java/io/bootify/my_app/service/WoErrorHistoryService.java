@@ -30,4 +30,10 @@ public class WoErrorHistoryService {
     public void updateError(ChatMessage message) {
         woErrorHistoryRepository.updateWoErrorHistory(message.getSender(), message.getContent(), message.getWorkOrder(), message.getType().name(), message.getStatus());
     }
+    @Transactional
+    public void updateErrors(List<ChatMessage> messages) {
+        for (ChatMessage message : messages){
+        woErrorHistoryRepository.updateWoErrorHistory(message.getSender(), message.getContent(), message.getWorkOrder(), message.getType().name(), message.getStatus());
+        }
+    }
 }

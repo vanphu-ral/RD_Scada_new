@@ -20,8 +20,13 @@ public class WoErrorHistoryResource {
         return ResponseEntity.ok(woErrorHistoryService.findByWorkOrder(workOrder));
     }
     @PostMapping("/history/update")
-    public ResponseEntity<Void> updateDetailErrors(@RequestBody @Valid final ChatMessage message) {
+    public ResponseEntity<Void> updateDetailError(@RequestBody @Valid final ChatMessage message) {
         woErrorHistoryService.updateError(message);
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/history/updates")
+    public ResponseEntity<Void> updateDetailErrors(@RequestBody @Valid final List<ChatMessage> message) {
+        woErrorHistoryService.updateErrors(message);
         return ResponseEntity.ok().build();
     }
 }
