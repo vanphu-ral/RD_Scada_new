@@ -12,7 +12,8 @@ public class KafkaProducer {
     private KafkaTemplate<String, String> kafkaTemplate;
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
-
+    @Autowired
+    DetailErrorService detailErrorService;
     public void sendMessage(String topic, String message) {
         kafkaTemplate.send(topic, message);
         ChatMessage messages = new ChatMessage();
@@ -20,7 +21,8 @@ public class KafkaProducer {
         messages.setSender("Server");
         messages.setContent(message);
         messages.setWorkOrder("WO-146247-1");
-
+        messages.setStatus(0);
+        messages.setId(detailErrorService.insertError(messages));
         messagingTemplate.convertAndSend("/topic/public", messages);
     }
 }

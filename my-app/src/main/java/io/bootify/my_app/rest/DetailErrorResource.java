@@ -1,5 +1,6 @@
 package io.bootify.my_app.rest;
 
+import io.bootify.my_app.model.ChatMessage;
 import io.bootify.my_app.model.DetailErrorDTO;
 import io.bootify.my_app.service.DetailErrorService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,7 +33,15 @@ public class DetailErrorResource {
     public ResponseEntity<List<DetailErrorDTO>> getAllDetailErrors() {
         return ResponseEntity.ok(detailErrorService.findAll());
     }
-
+    @GetMapping("/history/workOrder/{workOrder}")
+    public ResponseEntity<List<ChatMessage>> getAllDetailErrorsByWorkOrder(@PathVariable(name = "workOrder") final String workOrder) {
+        return ResponseEntity.ok(detailErrorService.findByWorkOrder(workOrder));
+    }
+    @PostMapping("/history/update")
+    public ResponseEntity<Void> updateDetailErrors(@RequestBody @Valid final ChatMessage message) {
+        detailErrorService.updateError(message);
+        return ResponseEntity.ok().build();
+    }
     @GetMapping("/{detailEid}")
     public ResponseEntity<DetailErrorDTO> getDetailError(
             @PathVariable(name = "detailEid") final Long detailEid) {

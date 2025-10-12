@@ -1,12 +1,14 @@
 package io.bootify.my_app.service;
 
 import io.bootify.my_app.domain.DetailError;
+import io.bootify.my_app.model.ChatMessage;
 import io.bootify.my_app.model.DetailErrorDTO;
 import io.bootify.my_app.repos.DetailErrorRepository;
 import io.bootify.my_app.util.NotFoundException;
 import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -17,7 +19,17 @@ public class DetailErrorService {
     public DetailErrorService(final DetailErrorRepository detailErrorRepository) {
         this.detailErrorRepository = detailErrorRepository;
     }
-
+    @Transactional
+    public Integer insertError(ChatMessage message) {
+        return detailErrorRepository.insertWoErrorHistory(message.getSender(), message.getContent(), message.getWorkOrder(), message.getType().name());
+    }
+    public List<ChatMessage> findByWorkOrder(String workOrder) {
+        return detailErrorRepository.findByWorkOrder(workOrder);
+    }
+    @Transactional
+    public void updateError(ChatMessage message) {
+        detailErrorRepository.updateWoErrorHistory(message.getSender(), message.getContent(), message.getWorkOrder(), message.getType().name(), message.getStatus());
+    }
     public List<DetailErrorDTO> findAll() {
         final List<DetailError> detailErrors = detailErrorRepository.findAll(Sort.by("detailEid"));
         return detailErrors.stream()
