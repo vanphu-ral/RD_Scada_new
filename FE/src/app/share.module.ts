@@ -39,6 +39,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { ChartModule } from 'primeng/chart';
 import { AutoComplete } from 'primeng/autocomplete';
 import { FullscreenDirective } from './shared/directive/fullscreen.directive';
+import { HasRoleDirective } from './shared/directive/has-role.directive';
 
 @NgModule({
   imports: [
@@ -80,7 +81,8 @@ import { FullscreenDirective } from './shared/directive/fullscreen.directive';
     RadioButtonModule,
     ChartModule,
     AutoComplete,
-    FullscreenDirective
+    FullscreenDirective,
+    HasRoleDirective
   ],
   exports: [
     CommonModule,
@@ -121,7 +123,8 @@ import { FullscreenDirective } from './shared/directive/fullscreen.directive';
     RadioButtonModule,
     ChartModule,
     AutoComplete,
-    FullscreenDirective
+    FullscreenDirective,
+    HasRoleDirective
   ],
   providers: [DialogService, MessageService, ConfirmationService]
 })
