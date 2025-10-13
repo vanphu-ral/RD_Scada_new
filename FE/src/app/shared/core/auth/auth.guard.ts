@@ -1,17 +1,29 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router, UrlTree } from '@angular/router';
-import { KeycloakService } from 'keycloak-angular';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+import { AccountService } from './account/account.service';
+import { map, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
-export class AuthGuard implements CanActivate {
-    constructor(private keycloak: KeycloakService, private router: Router) { }
+export const AuthGuard: CanActivateFn = () => {
+    const accountService = inject(AccountService);
+    const router = inject(Router);
 
-    async canActivate(): Promise<boolean | UrlTree> {
-        const isLoggedIn = await this.keycloak.isLoggedIn();
-        if (isLoggedIn) {
-            return true;
-        }
-        // nếu chưa login, chuyển về trang login nội bộ
-        return this.router.parseUrl('/login');
-    }
-}
+    return accountService.identity().pipe(
+        map(account => {
+            console.log('✅ Account:', account);
+
+            if (account) {
+                return true; // Cho phép vào route
+            } else {
+                console.warn('⚠️ Chưa đăng nhập → chuyển login');
+                router.navigate(['/login']);
+                return false;
+            }
+        }),
+        catchError(err => {
+            console.error('❌ Lỗi khi xác thực:', err);
+            router.navigate(['/login']);
+            return of(false);
+        })
+    );
+};

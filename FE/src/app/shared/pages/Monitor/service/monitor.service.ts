@@ -22,6 +22,6 @@ export class MonitorService extends BaseApiService<any> {
     if (filter.productCode) {
       params = params.set('productCode', filter.productCode);
     }
-    return this.http.get<any>(`${this['fullBaseUrl']}/latest`, { params });
+    return this.http.get<any>(`${this['fullBaseUrl']}/latest`, { withCredentials: true, params });
   }
 }

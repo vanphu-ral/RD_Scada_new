@@ -11,7 +11,7 @@ export class PlanningWoService extends BaseApiService<any> {
 
   override create(entity: CreateEntity<any>): Observable<any> {
     delete entity.id;
-    return this.http.post<any>(this['fullBaseUrl'], entity);
+    return this.http.post<any>(this['fullBaseUrl'], entity, {withCredentials: true});
   }
 
   getPlanningWOs(filters: any, page: number, size: number): Observable<any> {
@@ -58,19 +58,19 @@ export class PlanningWoService extends BaseApiService<any> {
       params = params.set('quantityPlan', filters.quantityPlan);
     }
 
-    return this.http.get<any>(this['fullBaseUrl'], { params });
+    return this.http.get<any>(this['fullBaseUrl'], { params, withCredentials: true });
   }
 
   getWoInfor(woId: string): Observable<any> {
-    return this.http.get<any>(`${this['fullBaseUrl']}/info/${woId}`);
+    return this.http.get<any>(`${this['fullBaseUrl']}/info/${woId}`, {withCredentials: true});
   }
 
   getWoDetailInfor(woId: string): Observable<any> {
-    return this.http.get<any>(`${this['fullBaseUrl']}/detail/${woId}`);
+    return this.http.get<any>(`${this['fullBaseUrl']}/detail/${woId}`, {withCredentials: true});
   }
 
   getWoErrorInfor(woId: string): Observable<any> {
-    return this.http.get<any>(`${this['fullBaseUrl']}/error/info/${woId}`);
+    return this.http.get<any>(`${this['fullBaseUrl']}/error/info/${woId}`, {withCredentials: true});
   }
 
   filterBySerialItem(serialItem: any): Observable<any> {
@@ -78,7 +78,7 @@ export class PlanningWoService extends BaseApiService<any> {
     if (serialItem) {
       params = params.set('serialItem', serialItem);
     }
-    return this.http.get<any>(`${this['fullBaseUrl']}/serial-item`, { params });
+    return this.http.get<any>(`${this['fullBaseUrl']}/serial-item`, { params, withCredentials: true });
   }
 
   filterBySerialBoard(serialBoard: any): Observable<any> {
@@ -86,10 +86,10 @@ export class PlanningWoService extends BaseApiService<any> {
     if (serialBoard) {
       params = params.set('serialBoard', serialBoard);
     }
-    return this.http.get<any>(`${this['fullBaseUrl']}/serial-board`, { params });
+    return this.http.get<any>(`${this['fullBaseUrl']}/serial-board`, { params, withCredentials: true });
   }
 
   insertListDevietoWo(listDevices: any[]): Observable<any> {
-    return this.http.post<any>(`${this['fullBaseUrl']}/insert`, listDevices);
+    return this.http.post<any>(`${this['fullBaseUrl']}/insert`, listDevices, {withCredentials: true});
   }
 }
