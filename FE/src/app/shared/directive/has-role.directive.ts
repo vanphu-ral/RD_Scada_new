@@ -15,7 +15,6 @@ export class HasRoleDirective {
         private accountService: AccountService
     ) {
         this.userRoles = _.get(this.accountService.getUser(), 'attributes.roles') || [];
-        console.log(this.userRoles);
     }
 
     @Input() set appHasRole(roles: string[]) {

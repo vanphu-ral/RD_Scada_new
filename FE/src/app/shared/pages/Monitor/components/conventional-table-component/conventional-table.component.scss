@@ -60,3 +60,18 @@
   color: #fff !important;
   border: 1px solid #555 !important;
 }
+
+
+::ng-deep .filter-column p-columnFilter p-columnfilterformelement {
+  display: block;
+  width: 100%;
+}
+
+::ng-deep .filter-column p-columnFilter p-columnfilterformelement p-datepicker {
+  display: block;
+  width: 100%;
+}
+
+::ng-deep .filter-column input {
+  width: 100%;
+}
