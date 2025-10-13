@@ -59,21 +59,21 @@ export const appConfig: ApplicationConfig = {
         selectionMessage: '{0} cột được chọn'
       }
     }),
-    // {
-    //   provide: APP_INITIALIZER,
-    //   useFactory: (loginService: LoginService) => {
-    //     return async () => {
-    //       const currentPath = window.location.pathname;
-    //       if (currentPath.startsWith('/callback')) {
-    //         await loginService.handlePostLogin();
-    //       } else {
-    //         await loginService.restoreLoginFromStorage();
-    //       }
-    //     };
-    //   },
-    //   deps: [LoginService],
-    //   multi: true
-    // },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (loginService: LoginService) => {
+        return async () => {
+          const currentPath = window.location.pathname;
+          if (currentPath.startsWith('/callback')) {
+            await loginService.handlePostLogin();
+          } else {
+            await loginService.restoreLoginFromStorage();
+          }
+        };
+      },
+      deps: [LoginService],
+      multi: true
+    },
     provideApollo((): ApolloClientOptions<any> => {
       const httpLink = inject(HttpLink); // 👈 inject thủ công HttpLink
       return {
