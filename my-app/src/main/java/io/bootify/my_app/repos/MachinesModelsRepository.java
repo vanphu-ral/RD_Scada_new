@@ -37,5 +37,11 @@ public interface MachinesModelsRepository extends JpaRepository<MachinesModels, 
                        @Param("status") Integer status
                           ,@Param("workOrder") String workOrder
     );
+@Query(value = "select top 1  " +
+        "machineName as machineName" +
+        ", stageId as stageId " +
+        "from woMachineDetail where workOrder = :workOrder and status =1 and stageId < :stageId " +
+        "order by stageId ;" ,nativeQuery = true)
+    MachinesDetailResponse getMachineNamesByWorkOrder(@Param("workOrder") String workOrder ,@Param("stageId") Integer stageId);
 
 }

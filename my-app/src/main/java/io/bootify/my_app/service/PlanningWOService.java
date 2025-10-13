@@ -57,6 +57,8 @@ public class PlanningWOService {
     private SimpMessagingTemplate messagingTemplate;
     @Autowired
     KafkaProducer kafkaProducer;
+    @Autowired
+    WoErrorHistoryService woErrorHistoryService;
     public ProductOrderModelsResponse getWoInfo (Long id){
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
         // Lấy thông tin Work Order
@@ -156,12 +158,14 @@ public class PlanningWOService {
         Integer code = 0;
         String result = "Kết quả kiểm tra Serial : ";
         if(request.getStage() >0){
-            List<MachinesModels> machinesModels = machinesModelsRepository.findAllByMachineNameAndStageId(request.getMachineName(), request.getStage()-1);
-            if (machinesModels.isEmpty()){
+//            List<MachinesModels> machinesModels = machinesModelsRepository.findAllByMachineNameAndStageId(request.getMachineName(), request.getStage()-1);
+            MachinesDetailResponse machinesDetailResponse = machinesModelsRepository.getMachineNamesByWorkOrder(request.getWorkOrder(),request.getStage());
+            if (machinesDetailResponse == null){
                 result +=  "Không tìm thấy máy ở stage trước: "+(request.getStage()-1);
                 code = 1;
             }else {
-                for (MachinesModels machinesModels1 : machinesModels){
+//                for (MachinesModels machinesModels1 : machinesModels){
+                MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(machinesDetailResponse.getMachineName());
                     List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.getAllByWorkOrderAndMachineId(
                             request.getWorkOrder(),machinesModels1.getMachineId());
                     boolean found = false;
@@ -175,7 +179,7 @@ public class PlanningWOService {
                             code = 1;
                              result += "\n Không tìm thấy Serial Item: "+request.getSerialItems()+" ở máy: "+machinesModels1.getMachineName()+" stage: "+(request.getStage()-1);
                         }
-                }
+//                }
             }
             if(code == 1){
                 ChatMessage message = new ChatMessage();
@@ -183,7 +187,7 @@ public class PlanningWOService {
                 message.setSender("Server");
                 message.setContent(result);
                 message.setWorkOrder(request.getWorkOrder());
-
+                message.setId(woErrorHistoryService.insertError(message));
                 kafkaProducer.sendMessage("scada-giam-sat", result);
                 messagingTemplate.convertAndSend("/topic/public", message);
                 System.out.println("Đã gửi: " + message.getWorkOrder());
