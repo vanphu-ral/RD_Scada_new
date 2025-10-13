@@ -84,14 +84,16 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
             .pipe(filter((msg) => !!msg)) // chỉ xử lý khi có dữ liệu thật
             .subscribe((msg) => {
                 console.log('📩 Nhận message realtime từ Kafka:', msg);
-                this.messages.push(msg);
-                if (this.ref) {
-                    const instance = (this.ref as any)._componentRef?.instance;
-                    if (instance?.updateMessages) {
-                        instance.updateMessages(this.messages);
+                if(_.isEqual(_.get(msg, 'workOrder'), this.model.planningWO.woId)) {
+                    this.messages.push(msg);
+                    if (this.ref) {
+                        const instance = (this.ref as any)._componentRef?.instance;
+                        if (instance?.updateMessages) {
+                            instance.updateMessages(this.messages);
+                        }
+                    } else {
+                        this.openWarningDialog();
                     }
-                } else {
-                    this.openWarningDialog();
                 }
             });
     }
