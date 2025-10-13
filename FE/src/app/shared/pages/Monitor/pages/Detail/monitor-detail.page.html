@@ -1,6 +1,6 @@
 <div class="dashboard-container">
   <div class="widget widget-config p-3">
-    <app-station-indicators-component [data]="model.planningWO" [listDevices]="(model.machinesDetailResponses?.length ?? 0) > 0 ? model.machinesDetailResponses : listDevices" [isNewList]="(model.machinesDetailResponses?.length ?? 0) > 0 ? false : true"></app-station-indicators-component>
+    <app-station-indicators-component [data]="model" [listNewDevices]="listDevices"></app-station-indicators-component>
   </div>
   <div class="widget widget-po">
     <app-control-panel-component [data]="model.planningWO"></app-control-panel-component>
@@ -11,7 +11,8 @@
 
 
   <div class="widget widget-chart-1 d-flex justify-content-center align-items-center">
-    <base-chart-component [data]="chartDataErorrGroup" [options]="chartOptionErorrGroup" [title]="'Biểu đồ lỗi theo nhóm lỗi'"></base-chart-component>
+    <base-chart-component [data]="chartDataErorrGroup" [options]="chartOptionErorrGroup"
+      [title]="'Biểu đồ lỗi theo nhóm lỗi'"></base-chart-component>
   </div>
   <div class=" widget-config">
     <div class="widget d-flex justify-content-center align-items-center hidden-overflow">
@@ -26,13 +27,15 @@
   </div>
 
   <div class="widget widget-chart-2 d-flex justify-content-center align-items-center">
-    <base-chart-component [data]="chartDataErorrByMechine" [options]="chartOptionErorrByMechine" [title]="'Lỗi chi tiết'"></base-chart-component>
+    <base-chart-component [data]="chartDataErorrByMechine" [options]="chartOptionErorrByMechine"
+      [title]="'Lỗi chi tiết'"></base-chart-component>
   </div>
   <div class="widget widget-progress">
     <app-conventional-table-component [data]="scanSerialChecks"></app-conventional-table-component>
   </div>
   <div class="widget widget-frequency d-flex justify-content-center align-items-center">
-    <base-chart-component [data]="chartDataErorrByStage" [options]="chartOptionErorrByStage" [title]="'Lỗi theo công đoạn'"></base-chart-component>
+    <base-chart-component [data]="chartDataErorrByStage" [options]="chartOptionErorrByStage"
+      [title]="'Lỗi theo công đoạn'"></base-chart-component>
   </div>
 </div>
 <div class="d-flex justify-content-end mt-3">

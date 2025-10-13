@@ -5,6 +5,10 @@ import { ChangeDetectorRef, Component, effect, inject, Input, OnInit, PLATFORM_I
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ListDeviceAcceptWODialogDialog } from '../../dialogs/list-device-accept-wo-dialog/list-device-accept-wo.dialog';
 import { AccountService } from '../../../../core/auth/account/account.service';
+import { ActivatedRoute } from '@angular/router';
+import { PlanningWoService } from '../../service/planning-wo.service';
+import _ from 'lodash';
+import { Util } from '../../../../core/utils/utils-function';
 
 @Component({
     selector: 'app-station-indicators-component',
@@ -16,22 +20,23 @@ import { AccountService } from '../../../../core/auth/account/account.service';
 export class StationIndicatorsComponent implements OnInit {
 
     @Input() data: any
-    @Input() listDevices: any[] = []
-    @Input() isNewList: boolean = false
+    @Input() listNewDevices: any[] = []
     ref?: DynamicDialogRef;
+    listDevices: any[] = []
     account: any
+    IsNewList: boolean = false
 
-    constructor(private cd: ChangeDetectorRef, private dialogService: DialogService, private accountService: AccountService) {
+    constructor(private apiService: PlanningWoService, private dialogService: DialogService, private accountService: AccountService) {
         effect(() => {
             this.account = this.accountService.trackAccount()();
         });
     }
 
     ngOnInit() {
-
     }
 
-    openConfigDialog() {
+    async openConfigDialog() {
+        await this.loadDataPromise();
         this.ref = this.dialogService.open(ListDeviceAcceptWODialogDialog, {
             header: 'Cấu hình thiết bị tham gia vào lệnh sản xuất',
             width: '1200px',
@@ -39,13 +44,30 @@ export class StationIndicatorsComponent implements OnInit {
             data: {
                 data: this.data,
                 listDevices: this.listDevices,
-                isNewList: this.isNewList
+                isNewList: this.IsNewList
             },
         });
-        this.ref.onClose.subscribe((result) => {
-            if (result) {
-            }
+    }
+
+    loadDataPromise(): Promise<void> {
+        return new Promise(resolve => {
+            this.apiService.getWoInfor(this.data.planningWO.id).subscribe((data: any) => {
+                this.IsNewList = false
+                this.listDevices = _.get(data, 'machinesDetailResponses');
+                if (Util.isEmptyArray(this.listDevices)) {
+                    this.IsNewList = true
+                    this.listDevices = _.map(this.listNewDevices, item => ({
+                        ...item.machine,
+                        machineName: item.machine.machineName,
+                        stageId: item.machine.stageId,
+                        workOrder: this.data.planningWO.woId,
+                        status: 1
+                    }));
+                }
+                resolve();
+            });
         });
     }
+
 
 }
