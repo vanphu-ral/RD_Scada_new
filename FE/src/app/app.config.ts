@@ -15,6 +15,7 @@ import { InMemoryCache, ApolloClientOptions } from '@apollo/client/core';
 import { provideApollo } from 'apollo-angular'; // ✅ Quan trọng
 import { HttpLink } from 'apollo-angular/http';
 import { AccountService } from './shared/core/auth/account/account.service';
+import { LoginService } from './shared/core/auth/login/login.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -58,13 +59,21 @@ export const appConfig: ApplicationConfig = {
         selectionMessage: '{0} cột được chọn'
       }
     }),
-    importProvidersFrom(KeycloakAngularModule),
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeKeycloak,
-      multi: true,
-      deps: [KeycloakService, AccountService]
-    },
+    // {
+    //   provide: APP_INITIALIZER,
+    //   useFactory: (loginService: LoginService) => {
+    //     return async () => {
+    //       const currentPath = window.location.pathname;
+    //       if (currentPath.startsWith('/callback')) {
+    //         await loginService.handlePostLogin();
+    //       } else {
+    //         await loginService.restoreLoginFromStorage();
+    //       }
+    //     };
+    //   },
+    //   deps: [LoginService],
+    //   multi: true
+    // },
     provideApollo((): ApolloClientOptions<any> => {
       const httpLink = inject(HttpLink); // 👈 inject thủ công HttpLink
       return {
