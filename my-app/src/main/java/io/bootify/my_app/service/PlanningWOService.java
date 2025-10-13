@@ -161,8 +161,8 @@ public class PlanningWOService {
 //            List<MachinesModels> machinesModels = machinesModelsRepository.findAllByMachineNameAndStageId(request.getMachineName(), request.getStage()-1);
             MachinesDetailResponse machinesDetailResponse = machinesModelsRepository.getMachineNamesByWorkOrder(request.getWorkOrder(),request.getStage());
             if (machinesDetailResponse == null){
-                result +=  "Không tìm thấy máy ở stage trước: "+(request.getStage()-1);
-                code = 1;
+//                result +=  "Không tìm thấy công đoạn ở stage trước: "+(request.getStage()-1);
+//                code = 1;
             }else {
 //                for (MachinesModels machinesModels1 : machinesModels){
                 MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(machinesDetailResponse.getMachineName());
@@ -177,7 +177,7 @@ public class PlanningWOService {
                         }
                         if (!found){
                             code = 1;
-                             result += "\n Không tìm thấy Serial Item: "+request.getSerialItems()+" ở máy: "+machinesModels1.getMachineName()+" stage: "+(request.getStage()-1);
+                             result += "\n Không tìm thấy Serial Item: "+request.getSerialItems()+" ở công đoạn: "+machinesModels1.getMachineName()+" stage: "+(request.getStage()-1);
                         }
 //                }
             }
