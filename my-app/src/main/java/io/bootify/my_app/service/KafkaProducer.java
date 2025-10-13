@@ -16,13 +16,13 @@ public class KafkaProducer {
     WoErrorHistoryService woErrorHistoryService;
     public void sendMessage(String topic, String message) {
         kafkaTemplate.send(topic, message);
-        ChatMessage messages = new ChatMessage();
-        messages.setType(ChatMessage.MessageType.CHAT);
-        messages.setSender("Server");
-        messages.setContent(message);
-        messages.setWorkOrder("WO-146247-1");
-        messages.setStatus(0);
-        messages.setId(woErrorHistoryService.insertError(messages));
-        messagingTemplate.convertAndSend("/topic/public", messages);
+//        ChatMessage messages = new ChatMessage();
+//        messages.setType(ChatMessage.MessageType.CHAT);
+//        messages.setSender("Server");
+//        messages.setContent(message);
+//        messages.setWorkOrder("WO-146247-1");
+//        messages.setStatus(0);
+//        messages.setId(woErrorHistoryService.insertError(messages));
+//        messagingTemplate.convertAndSend("/topic/public", messages);
     }
 }
