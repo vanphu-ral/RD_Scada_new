@@ -163,6 +163,20 @@ public class PlanningWOService {
             if (machinesDetailResponse == null){
 //                result +=  "Không tìm thấy công đoạn ở stage trước: "+(request.getStage()-1);
 //                code = 1;
+                MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(machinesDetailResponse.getMachineName());
+                List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.getAllByWorkOrderAndMachineId(
+                        request.getWorkOrder(),machinesModels1.getMachineId());
+                boolean found = false;
+                for (ScanSerialCheck ssc : scanSerialCheck){
+                    if (ssc.getSerialItem().equals(request.getSerialItems())){
+                        found = true;
+                        break;
+                    }
+                }
+                if (found == true){
+                    code = 1;
+                    result += "\n Đã tồn tại Serial Item: "+request.getSerialItems()+" ở công đoạn: "+machinesModels1.getMachineName()+" stage: "+(request.getStage()-1);
+                }
             }else {
 //                for (MachinesModels machinesModels1 : machinesModels){
                 MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(machinesDetailResponse.getMachineName());
@@ -175,7 +189,7 @@ public class PlanningWOService {
                                 break;
                             }
                         }
-                        if (!found){
+                        if (found == false){
                             code = 1;
                              result += "\n Không tìm thấy Serial Item: "+request.getSerialItems()+" ở công đoạn: "+machinesModels1.getMachineName()+" stage: "+(request.getStage()-1);
                         }
