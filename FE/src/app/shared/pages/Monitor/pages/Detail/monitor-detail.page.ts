@@ -108,10 +108,7 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
         if (!id) return;
         this.apiService.getWoDetailInfor(id).subscribe((data: any) => {
             this.formatData(data.productionOrderModelDetails);
-            this.chartDataErorrGroup = this.getChartDataErrorByGroup(
-                data.productionOrderModelDetails,
-                this.model.errorCommonScadas
-            );
+            this.chartDataErorrGroup = this.getChartDataErrorByGroup(data.productionOrderModelDetails);
             this.chartOptionErorrGroup = this.getDefaultChartOption();
             this.chartDataErorrByMechine = this.getChartDataError(data.productionOrderModelDetails);
             this.chartOptionErorrByMechine = this.getDefaultChartOption();
@@ -130,6 +127,7 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
 
     formatData(data: any[]): void {
         if (!data) return;
+        this.listDevices = [];
         const total = data.reduce(
             (acc, item) => {
                 const details = item.machineGroupDetails?.machineDetails || [];
@@ -159,10 +157,7 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
         this.model = { ...this.model };
     }
 
-    getChartDataErrorByGroup(
-        productionOrderModelDetails: any[],
-        errorCommonScadas: any[]
-    ): any {
+    getChartDataErrorByGroup(productionOrderModelDetails: any[]): any {
         const errorGroupTotals: Record<string, number> = {};
         for (const item of productionOrderModelDetails || []) {
             const machineDetails = item?.machineGroupDetails?.machineDetails || [];
@@ -170,10 +165,7 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
                 const errors = detail?.errors || [];
                 for (const err of errors) {
                     if (err?.quantity > 0) {
-                        const matchedError = errorCommonScadas.find(
-                            e => e.id === err.errorId
-                        );
-                        const groupName = matchedError?.errGroup || 'Nhóm khác';
+                        const groupName = err.errorGroup?.trim() || 'Nhóm khác';
                         errorGroupTotals[groupName] = (errorGroupTotals[groupName] || 0) + err.quantity;
                     }
                 }

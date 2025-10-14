@@ -3,6 +3,7 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th>Nhóm lỗi</th>
                     <th>Mã lỗi</th>
                     <th>Tên lỗi</th>
                     <th>Tổng số lỗi</th>
@@ -10,7 +11,8 @@
             </thead>
             <tbody *ngIf="listErorrs.length > 0">
                 <tr *ngFor="let row of listErorrs">
-                    <td>{{ row.errorId }}</td>
+                    <td>{{ row.errorGroup }}</td>
+                    <td>{{ row.errorCode }}</td>
                     <td>{{ row.errorName }}</td>
                     <td>{{ row.quantity }}</td>
                 </tr>
