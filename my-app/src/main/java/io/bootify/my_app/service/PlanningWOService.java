@@ -310,8 +310,12 @@ public class PlanningWOService {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("quantityPlan"), filter.getQuantityPlan()));
         }
         // Add more filters as needed...
-
-        return planningwoRepository.findAll(spec, pageable);
+        Page<PlanningWO> page= planningwoRepository.findAll(spec, pageable);
+        for (PlanningWO p: page.getContent()) {
+            p.setNumberOfOutputs(detailQuantityRepository.sumQuantityOutByWorkOrder(p.getWoId()));
+            p.setNumberOfInputs(detailQuantityRepository.sumQuantityInByWorkOrder(p.getWoId()));
+        }
+        return page;
     }
     public ResponseEntity<?> create(PlanningWO planningWO) {
         if (planningwoRepository.findByWoId(planningWO.getWoId()) != null) {
