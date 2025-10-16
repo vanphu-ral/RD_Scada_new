@@ -107,6 +107,8 @@ public class PlanningWO {
     private String phoneNumber;
     @Column(name="recurrence_rule")
     private String recurrenceRule;
+    @Transient
     private Integer numberOfInputs;
+    @Transient
     private Integer numberOfOutputs;
 }
