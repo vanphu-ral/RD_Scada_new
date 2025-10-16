@@ -8,29 +8,30 @@
         <ng-template pTemplate="header">
             <tr>
                 <th>Planning WO</th>
-                <th>Mã WO Scada</th>
+                <th>Mã WO</th>
                 <th>Mã PO</th>
                 <th>Ngành</th>
                 <th>Mã ngành</th>
                 <th>Tổ</th>
                 <th>Mã tổ</th>
                 <th>Trạng thái</th>
-                <th>Mã WO</th>
                 <th>Số Lô</th>
                 <th>Mã hàng hóa</th>
                 <th>Tên hàng hóa</th>
                 <th>Sản lượng kế hoạch</th>
+                <th>Sản lượng đầu vào</th>
+                <th>Sản lượng hoàn thành</th>
             </tr>
             <tr>
                 <th>
                     <p-floatlabel variant="on">
-                        <input pInputText type="text" placeholder="planningWorkOrderId" [(ngModel)]="filters.planningWorkOrderId"
+                        <input pInputText type="text" placeholder="Planning WO" [(ngModel)]="filters.woId"
                         class="w-100" (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
                 <th>
                     <p-floatlabel variant="on">
-                        <input pInputText type="text" placeholder="sapWoId" [(ngModel)]="filters.sapWoId"
+                        <input pInputText type="text" placeholder="Mã WO" [(ngModel)]="filters.sapWoId"
                         class="w-100" (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
@@ -70,12 +71,7 @@
                         class="w-100" (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
-                <th>
-                    <p-floatlabel variant="on">
-                        <input pInputText type="text" placeholder="woId" [(ngModel)]="filters.woId"
-                        class="w-100" (keydown.enter)="onSearch()" />
-                    </p-floatlabel>
-                </th>
+                
                 <th>
                     <p-floatlabel variant="on">
                         <input pInputText type="text" placeholder="lotNumber" [(ngModel)]="filters.lotNumber"
@@ -100,11 +96,13 @@
                         class="w-100" (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
+                <th></th>
+                <th></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-row>
             <tr class="hover-item" (click)="viewItem(row)">
-                <td>{{ row.planningWorkOrderId }}</td>
+                <td>{{ row.woId }}</td>
                 <td>{{ row.sapWoId }}</td>
                 <td>{{ row.productOrderId }}</td>
                 <td>{{ row.branchName }}</td>
@@ -112,11 +110,12 @@
                 <td>{{ row.groupName }}</td>
                 <td>{{ row.groupCode }}</td>
                 <td>{{ row.status }}</td>
-                <td>{{ row.woId }}</td>
                 <td>{{ row.lotNumber }}</td>
                 <td>{{ row.productCode }}</td>
                 <td>{{ row.productName }}</td>
                 <td>{{ row.quantityPlan }}</td>
+                <td>{{ row.numberOfInputs }}</td>
+                <td>{{ row.numberOfOutputs }}</td>
             </tr>
         </ng-template>
     </p-table>

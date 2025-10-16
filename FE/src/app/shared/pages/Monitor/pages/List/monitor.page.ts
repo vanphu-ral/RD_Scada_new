@@ -38,10 +38,23 @@ export class MonitorPage {
         quantityPlan: ''
     }
 
+    intervalId: any;
+    currentPage: number = 0;
+
     constructor(private router: Router, private route: ActivatedRoute, private planningWoService: PlanningWoService, private cdr: ChangeDetectorRef, private dialogService: DialogService) { }
 
     ngOnInit(): void {
         this.loadData(0, this.pageSize);
+
+        this.intervalId = setInterval(() => {
+            this.loadData(this.currentPage, this.pageSize);
+        }, 60000);
+    }
+
+    ngOnDestroy(): void {
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
     }
 
     loadData(page: number, size: number) {
@@ -61,8 +74,10 @@ export class MonitorPage {
     }
 
     onPage(event: any) {
-        const page = event.first / event.rows;  
+        const page = event.first / event.rows;
         const size = event.rows;
+        this.currentPage = page; 
+        this.pageSize = size;
         this.loadData(page, size);
     }
 
