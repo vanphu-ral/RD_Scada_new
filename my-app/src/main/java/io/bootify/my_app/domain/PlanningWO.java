@@ -48,7 +48,7 @@ public class PlanningWO {
     @Column(name="state")
     private String state;
     @Column(name="status")
-    private String status;
+    private String status; // trạng thái tính toán trong quá trình sản xuất ( productOrderModels lấy theo stage  lớn nhất)
     @Column(name="QUANTITY_ACTUAL")
     private BigDecimal quantityActual;
     @Column(name="planning_work_order_id")
