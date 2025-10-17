@@ -78,6 +78,10 @@ public class PlanningwoResource {
     public ResponseEntity<?> createPlanningWO(@RequestBody PlanningWO planningWO) {
         return planningWOService.create(planningWO);
     }
+    @PutMapping
+    public ResponseEntity<?> updatePlanningWO(@RequestBody PlanningWO planningWO) {
+        return planningWOService.create(planningWO);
+    }
     @GetMapping("/serial-item")
     public ResponseEntity<ProductOrderModelsResponse> getWoErrorInfoSerialItem(
             @RequestParam(required = false) String serialItem) {

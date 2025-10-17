@@ -59,7 +59,8 @@ public class PlanningWOService {
     KafkaProducer kafkaProducer;
     @Autowired
     WoErrorHistoryService woErrorHistoryService;
-    public ProductOrderModelsResponse getWoInfo (Long id){
+
+    public ProductOrderModelsResponse getWoInfo(Long id) {
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
         // Lấy thông tin Work Order
         response.setErrorCommonScadas(errorCommonScadaRepository.findAll());
@@ -108,26 +109,29 @@ public class PlanningWOService {
 //        response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(planningWO.getWoId()));
         return response;
     }
-    public  ProductOrderModelsResponse getWoErrorCommonScadaInfoserialBoard (String serialBoard){
+
+    public ProductOrderModelsResponse getWoErrorCommonScadaInfoserialBoard(String serialBoard) {
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
         // Lấy thông tin Work Order
         List<ScanSerialChecksResponse> scanSerialCheck = scanSerialCheckRepository.getBySerialBoard(serialBoard);
-        System.out.println("check :::"+scanSerialCheck.get(0).getWorkOrder());
+        System.out.println("check :::" + scanSerialCheck.get(0).getWorkOrder());
         PlanningWO planningWO = planningwoRepository.findByWoId(scanSerialCheck.get(0).getWorkOrder());
         response.setPlanningWO(planningWO);
         response.setScanSerialChecks(scanSerialCheck);
         return response;
     }
-    public  ProductOrderModelsResponse getWoErrorCommonScadaInfoserialItem (String serialItem){
+
+    public ProductOrderModelsResponse getWoErrorCommonScadaInfoserialItem(String serialItem) {
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
         // Lấy thông tin Work Order
         List<ScanSerialChecksResponse> scanSerialCheck = scanSerialCheckRepository.getBySerialItem(serialItem);
-        System.out.println("check 2:::"+scanSerialCheck.get(0).getWorkOrder());
+        System.out.println("check 2:::" + scanSerialCheck.get(0).getWorkOrder());
         PlanningWO planningWO = planningwoRepository.findByWoId(scanSerialCheck.get(0).getWorkOrder());
         response.setPlanningWO(planningWO);
         response.setScanSerialChecks(scanSerialCheck);
         return response;
     }
+
     @Transactional
     public ResponseEntity<InsertMachineResultDTO> insertMachine(List<MachinesModelsDTO> machinesModels) {
         InsertMachineResultDTO result = new InsertMachineResultDTO();
@@ -154,48 +158,48 @@ public class PlanningWOService {
         return ResponseEntity.ok(result);
     }
 
-    public ResponseEntity<SerialCheckResponse> checkSerialItemExist (SerialCheckRequest request){
+    public ResponseEntity<SerialCheckResponse> checkSerialItemExist(SerialCheckRequest request) {
         Integer code = 0;
         String result = "Kết quả kiểm tra Serial : ";
-        if(request.getStage() >0){
+        if (request.getStage() > 0) {
 //            List<MachinesModels> machinesModels = machinesModelsRepository.findAllByMachineNameAndStageId(request.getMachineName(), request.getStage()-1);
-            MachinesDetailResponse machinesDetailResponse = machinesModelsRepository.getMachineNamesByWorkOrder(request.getWorkOrder(),request.getStage());
-            if (machinesDetailResponse == null){
+            MachinesDetailResponse machinesDetailResponse = machinesModelsRepository.getMachineNamesByWorkOrder(request.getWorkOrder(), request.getStage());
+            if (machinesDetailResponse == null) {
 //                result +=  "Không tìm thấy công đoạn ở stage trước: "+(request.getStage()-1);
 //                code = 1;
                 MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(machinesDetailResponse.getMachineName());
                 List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.getAllByWorkOrderAndMachineId(
-                        request.getWorkOrder(),machinesModels1.getMachineId());
+                        request.getWorkOrder(), machinesModels1.getMachineId());
                 boolean found = false;
-                for (ScanSerialCheck ssc : scanSerialCheck){
-                    if (ssc.getSerialItem().equals(request.getSerialItems())){
+                for (ScanSerialCheck ssc : scanSerialCheck) {
+                    if (ssc.getSerialItem().equals(request.getSerialItems())) {
                         found = true;
                         break;
                     }
                 }
-                if (found == true){
+                if (found) {
                     code = 1;
-                    result += "\n Đã tồn tại Serial Item: "+request.getSerialItems()+" ở công đoạn: "+machinesModels1.getMachineName()+" stage: "+(request.getStage()-1);
+                    result += "\n Đã tồn tại Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage() - 1);
                 }
-            }else {
+            } else {
 //                for (MachinesModels machinesModels1 : machinesModels){
                 MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(machinesDetailResponse.getMachineName());
-                    List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.getAllByWorkOrderAndMachineId(
-                            request.getWorkOrder(),machinesModels1.getMachineId());
-                    boolean found = false;
-                        for (ScanSerialCheck ssc : scanSerialCheck){
-                            if (ssc.getSerialItem().equals(request.getSerialItems())){
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (found == false){
-                            code = 1;
-                             result += "\n Không tìm thấy Serial Item: "+request.getSerialItems()+" ở công đoạn: "+machinesModels1.getMachineName()+" stage: "+(request.getStage()-1);
-                        }
+                List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.getAllByWorkOrderAndMachineId(
+                        request.getWorkOrder(), machinesModels1.getMachineId());
+                boolean found = false;
+                for (ScanSerialCheck ssc : scanSerialCheck) {
+                    if (ssc.getSerialItem().equals(request.getSerialItems())) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    code = 1;
+                    result += "\n Không tìm thấy Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage() - 1);
+                }
 //                }
             }
-            if(code == 1){
+            if (code == 1) {
                 ChatMessage message = new ChatMessage();
                 message.setType(ChatMessage.MessageType.CHAT);
                 message.setSender("Server");
@@ -206,12 +210,13 @@ public class PlanningWOService {
                 messagingTemplate.convertAndSend("/topic/public", message);
                 System.out.println("Đã gửi: " + message.getWorkOrder());
             }
-        }else{
+        } else {
             result += "\n Stage hiện tại là 0, không cần kiểm tra stage trước";
         }
-        return ResponseEntity.ok(new SerialCheckResponse(code,result));
+        return ResponseEntity.ok(new SerialCheckResponse(code, result));
     }
-    public ProductOrderModelsResponse getWoDetaillnfo (Long id){
+
+    public ProductOrderModelsResponse getWoDetaillnfo(Long id) {
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
         // Lấy thông tin Work Order
         PlanningWO planningWO = planningwoRepository.findById(id).orElse(null);
@@ -225,7 +230,7 @@ public class PlanningWOService {
             // Lấy thông tin Machine Group Detail
             MachineGroupDetail machineGroupDetail = new MachineGroupDetail();
             List<MachineDetail> machineDetails = new ArrayList<>();
-            machineGroupDetail.setMachineTypesModels( machineTypesModelsService.mapToDTO(
+            machineGroupDetail.setMachineTypesModels(machineTypesModelsService.mapToDTO(
                     machineTypesModelsRepository.findById(pom.getMachineGroup().getMachineGroupId()).orElse(null),
                     new MachineTypesModelsDTO()));
             detail.setProductionOrderModels(productionOrderModelsService.mapToDTO(pom, new ProductionOrderModelsDTO()));
@@ -238,14 +243,14 @@ public class PlanningWOService {
                 machineDetail.setMachine(machinesModelsService.mapToDTO(mm, new MachinesModelsDTO()));
                 //   Lấy thông tin quantity của máy
                 List<DetailQuantity> detailQuantities = detailQuantityRepository.findAllByWorkOrderAndMachineName(
-                        planningWO.getWoId(),machineDetail.getMachine().getMachineName());
+                        planningWO.getWoId(), machineDetail.getMachine().getMachineName());
                 List<DetailQuantityDTO> detailQuantityDTOS = new ArrayList<>();
                 for (DetailQuantity dq : detailQuantities) {
                     detailQuantityDTOS.add(detailQuantityService.mapToDTO(dq, new DetailQuantityDTO()));
                 }
                 // Lấy thông tin lỗi của máy
                 List<ErrorResponse> errorModels = errorModelRepository.getErrorResponsesByWorkOrderAndMachineNameAndStageID(
-                        planningWO.getWoId(),machineDetail.getMachine().getMachineName(),machineDetail.getMachine().getStageId());
+                        planningWO.getWoId(), machineDetail.getMachine().getMachineName(), machineDetail.getMachine().getStageId());
                 machineDetail.setDetailQuantity(detailQuantityDTOS);
                 machineDetail.setErrors(errorModels);
                 machineDetails.add(machineDetail);
@@ -257,16 +262,18 @@ public class PlanningWOService {
         response.setProductionOrderModelDetails(productionOrderModelDetails);
         return response;
     }
-    public ProductOrderModelsResponse getWoErrorInfo (Long id){
+
+    public ProductOrderModelsResponse getWoErrorInfo(Long id) {
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
         // Lấy thông tin Work Order
 //        response.setPlanningWO(planningwoRepository.findById(id).orElse(null));
         PlanningWO planningWO = planningwoRepository.findById(id).orElse(null);
-        
+
         //
         response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(planningWO.getWoId()));
         return response;
     }
+
     public Page<PlanningWO> getFilteredPlanningWOs(PlanningWOFilter filter, Pageable pageable) {
         Specification<PlanningWO> spec = Specification.where(null);
 
@@ -310,13 +317,14 @@ public class PlanningWOService {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("quantityPlan"), filter.getQuantityPlan()));
         }
         // Add more filters as needed...
-        Page<PlanningWO> page= planningwoRepository.findAll(spec, pageable);
-        for (PlanningWO p: page.getContent()) {
+        Page<PlanningWO> page = planningwoRepository.findAll(spec, pageable);
+        for (PlanningWO p : page.getContent()) {
             p.setNumberOfOutputs(detailQuantityRepository.sumQuantityOutByWorkOrder(p.getWoId()));
             p.setNumberOfInputs(detailQuantityRepository.sumQuantityInByWorkOrder(p.getWoId()));
         }
         return page;
     }
+
     public ResponseEntity<?> create(PlanningWO planningWO) {
         if (planningwoRepository.findByWoId(planningWO.getWoId()) != null) {
             return ResponseEntity
@@ -325,23 +333,41 @@ public class PlanningWOService {
                             "message", "Work Order đã tồn tại",
                             "data", planningWO
                     ));
-        }else {
+        } else {
+            try {
+                PlanningWO savedWO = planningwoRepository.save(planningWO);
+                return ResponseEntity
+                        .status(HttpStatus.CREATED)
+                        .body(Map.of(
+                                "message", "Tạo Work Order thành công",
+                                "data", savedWO
+                        ));
+            } catch (Exception e) {
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of(
+                                "message", "Lỗi khi tạo Work Order",
+                                "error", e.getMessage()
+                        ));
+            }
+        }
+    }
+    public ResponseEntity<?> update(PlanningWO planningWO){
         try {
-            PlanningWO savedWO = planningwoRepository.save(planningWO);
+            PlanningWO updatedWO = planningwoRepository.save(planningWO);
             return ResponseEntity
-                    .status(HttpStatus.CREATED)
+                    .status(HttpStatus.OK)
                     .body(Map.of(
-                            "message", "Tạo Work Order thành công",
-                            "data", savedWO
+                            "message", "Cập nhật Work Order thành công",
+                            "data", updatedWO
                     ));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of(
-                            "message", "Lỗi khi tạo Work Order",
+                            "message", "Lỗi khi cập nhật Work Order",
                             "error", e.getMessage()
                     ));
         }
     }
-        }
 }
