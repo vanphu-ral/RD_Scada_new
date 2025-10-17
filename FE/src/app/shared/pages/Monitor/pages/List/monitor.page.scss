@@ -54,3 +54,19 @@
 ::ng-deep .dark-table .p-datatable-header {
     background-color: black !important;
 }
+
+.status-stop {
+  color: red !important;
+}
+
+.status-running {
+  color: green !important;
+}
+
+.status-finish {
+  color: turquoise !important;
+}
+
+.status-pause {
+  color: gold !important;
+}

@@ -113,13 +113,23 @@
                 <td>{{ row.groupName }}</td>
                 <td>{{ row.groupCode }}</td>
                 <td>
-                    {{
-                    row.status === "2"
-                    ? 'Đã hoàn thành'
-                    : row.status === "3"
-                    ? 'Tạm dừng'
-                    : 'Đang chạy'
-                    }}
+                    <span [ngClass]="{
+                        'status-stop': row.status === '0',
+                        'status-running': row.status === '1',
+                        'status-finish': row.status === '2',
+                        'status-pause': row.status === '3'
+                        }">{{
+                        row.status === "0"
+                        ? 'Stop'
+                        : row.status === "1"
+                        ? 'Running'
+                        : row.status === "2"
+                        ? 'Finish'
+                        : row.status === "3"
+                        ? 'Pause'
+                        : ''
+                        }}</span>
+
                 </td>
                 <td>{{ row.lotNumber }}</td>
                 <td>{{ row.productCode }}</td>
