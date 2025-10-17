@@ -107,6 +107,10 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
         const id = this.route.snapshot.paramMap.get('id');
         if (!id) return;
         this.apiService.getWoInfor(id).subscribe((data: any) => {
+            this.model = { ...data };
+            this.cdr.detectChanges();
+        });
+        this.apiService.getWoDetailInfor(id).subscribe((data: any) => {
             this.formatData(data.productionOrderModelDetails);
             this.chartDataErorrGroup = this.getChartDataErrorByGroup(data.productionOrderModelDetails);
             this.chartOptionErorrGroup = this.getDefaultChartOption();
@@ -114,30 +118,15 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
             this.chartOptionErorrByMechine = this.getDefaultChartOption();
             this.chartDataErorrByStage = this.getChartDataErorrByStage(data.productionOrderModelDetails);
             this.chartOptionErorrByStage = this.getDefaultChartOption();
+            this.cdr.detectChanges();
+        });
+        this.apiService.getWoErrorInfor(id).subscribe((data: any) => {
             this.scanSerialChecks = data.scanSerialChecks.map((x: any) => ({
                 ...x,
                 timeScan: x.timeScan ? new Date(x.timeScan) : null
             }));
-            this.model = { ...data };
             this.cdr.detectChanges();
         });
-        // this.apiService.getWoDetailInfor(id).subscribe((data: any) => {
-        //     this.formatData(data.productionOrderModelDetails);
-        //     this.chartDataErorrGroup = this.getChartDataErrorByGroup(data.productionOrderModelDetails);
-        //     this.chartOptionErorrGroup = this.getDefaultChartOption();
-        //     this.chartDataErorrByMechine = this.getChartDataError(data.productionOrderModelDetails);
-        //     this.chartOptionErorrByMechine = this.getDefaultChartOption();
-        //     this.chartDataErorrByStage = this.getChartDataErorrByStage(data.productionOrderModelDetails);
-        //     this.chartOptionErorrByStage = this.getDefaultChartOption();
-        //     this.cdr.detectChanges();
-        // });
-        // this.apiService.getWoErrorInfor(id).subscribe((data: any) => {
-        //     this.scanSerialChecks = data.scanSerialChecks.map((x: any) => ({
-        //         ...x,
-        //         timeScan: x.timeScan ? new Date(x.timeScan) : null
-        //     }));
-        //     this.cdr.detectChanges();
-        // });
     }
 
     formatData(data: any[]): void {
