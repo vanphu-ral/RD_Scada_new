@@ -72,7 +72,7 @@ export class AddWODialog {
         this.planningWOService.create(item).subscribe({
             next: (res) => {
                 Util.toastMessage('Thêm WO thành công', 'success');
-                this.close();
+                this.ref.close(true);
             },
             error: (err) => {
                 console.error(err);

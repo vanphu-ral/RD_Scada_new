@@ -1,10 +1,13 @@
 <div class="bg-sosen">
     <div class="base-table-header my-3 d-flex px-2">
         <h2>Thông tin sản xuất</h2>
-        <p-button *appHasRole="['RD_GiamSat_TruySuatSerial_Admin']" label="Thêm" class="p-button-sm" severity="secondary" (onClick)="addWODialog()" />
+        <p-button *appHasRole="['RD_GiamSat_TruySuatSerial_Admin']" label="Thêm" class="p-button-sm"
+            severity="secondary" (onClick)="addWODialog()" />
     </div>
     <p-table [value]="data" [paginator]="true" [rows]="pageSize" [totalRecords]="totalRecords" [lazy]="true"
-        [loading]="loading" (onLazyLoad)="onPage($event)" [rowsPerPageOptions]="[5,10,20,50]" class="dark-table" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
+        [loading]="loading" (onLazyLoad)="onPage($event)" [rowsPerPageOptions]="[5,10,20,50]" class="dark-table"
+        currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục"
+        [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
             <tr>
                 <th>Planning WO</th>
@@ -25,75 +28,75 @@
             <tr>
                 <th>
                     <p-floatlabel variant="on">
-                        <input pInputText type="text" placeholder="Planning WO" [(ngModel)]="filters.woId"
-                        class="w-100" (keydown.enter)="onSearch()" />
+                        <input pInputText type="text" placeholder="Planning WO" [(ngModel)]="filters.woId" class="w-100"
+                            (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
                 <th>
                     <p-floatlabel variant="on">
-                        <input pInputText type="text" placeholder="Mã WO" [(ngModel)]="filters.sapWoId"
-                        class="w-100" (keydown.enter)="onSearch()" />
+                        <input pInputText type="text" placeholder="Mã WO" [(ngModel)]="filters.sapWoId" class="w-100"
+                            (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
                 <th>
                     <p-floatlabel variant="on">
                         <input pInputText type="text" placeholder="productOrderId" [(ngModel)]="filters.productOrderId"
-                        class="w-100" (keydown.enter)="onSearch()" />
+                            class="w-100" (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
                 <th>
                     <p-floatlabel variant="on">
                         <input pInputText type="text" placeholder="branchName" [(ngModel)]="filters.branchName"
-                        class="w-100" (keydown.enter)="onSearch()" />
+                            class="w-100" (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
                 <th>
                     <p-floatlabel variant="on">
                         <input pInputText type="text" placeholder="branchCode" [(ngModel)]="filters.branchCode"
-                        class="w-100" (keydown.enter)="onSearch()" />
+                            class="w-100" (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
                 <th>
                     <p-floatlabel variant="on">
                         <input pInputText type="text" placeholder="groupName" [(ngModel)]="filters.groupName"
-                        class="w-100" (keydown.enter)="onSearch()" />
+                            class="w-100" (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
                 <th>
                     <p-floatlabel variant="on">
                         <input pInputText type="text" placeholder="groupCode" [(ngModel)]="filters.groupCode"
-                        class="w-100" (keydown.enter)="onSearch()" />
+                            class="w-100" (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
                 <th>
                     <p-floatlabel variant="on">
-                        <input pInputText type="text" placeholder="status" [(ngModel)]="filters.status"
-                        class="w-100" (keydown.enter)="onSearch()" />
+                        <input pInputText type="text" placeholder="status" [(ngModel)]="filters.status" class="w-100"
+                            (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
-                
+
                 <th>
                     <p-floatlabel variant="on">
                         <input pInputText type="text" placeholder="lotNumber" [(ngModel)]="filters.lotNumber"
-                        class="w-100" (keydown.enter)="onSearch()" />
+                            class="w-100" (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
                 <th>
                     <p-floatlabel variant="on">
                         <input pInputText type="text" placeholder="productCode" [(ngModel)]="filters.productCode"
-                        class="w-100" (keydown.enter)="onSearch()" />
+                            class="w-100" (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
                 <th>
                     <p-floatlabel variant="on">
                         <input pInputText type="text" placeholder="productName" [(ngModel)]="filters.productName"
-                        class="w-100" (keydown.enter)="onSearch()" />
+                            class="w-100" (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
                 <th>
                     <p-floatlabel variant="on">
                         <input pInputText type="text" placeholder="quantityPlan" [(ngModel)]="filters.quantityPlan"
-                        class="w-100" (keydown.enter)="onSearch()" />
+                            class="w-100" (keydown.enter)="onSearch()" />
                     </p-floatlabel>
                 </th>
                 <th></th>
@@ -109,7 +112,15 @@
                 <td>{{ row.branchCode }}</td>
                 <td>{{ row.groupName }}</td>
                 <td>{{ row.groupCode }}</td>
-                <td>{{ row.status }}</td>
+                <td>
+                    {{
+                    row.status === "2"
+                    ? 'Đã hoàn thành'
+                    : row.status === "3"
+                    ? 'Tạm dừng'
+                    : 'Đang chạy'
+                    }}
+                </td>
                 <td>{{ row.lotNumber }}</td>
                 <td>{{ row.productCode }}</td>
                 <td>{{ row.productName }}</td>
