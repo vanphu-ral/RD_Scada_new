@@ -36,15 +36,13 @@
       </thead>
       <tbody>
         <tr>
-          <td>{{ data.totalNumberInput }}</td>
-          <td>{{ data.totalNumberOutput }}</td>
-          <!-- <td>{{ (data.totalNumberOutput / data.totalNumberInput) > 0 ? (data.totalNumberOutput / data.totalNumberInput)
-            * 100 : 0 }}</td> -->
-            <td>0</td>
+          <td>{{ data.numberOfInputs }}</td>
+          <td>{{ data.numberOfOutputs }}</td>
+          <td>0</td>
           <td>
             {{
-            (data.totalQuantity > 0 && data.totalNumberInput > 0)
-            ? ((data.totalQuantity / data.totalNumberInput) * 100).toFixed(3)
+            (data.totalQuantity > 0 && data.numberOfInputs > 0)
+            ? ((data.totalQuantity / data.numberOfInputs) * 100).toFixed(3)
             : 0
             }} %
           </td>
