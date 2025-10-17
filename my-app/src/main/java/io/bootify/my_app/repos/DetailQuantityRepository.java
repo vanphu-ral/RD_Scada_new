@@ -10,8 +10,24 @@ import java.util.List;
 @Repository
 public interface DetailQuantityRepository extends JpaRepository<DetailQuantity, Long> {
     List<DetailQuantity> findAllByWorkOrderAndMachineName(String workOrder,String machineName);
-    @Query(value = "SELECT SUM(numberOutput) FROM DetailQuantity WHERE workOrder = ?1", nativeQuery = true)
+    @Query(value = "SELECT SUM(dq.numberOutput) AS TotalOutput\n" +
+            "FROM DetailQuantity dq\n" +
+            "INNER JOIN woMachineDetail mm ON dq.machineName = mm.machineName\n" +
+            "WHERE dq.workOrder = ?1 \n" +
+            "  AND mm.StageID = (\n" +
+            "      SELECT MAX(stageId)\n" +
+            "      FROM woMachineDetail\n" +
+            "      WHERE workOrder = dq.workOrder\n" +
+            "  )\n", nativeQuery = true)
     Integer sumQuantityOutByWorkOrder(String workOrder);
-    @Query(value = "SELECT SUM(numberInput) FROM DetailQuantity WHERE workOrder = ?1", nativeQuery = true)
+    @Query(value = "SELECT SUM(dq.numberOutput) AS TotalOutput\n" +
+            "FROM DetailQuantity dq\n" +
+            "INNER JOIN woMachineDetail mm ON dq.machineName = mm.machineName\n" +
+            "WHERE dq.workOrder = ?1 \n" +
+            "  AND mm.StageID = (\n" +
+            "      SELECT MIN(stageId)\n" +
+            "      FROM woMachineDetail \n" +
+            "      WHERE workOrder = dq.workOrder\n" +
+            "  )\n", nativeQuery = true)
     Integer sumQuantityInByWorkOrder(String workOrder);
 }
