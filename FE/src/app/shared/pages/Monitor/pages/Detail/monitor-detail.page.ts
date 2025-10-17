@@ -106,6 +106,10 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
     callDataFrequency(): void {
         const id = this.route.snapshot.paramMap.get('id');
         if (!id) return;
+        this.apiService.getWoInfor(id).subscribe((data: any) => {
+            this.model = { ...data };
+            this.cdr.detectChanges();
+        });
         this.apiService.getWoDetailInfor(id).subscribe((data: any) => {
             this.formatData(data.productionOrderModelDetails);
             this.chartDataErorrGroup = this.getChartDataErrorByGroup(data.productionOrderModelDetails);
