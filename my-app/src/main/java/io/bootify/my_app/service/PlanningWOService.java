@@ -321,6 +321,7 @@ public class PlanningWOService {
         for (PlanningWO p : page.getContent()) {
             p.setNumberOfOutputs(detailQuantityRepository.sumQuantityOutByWorkOrder(p.getWoId()));
             p.setNumberOfInputs(detailQuantityRepository.sumQuantityInByWorkOrder(p.getWoId()));
+            p.setStatus(productionOrderModelsRepository.getStatusByWorkOrderWithMaxStage(p.getWoId()));
         }
         return page;
     }
