@@ -167,7 +167,7 @@ public class PlanningWOService {
             if (machinesDetailResponse == null) {
 //                result +=  "Không tìm thấy công đoạn ở stage trước: "+(request.getStage()-1);
 //                code = 1;
-                MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(machinesDetailResponse.getMachineName());
+                MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(request.getMachineName());
                 List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.getAllByWorkOrderAndMachineId(
                         request.getWorkOrder(), machinesModels1.getMachineId());
                 boolean found = false;
