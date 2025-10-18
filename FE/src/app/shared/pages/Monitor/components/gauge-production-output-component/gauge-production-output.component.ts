@@ -70,7 +70,7 @@ export class GaugeProductionOutputComponent implements OnChanges {
 
   updateValueAndColor(): void {
     if (this.data?.planningWO?.quantityPlan > 0) {
-      this.percentValue = (this.data.planningWO.totalNumberOutput / this.data.planningWO.quantityPlan) * 100;
+      this.percentValue = (this.data.planningWO.numberOfOutputs / this.data.planningWO.quantityPlan) * 100;
     } else {
       this.percentValue = 0;
     }

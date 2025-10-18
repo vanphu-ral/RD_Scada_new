@@ -102,10 +102,10 @@ export class GauGePointPpmComponent implements OnInit {
   }
 
   calculatePPM() {
-    if (this.data?.planningWO?.totalNumberOutput > 0) {
+    if (this.data?.planningWO?.numberOfOutputs > 0) {
       this.ppmValue =
         (this.data.planningWO.totalQuantity * 1000000) /
-        (this.data.planningWO.totalNumberOutput * this.data.planningWO.quota);
+        (this.data.planningWO.numberOfOutputs * this.data.planningWO.quota);
     } else {
       this.ppmValue = 0;
     }
