@@ -8,7 +8,8 @@
         <th>Machine</th>
         <th>Serial board</th>
         <th>Serial PCS</th>
-        <th>Time</th>
+        <th>Thời gian scan</th>
+        <th>Thời gian sửa serial</th>
         <th>Status</th>
       </tr>
       <tr>
@@ -27,6 +28,9 @@
         <th class="filter-column" style="padding: 0; max-width: 100px; overflow: hidden;">
           <p-columnFilter type="date" field="timeScan" placeholder="Search" [showMenu]="false"></p-columnFilter>
         </th>
+        <th class="filter-column" style="padding: 0; max-width: 100px; overflow: hidden;">
+          <p-columnFilter type="date" field="timeCheck" placeholder="Search" [showMenu]="false"></p-columnFilter>
+        </th>
         <th class="filter-column" style="padding: 0; max-width: 88px; overflow: hidden;">
           <p-columnFilter type="text" field="serialStatus" placeholder="Search" [showMenu]="false"></p-columnFilter>
         </th>
@@ -39,6 +43,7 @@
         <td>{{ row.serialBoard }}</td>
         <td>{{ row.serialItem }}</td>
         <td>{{ row.timeScan | date:'dd/MM/yyyy HH:mm'}}</td>
+        <td>{{ row.timeCheck | date:'dd/MM/yyyy HH:mm'}}</td>
         <td>{{ row.serialStatus }}</td>
       </tr>
     </ng-template>

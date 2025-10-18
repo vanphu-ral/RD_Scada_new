@@ -20,7 +20,8 @@ export class ConventionalTableComponent implements OnInit {
     ngOnInit() {
         this.data = this.data.map(x => ({
             ...x,
-            timeScan: x.timeScan ? new Date(x.timeScan) : null
+            timeScan: x.timeScan ? new Date(x.timeScan) : null,
+            timeCheck: x.timeCheck ? new Date(x.timeCheck) : null
         }));
         
     }
