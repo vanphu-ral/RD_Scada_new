@@ -195,9 +195,9 @@ public class PlanningWOService {
                         break;
                     }
                 }
-                if (!found) {
+                if (found == true) {
                     code = 1;
-                    result += "\n Không tìm thấy Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage() - 1);
+                    result += "\n Đã tồn tại Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage() - 1);
                 }
 //                }
             }
