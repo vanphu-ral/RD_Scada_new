@@ -63,8 +63,10 @@ public class PlanningWOService {
     public ProductOrderModelsResponse getWoInfo(Long id) {
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
         // Lấy thông tin Work Order
-        response.setErrorCommonScadas(errorCommonScadaRepository.findAll());
+//        response.setErrorCommonScadas(errorCommonScadaRepository.findAll());
         response.setPlanningWO(planningwoRepository.findById(id).orElse(null));
+        response.getPlanningWO().setNumberOfOutputs(detailQuantityRepository.sumQuantityOutByWorkOrder(response.getPlanningWO().getWoId()));
+        response.getPlanningWO().setNumberOfInputs(detailQuantityRepository.sumQuantityInByWorkOrder(response.getPlanningWO().getWoId()));
         response.setMachinesDetailResponses(machinesModelsRepository.getMachinesByWorkOrder(response.getPlanningWO().getWoId()));
 //        // Lấy thông tin Production Order Models
 //        List<ProductionOrderModelDetail> productionOrderModelDetails = new ArrayList<>();

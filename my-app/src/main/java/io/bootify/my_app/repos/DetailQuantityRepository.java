@@ -12,22 +12,30 @@ public interface DetailQuantityRepository extends JpaRepository<DetailQuantity, 
     List<DetailQuantity> findAllByWorkOrderAndMachineName(String workOrder,String machineName);
     @Query(value = "SELECT SUM(dq.numberOutput) AS TotalOutput\n" +
             "FROM DetailQuantity dq\n" +
-            "INNER JOIN woMachineDetail mm ON dq.machineName = mm.machineName\n" +
-            "WHERE dq.workOrder = ?1 \n" +
-            "  AND mm.StageID = (\n" +
-            "      SELECT MAX(stageId)\n" +
-            "      FROM woMachineDetail\n" +
-            "      WHERE workOrder = dq.workOrder\n" +
-            "  )\n", nativeQuery = true)
+            "INNER JOIN (\n" +
+            "    SELECT machineName, workOrder\n" +
+            "    FROM woMachineDetail\n" +
+            "    WHERE stageId = (\n" +
+            "        SELECT MAX(stageId)\n" +
+            "        FROM woMachineDetail\n" +
+            "        WHERE workOrder = ?1 \n" +
+            "    )\n" +
+            "    AND workOrder = ?1 \n" +
+            ") AS maxStage ON dq.machineName = maxStage.machineName\n" +
+            "             AND dq.workOrder = maxStage.workOrder;", nativeQuery = true)
     Integer sumQuantityOutByWorkOrder(String workOrder);
     @Query(value = "SELECT SUM(dq.numberOutput) AS TotalOutput\n" +
             "FROM DetailQuantity dq\n" +
-            "INNER JOIN woMachineDetail mm ON dq.machineName = mm.machineName\n" +
-            "WHERE dq.workOrder = ?1 \n" +
-            "  AND mm.StageID = (\n" +
-            "      SELECT MIN(stageId)\n" +
-            "      FROM woMachineDetail \n" +
-            "      WHERE workOrder = dq.workOrder\n" +
-            "  )\n", nativeQuery = true)
+            "INNER JOIN (\n" +
+            "    SELECT machineName, workOrder\n" +
+            "    FROM woMachineDetail\n" +
+            "    WHERE stageId = (\n" +
+            "        SELECT MIN(stageId)\n" +
+            "        FROM woMachineDetail\n" +
+            "        WHERE workOrder = ?1 \n" +
+            "    )\n" +
+            "    AND workOrder = ?1 \n" +
+            ") AS maxStage ON dq.machineName = maxStage.machineName\n" +
+            "             AND dq.workOrder = maxStage.workOrder;", nativeQuery = true)
     Integer sumQuantityInByWorkOrder(String workOrder);
 }
