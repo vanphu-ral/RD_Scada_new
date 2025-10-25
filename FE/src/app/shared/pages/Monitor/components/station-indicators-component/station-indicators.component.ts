@@ -43,7 +43,7 @@ export class StationIndicatorsComponent implements OnInit {
             modal: true,
             data: {
                 data: this.data,
-                listDevices: this.listDevices,
+                listDevices: this.listDevices.sort((a:any,b:any)=>a.stageId - b.stageId),
                 isNewList: this.IsNewList
             },
         });
