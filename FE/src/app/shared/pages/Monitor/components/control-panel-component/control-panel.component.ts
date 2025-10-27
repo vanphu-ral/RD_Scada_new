@@ -13,6 +13,7 @@ import { ChangeDetectorRef, Component, inject, Input, OnInit, PLATFORM_ID } from
 export class ControlPanelComponent implements OnInit {
 
     @Input() data: any
+    @Input() totalError: number = 0;
 
     constructor(private cd: ChangeDetectorRef) { }
 

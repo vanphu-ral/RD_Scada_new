@@ -3,10 +3,10 @@
     <app-station-indicators-component [data]="model" [listNewDevices]="listDevices"></app-station-indicators-component>
   </div>
   <div class="widget widget-po">
-    <app-control-panel-component [data]="model.planningWO"></app-control-panel-component>
+    <app-control-panel-component [data]="model.planningWO" [totalError]="toltalErrorQuantity"></app-control-panel-component>
   </div>
   <div class="widget widget-status">
-    <app-status-device-component [data]="model.planningWO"></app-status-device-component>
+    <app-status-device-component [data]="model.planningWO" [totalError]="toltalErrorQuantity"></app-status-device-component>
   </div>
 
 
@@ -19,7 +19,7 @@
       <gauge-production-output-component [data]="model"></gauge-production-output-component>
     </div>
     <div class="widget d-flex justify-content-center align-items-center hidden-overflow">
-      <gauge-point-ppm-component [data]="model"></gauge-point-ppm-component>
+      <gauge-point-ppm-component [data]="model" [totalError]="toltalErrorQuantity"></gauge-point-ppm-component>
     </div>
   </div>
   <div class="widget widget-ppm">

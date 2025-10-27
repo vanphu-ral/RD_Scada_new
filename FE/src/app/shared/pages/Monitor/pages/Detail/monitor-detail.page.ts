@@ -63,6 +63,7 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
     private ref?: DynamicDialogRef;
 
     idWo: string | null = null;
+    toltalErrorQuantity: number = 0;
 
     constructor(protected override apiService: PlanningWoService, private socketService: SocketService,
         private dialogService: DialogService, private woHistoryError: WOHistoryErrorService) {
@@ -173,7 +174,7 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
         );
         this.model.planningWO.totalNumberInput = total.numberInput;
         this.model.planningWO.totalNumberOutput = total.numberOutput;
-        this.model.planningWO.totalQuantity = total.quantity;
+        this.toltalErrorQuantity = total.quantity;
 
         this.model = { ...this.model };
     }
