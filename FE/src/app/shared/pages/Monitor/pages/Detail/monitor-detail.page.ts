@@ -62,6 +62,8 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
     warningMessage = '';
     private ref?: DynamicDialogRef;
 
+    idWo: string | null = null;
+
     constructor(protected override apiService: PlanningWoService, private socketService: SocketService,
         private dialogService: DialogService, private woHistoryError: WOHistoryErrorService) {
         super(apiService);
@@ -69,10 +71,21 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
 
     override ngOnInit(): void {
         super.ngOnInit();
-        this.callDataFrequency();
+        this.idWo = this.route.snapshot.paramMap.get('id');
+        this.callErrorFrequency(this.idWo!);
+        this.callOutputFrequency(this.idWo!);
+        this.callSerialCheckFrequency(this.idWo!);
         this.socketService.connect();
         this.refreshSub = interval(180000).subscribe(() => {
-            this.callDataFrequency();
+            this.callSerialCheckFrequency(this.idWo!);
+        });
+        this.refreshSub = interval(60000).subscribe(() => {
+            this.callErrorFrequency(this.idWo!);
+        });
+        this.refreshSub = interval(30000).subscribe(() => {
+            if (this.idWo) {
+                this.callOutputFrequency(this.idWo);
+            }
         });
         this.woHistoryError.getErrorByWoId(this.model.planningWO.woId).subscribe((data: any) => {
             this.messages = _.filter(data, { status: 0 });
@@ -103,13 +116,7 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
         this.socketService.disconnect();
     }
 
-    callDataFrequency(): void {
-        const id = this.route.snapshot.paramMap.get('id');
-        if (!id) return;
-        this.apiService.getWoInfor(id).subscribe((data: any) => {
-            this.model = { ...data };
-            this.cdr.detectChanges();
-        });
+    callErrorFrequency(id: string): void {
         this.apiService.getWoDetailInfor(id).subscribe((data: any) => {
             this.formatData(data.productionOrderModelDetails);
             this.chartDataErorrGroup = this.getChartDataErrorByGroup(data.productionOrderModelDetails);
@@ -120,11 +127,21 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
             this.chartOptionErorrByStage = this.getDefaultChartOption();
             this.cdr.detectChanges();
         });
+    }
+
+    callSerialCheckFrequency(id: string): void {
         this.apiService.getWoErrorInfor(id).subscribe((data: any) => {
             this.scanSerialChecks = data.scanSerialChecks.map((x: any) => ({
                 ...x,
                 timeScan: x.timeScan ? new Date(x.timeScan) : null
             }));
+            this.cdr.detectChanges();
+        });
+    }
+
+    callOutputFrequency(id: string): void {
+        this.apiService.getWoInfor(id).subscribe((data: any) => {
+            this.model = { ...data };
             this.cdr.detectChanges();
         });
     }
