@@ -13,5 +13,4 @@ import java.util.List;
 public interface PlanningwoRepository  extends JpaRepository<PlanningWO, Long> {
     Page<PlanningWO> findAll(Specification<PlanningWO> spec, Pageable pageable);
     PlanningWO findByWoId(String workOrder);
-    List<PlanningWO> findAllBySerialItem(String serialItem);
 }
