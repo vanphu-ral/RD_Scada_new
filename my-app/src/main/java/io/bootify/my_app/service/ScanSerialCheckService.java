@@ -79,7 +79,9 @@ public class ScanSerialCheckService {
         for (ScanSerialCheck s: scanSerialChecks) {
             planningWOS.add(planningwoRepository.findByWoId(s.getWorkOrder()));
            List<CheckSerialResult> checkSerialResult = scanSerialCheckRepository.checkSerials(s.getWorkOrder());
-              list.addAll(checkSerialResult);
+             for (CheckSerialResult c: checkSerialResult) {
+                 list.add(c);
+             }
         }
         responses.setPlanningWOS(planningWOS);
         responses.setCheckSerialResults(list);
