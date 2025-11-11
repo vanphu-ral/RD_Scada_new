@@ -95,8 +95,8 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "  where a.workOrder =?1 and a.machineID =?2 ;",nativeQuery = true)
     List<ScanSerialCheck> getAllByWorkOrderAndMachineId(String workOrder, Integer machineId);
     @Query(value="SELECT \n" +
-            "    b.MachineName as machineName,\n" +
-            "    a.workOrder as workOrder,\n" +
+            "    b.MachineName,\n" +
+            "    a.workOrder,\n" +
             "    (SELECT COUNT(serialID) \n" +
             "     FROM [ScadaMappingInfo].[dbo].[ScanSerialCheck] \n" +
             "     WHERE workOrder = a.workOrder AND machineID = a.machineID and CASE \n" +
@@ -112,13 +112,15 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "        WHEN CHARINDEX('-', a.serialItem) > 0 \n" +
             "        THEN REVERSE(SUBSTRING(REVERSE(a.serialItem), 1, CHARINDEX('-', REVERSE(a.serialItem)) - 1))\n" +
             "        ELSE a.serialItem\n" +
-            "    END AS serialType,\n" +
+            "    END AS PhanSauDauGachCuoi,\n" +
             "\t    CASE \n" +
             "        WHEN CHARINDEX('-', a.serialItem) > 0 \n" +
             "        THEN 'true'\n" +
-            "        ELSE 'false'END AS result\n" +
-            "FROM  [ScadaMappingInfo].[dbo].[ScanSerialCheck] a\n" +
+            "        ELSE 'other'END AS result,\n" +
+            "\t\tc.PRODUCT_NAME as productName\n" +
+            "FROM [ScadaMappingInfo].[dbo].[ScanSerialCheck] a\n" +
             "INNER JOIN MachinesModels b ON b.MachineID = a.machineID\n" +
+            "inner join planningwo c on c.wo_id = a.workOrder\n" +
             "where a.workOrder= ?1 \n" +
             "GROUP BY \n" +
             "    b.MachineName,\n" +
@@ -132,7 +134,8 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "\tCASE \n" +
             "        WHEN CHARINDEX('-', a.serialItem) >0 \n" +
             "        THEN 'true'\n" +
-            "        ELSE 'false'END\n" +
+            "        ELSE 'other'END,\n" +
+            "\t\tc.PRODUCT_NAME\n" +
             "ORDER BY a.workOrder;\n",nativeQuery = true)
     public List<CheckSerialResult> checkSerials(String workOrder);
 

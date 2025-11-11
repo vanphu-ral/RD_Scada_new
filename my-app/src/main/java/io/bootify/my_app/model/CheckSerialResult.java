@@ -6,4 +6,5 @@ public interface CheckSerialResult {
     Integer getSumOfSerial();
     String getSerialType();
     String getResult();
+    String getProductName();
 }
