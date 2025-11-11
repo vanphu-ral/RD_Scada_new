@@ -53,6 +53,7 @@ import { NgxGaugeModule } from 'ngx-gauge';
 export class GauGePointPpmComponent implements OnInit {
 
   @Input() data: any
+  @Input() totalError: number = 0;
   private lastData: any;
 
   public gaugeMin = 0;
@@ -104,7 +105,7 @@ export class GauGePointPpmComponent implements OnInit {
   calculatePPM() {
     if (this.data?.planningWO?.numberOfOutputs > 0) {
       this.ppmValue =
-        (this.data.planningWO.totalQuantity * 1000000) /
+        (this.totalError * 1000000) /
         (this.data.planningWO.numberOfOutputs * this.data.planningWO.quota);
     } else {
       this.ppmValue = 0;

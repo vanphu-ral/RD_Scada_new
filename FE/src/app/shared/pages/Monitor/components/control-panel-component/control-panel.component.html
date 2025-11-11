@@ -41,8 +41,8 @@
           <td>0</td>
           <td>
             {{
-            (data.totalQuantity > 0 && data.numberOfInputs > 0)
-            ? ((data.totalQuantity / data.numberOfInputs) * 100).toFixed(3)
+            (totalError > 0 && data.numberOfInputs > 0)
+            ? ((totalError / data.numberOfInputs) * 100).toFixed(3)
             : 0
             }} %
           </td>

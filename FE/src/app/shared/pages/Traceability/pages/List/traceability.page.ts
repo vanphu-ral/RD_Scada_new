@@ -37,6 +37,7 @@ export class TraceabilityPage {
     constructor(private cdr: ChangeDetectorRef, private grapSqlService: GrapSqlService, private planningWoService: PlanningWoService) { }
 
     ngOnInit(): void {
+        this.filter.option = 'serialBoard'
     }
 
     search() {
@@ -61,6 +62,7 @@ export class TraceabilityPage {
                     this.listpqcBomQuantity = _.get(res, 'data.qmsToDoiTraInfoByLotNumber.pqcBomQuantity') || [];
                     this.listpqcBomErrorDetail = _.get(res, 'data.qmsToDoiTraInfoByLotNumber.pqcBomErrorDetail') || [];
                     this.loading = false;
+                    this.filter.serial = '';
                     this.cdr.detectChanges();
                 })
                 this.cdr.detectChanges();

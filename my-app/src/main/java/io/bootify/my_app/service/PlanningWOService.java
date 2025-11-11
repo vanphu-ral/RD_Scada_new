@@ -181,7 +181,7 @@ public class PlanningWOService {
                 }
                 if (found) {
                     code = 1;
-                    result += "\n Đã tồn tại Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage() - 1);
+                    result += "\n Đã tồn tại Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage());
                 }
             } else {
 //                for (MachinesModels machinesModels1 : machinesModels){
@@ -195,9 +195,9 @@ public class PlanningWOService {
                         break;
                     }
                 }
-                if (found == true) {
+                if (found == false) {
                     code = 1;
-                    result += "\n Đã tồn tại Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage() - 1);
+                    result += "\n Không tìm thấy Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesDetailResponse.getMachineName() + " stage: " + (machinesDetailResponse.getStageId());
                 }
 //                }
             }

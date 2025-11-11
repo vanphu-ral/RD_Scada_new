@@ -1,5 +1,6 @@
 package io.bootify.my_app.service;
 
+import io.bootify.my_app.model.PlanningWorkOrderResponse;
 import io.bootify.planning.domain.PlanningWorkOrder;
 import io.bootify.planning.repos.PlanningWorkOrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -65,4 +66,17 @@ public Page<PlanningWorkOrder> getLatestWorkOrders(
     public List<PlanningWorkOrder> getByPRODUCT_ORDER_ID(String productOrderId) {
         return planningWorkOrderRepository.getByPRODUCT_ORDER_ID(productOrderId);
     }
+
+
+        public Page<PlanningWorkOrderResponse> searchWorkOrders(
+                String woId,
+                String productCode,
+                String sapWoId,
+                String lotNumber,
+                Pageable pageable
+        ) {
+            return planningWorkOrderRepository.findAllProjected(woId, productCode, sapWoId, lotNumber, pageable);
+        }
+
+
 }
