@@ -112,7 +112,7 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "        WHEN CHARINDEX('-', a.serialItem) > 0 \n" +
             "        THEN REVERSE(SUBSTRING(REVERSE(a.serialItem), 1, CHARINDEX('-', REVERSE(a.serialItem)) - 1))\n" +
             "        ELSE a.serialItem\n" +
-            "    END AS PhanSauDauGachCuoi,\n" +
+            "    END AS serialType,\n" +
             "\t    CASE \n" +
             "        WHEN CHARINDEX('-', a.serialItem) > 0 \n" +
             "        THEN 'true'\n" +

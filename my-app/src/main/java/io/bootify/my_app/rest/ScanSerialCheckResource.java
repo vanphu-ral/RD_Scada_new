@@ -1,5 +1,6 @@
 package io.bootify.my_app.rest;
 
+import io.bootify.my_app.model.CheckSerialResponse;
 import io.bootify.my_app.model.ScanSerialCheckDTO;
 import io.bootify.my_app.service.ScanSerialCheckService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -57,7 +58,7 @@ public class ScanSerialCheckResource {
         return ResponseEntity.noContent().build();
     }
  @GetMapping("/check")
-    public ResponseEntity<List<?>> checkSerials(
+    public ResponseEntity<CheckSerialResponse> checkSerials(
          @RequestParam(required = false) String serialItem) {
      System.out.println("check serrial :::::"+serialItem);
         return ResponseEntity.ok(scanSerialCheckService.checkSerials(serialItem));

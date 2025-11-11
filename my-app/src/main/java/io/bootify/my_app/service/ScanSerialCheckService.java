@@ -1,13 +1,16 @@
 package io.bootify.my_app.service;
 
 import io.bootify.my_app.domain.MachinesModels;
+import io.bootify.my_app.domain.PlanningWO;
 import io.bootify.my_app.domain.ProductionOrderModels;
 import io.bootify.my_app.domain.ScanSerialCheck;
 import io.bootify.my_app.events.BeforeDeleteMachinesModels;
 import io.bootify.my_app.events.BeforeDeleteProductionOrderModels;
+import io.bootify.my_app.model.CheckSerialResponse;
 import io.bootify.my_app.model.CheckSerialResult;
 import io.bootify.my_app.model.ScanSerialCheckDTO;
 import io.bootify.my_app.repos.MachinesModelsRepository;
+import io.bootify.my_app.repos.PlanningwoRepository;
 import io.bootify.my_app.repos.ProductionOrderModelsRepository;
 import io.bootify.my_app.repos.ScanSerialCheckRepository;
 import io.bootify.my_app.util.NotFoundException;
@@ -26,13 +29,15 @@ public class ScanSerialCheckService {
     private final ScanSerialCheckRepository scanSerialCheckRepository;
     private final MachinesModelsRepository machinesModelsRepository;
     private final ProductionOrderModelsRepository productionOrderModelsRepository;
+    private final PlanningwoRepository planningwoRepository;
 
     public ScanSerialCheckService(final ScanSerialCheckRepository scanSerialCheckRepository,
-            final MachinesModelsRepository machinesModelsRepository,
-            final ProductionOrderModelsRepository productionOrderModelsRepository) {
+                                  final MachinesModelsRepository machinesModelsRepository,
+                                  final ProductionOrderModelsRepository productionOrderModelsRepository, PlanningwoRepository planningwoRepository) {
         this.scanSerialCheckRepository = scanSerialCheckRepository;
         this.machinesModelsRepository = machinesModelsRepository;
         this.productionOrderModelsRepository = productionOrderModelsRepository;
+        this.planningwoRepository = planningwoRepository;
     }
 
     public List<ScanSerialCheckDTO> findAll() {
@@ -66,14 +71,19 @@ public class ScanSerialCheckService {
                 .orElseThrow(NotFoundException::new);
         scanSerialCheckRepository.delete(scanSerialCheck);
     }
-    public List<CheckSerialResult>checkSerials(String serialItem){
+    public CheckSerialResponse checkSerials(String serialItem){
         List<ScanSerialCheck> scanSerialChecks = scanSerialCheckRepository.findAllBySerialItem(serialItem);
         List<CheckSerialResult> list = new ArrayList<>();
+        CheckSerialResponse responses = new CheckSerialResponse();
+        List<PlanningWO> planningWOS = new ArrayList<>();
         for (ScanSerialCheck s: scanSerialChecks) {
+            planningWOS.add(planningwoRepository.findByWoId(s.getWorkOrder()));
            List<CheckSerialResult> checkSerialResult = scanSerialCheckRepository.checkSerials(s.getWorkOrder());
               list.addAll(checkSerialResult);
         }
-        return list;
+        responses.setPlanningWOS(planningWOS);
+        responses.setCheckSerialResults(list);
+        return responses;
     }
     public ScanSerialCheckDTO mapToDTO(final ScanSerialCheck scanSerialCheck,
             final ScanSerialCheckDTO scanSerialCheckDTO) {
