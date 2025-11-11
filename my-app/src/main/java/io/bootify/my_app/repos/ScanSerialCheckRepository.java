@@ -115,8 +115,8 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "    END AS serialType,\n" +
             "\t    CASE \n" +
             "        WHEN CHARINDEX('-', a.serialItem) > 0 \n" +
-            "        THEN 'true'\n" +
-            "        ELSE 'other'END AS result,\n" +
+            "        THEN 1 \n" +
+            "        ELSE 0 END AS result,\n" +
             "\t\tc.PRODUCT_NAME as productName\n" +
             "FROM [ScadaMappingInfo].[dbo].[ScanSerialCheck] a\n" +
             "INNER JOIN MachinesModels b ON b.MachineID = a.machineID\n" +
@@ -136,8 +136,8 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "    END,\n" +
             "\tCASE \n" +
             "        WHEN CHARINDEX('-', a.serialItem) >0 \n" +
-            "        THEN 'true'\n" +
-            "        ELSE 'other'END,\n" +
+            "        THEN 1\n" +
+            "        ELSE 0 END,\n" +
             "\t\tc.PRODUCT_NAME\n" +
             "ORDER BY a.workOrder;\n",nativeQuery = true)
     public List<CheckSerialResult> checkSerials(String workOrder);
