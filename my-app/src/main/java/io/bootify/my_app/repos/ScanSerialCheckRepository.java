@@ -117,7 +117,7 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "        WHEN CHARINDEX('-', a.serialItem) > 0 \n" +
             "        THEN 'true'\n" +
             "        ELSE 'false'END AS result\n" +
-            "FROM `ScanSerialCheck` a\n" +
+            "FROM  [ScadaMappingInfo].[dbo].[ScanSerialCheck] a\n" +
             "INNER JOIN MachinesModels b ON b.MachineID = a.machineID\n" +
             "where a.workOrder= ?1 \n" +
             "GROUP BY \n" +
