@@ -12,6 +12,8 @@ import io.bootify.my_app.repos.ProductionOrderModelsRepository;
 import io.bootify.my_app.repos.ScanSerialCheckRepository;
 import io.bootify.my_app.util.NotFoundException;
 import io.bootify.my_app.util.ReferencedException;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
@@ -64,8 +66,14 @@ public class ScanSerialCheckService {
                 .orElseThrow(NotFoundException::new);
         scanSerialCheckRepository.delete(scanSerialCheck);
     }
-    public List<CheckSerialResult>checkSerials(String workOrder){
-        return scanSerialCheckRepository.checkSerials(workOrder);
+    public List<CheckSerialResult>checkSerials(String serialItem){
+        List<ScanSerialCheck> scanSerialChecks = scanSerialCheckRepository.findAllBySerialItem(serialItem);
+        List<CheckSerialResult> list = new ArrayList<>();
+        for (ScanSerialCheck s: scanSerialChecks) {
+           List<CheckSerialResult> checkSerialResult = scanSerialCheckRepository.checkSerials(s.getWorkOrder());
+              list.addAll(checkSerialResult);
+        }
+        return list;
     }
     public ScanSerialCheckDTO mapToDTO(final ScanSerialCheck scanSerialCheck,
             final ScanSerialCheckDTO scanSerialCheckDTO) {

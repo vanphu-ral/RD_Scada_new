@@ -122,7 +122,6 @@ public class PlanningWOService {
         response.setScanSerialChecks(scanSerialCheck);
         return response;
     }
-
     public ProductOrderModelsResponse getWoErrorCommonScadaInfoserialItem(String serialItem) {
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
         // Lấy thông tin Work Order
@@ -133,7 +132,6 @@ public class PlanningWOService {
         response.setScanSerialChecks(scanSerialCheck);
         return response;
     }
-
     @Transactional
     public ResponseEntity<InsertMachineResultDTO> insertMachine(List<MachinesModelsDTO> machinesModels) {
         InsertMachineResultDTO result = new InsertMachineResultDTO();
