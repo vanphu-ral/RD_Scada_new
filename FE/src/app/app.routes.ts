@@ -18,6 +18,12 @@ export const routes: Routes = [
     canActivate: [AuthGuard],            
     loadChildren: () => import('./shared/pages/Traceability/traceability.routes')
   },
+  {
+    path: 'CheckSerialError',
+    component: AppLayout,
+    canActivate: [AuthGuard],            
+    loadChildren: () => import('./shared/pages/CheckSerialError/check-serial-error.routes')
+  },
   { path: 'login', component: HomeComponent },
   { path: 'callback', component: CallbackComponent },
   { path: 'no-access', component: NoAccessComponent },

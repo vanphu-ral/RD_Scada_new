@@ -1,0 +1,87 @@
+<div class="bg-sosen">
+    <div class="base-table-header my-3 d-flex px-2">
+        <h2>Kiểm tra serial lỗi</h2>
+    </div>
+    <div class="d-flex mb-3">
+        <input type="text" pInputText placeholder="Serial" class="mx-2" [(ngModel)]="filter.serial" (keyup.enter)="search()">
+        <input type="text" pInputText placeholder="Key" class="mx-2" [(ngModel)]="filter.key">
+        <p-button icon="pi pi-search" class="p-button-text" severity="secondary" clas="mx-2" label="Search"
+            (onClick)="search()"></p-button>
+    </div>
+    <div class="mt-5" *ngIf="true">
+        <p-table [loading]="loading" class="dark-table mb-5" [value]="data">
+            <ng-template pTemplate="caption">
+                <span class="text-xl font-bold text-white">Thông tin sản xuất</span>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Mã sản phẩm</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Version</th>
+                    <th>Mã WO</th>
+                    <th>Số Lô</th>
+                    <th>Mã lệnh SAP</th>
+                    <th>Số lượng kế hoạch</th>
+                    <th>Thời gian phát hành</th>
+                    <th>Thời gian bắt đầu</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td>{{ item.productCode }}</td>
+                    <td>{{ item.productName }}</td>
+                    <td>{{ item.bomVersion }}</td>
+                    <td>{{ item.woId }}</td>
+                    <td>{{ item.lotNumber }}</td>
+                    <td>{{ item.sapWoId }}</td>
+                    <td>{{ item.quantityPlan }}</td>
+                    <td>{{ item.createTime | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+                    <td>{{ item.startTime | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="empty">
+                <tr>
+                    <td colspan="9" class="text-center text-white py-3">Không tìm thấy dữ liệu</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <br />
+    <h6 class="text-danger mx-5" *ngIf="data.length > 1 && data[0].woId != data[1].woId">Kết quả serial {{serial}} lỗi</h6>
+
+    <div class="mt-5" *ngIf="true">
+        <p-table [loading]="loading" [value]="listSerial || []" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
+            <ng-template pTemplate="caption">
+                <span class="text-xl font-bold text-white">Thông tin chi tiết serial lỗi</span>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Mã WO</th>
+                    <th>Tên SP</th>
+                    <th>Loại serial</th>
+                    <th>Công đoạn</th>
+                    <th>Số lượng</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr [ngClass]="{'red-row': item.serialType !== filter.key}">
+                    <td>{{ item.workOrder }}</td>
+                    <td>{{ item.productName }}</td>
+                    <td>{{ item.serialType }}</td>
+                    <td>{{ item.machineName }}</td>
+                    <td>{{ item.sumOfSerial }}</td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="empty">
+                <tr>
+                    <td colspan="11" class="text-center text-white py-3">Không tìm thấy dữ liệu</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
