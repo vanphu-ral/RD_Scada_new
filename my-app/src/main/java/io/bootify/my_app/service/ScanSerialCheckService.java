@@ -5,6 +5,7 @@ import io.bootify.my_app.domain.ProductionOrderModels;
 import io.bootify.my_app.domain.ScanSerialCheck;
 import io.bootify.my_app.events.BeforeDeleteMachinesModels;
 import io.bootify.my_app.events.BeforeDeleteProductionOrderModels;
+import io.bootify.my_app.model.CheckSerialResult;
 import io.bootify.my_app.model.ScanSerialCheckDTO;
 import io.bootify.my_app.repos.MachinesModelsRepository;
 import io.bootify.my_app.repos.ProductionOrderModelsRepository;
@@ -63,7 +64,9 @@ public class ScanSerialCheckService {
                 .orElseThrow(NotFoundException::new);
         scanSerialCheckRepository.delete(scanSerialCheck);
     }
-
+    public List<CheckSerialResult>checkSerials(String workOrder){
+        return scanSerialCheckRepository.checkSerials(workOrder);
+    }
     public ScanSerialCheckDTO mapToDTO(final ScanSerialCheck scanSerialCheck,
             final ScanSerialCheckDTO scanSerialCheckDTO) {
         scanSerialCheckDTO.setSerialId(scanSerialCheck.getSerialId());
