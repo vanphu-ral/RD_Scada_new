@@ -39,6 +39,9 @@ export class CheckSerialErrorPage {
 
     search() {
         if (!this.filter.serial) return;
+        if(this.filter.serial.split('-').pop() != this.filter.key){
+            this.openDialog();
+        }
         this.loading = true;
         this.scanSerialCheckService.getErrorBySerial(this.filter.serial).subscribe({
             next: (res: any) => {
