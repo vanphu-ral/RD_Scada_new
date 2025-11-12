@@ -43,6 +43,7 @@ export class CheckSerialErrorPage {
         this.scanSerialCheckService.getErrorBySerial(this.filter.serial).subscribe({
             next: (res: any) => {
                 this.data = res.planningWOS
+                if(this.data.length > 0 && this.data[0].woId != this.data[1].woId) this.openDialog();
                 this.listSerial = res.checkSerialResults.sort((a: any, b: any) => {
                     const serialA = a.serialType ?? '';
                     const serialB = b.serialType ?? '';
