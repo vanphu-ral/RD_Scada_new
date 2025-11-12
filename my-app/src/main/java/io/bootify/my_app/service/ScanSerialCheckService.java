@@ -87,6 +87,7 @@ public class ScanSerialCheckService {
         }
         responses.setPlanningWOS(planningWOS);
         responses.setCheckSerialResults(list);
+        System.out.println("check serial :::: " + list.size());
         return responses;
     }
     public ScanSerialCheckDTO mapToDTO(final ScanSerialCheck scanSerialCheck,
