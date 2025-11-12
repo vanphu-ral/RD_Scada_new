@@ -58,9 +58,9 @@ public class ScanSerialCheckResource {
         return ResponseEntity.noContent().build();
     }
  @GetMapping("/check")
-    public ResponseEntity<CheckSerialResponse> checkSerials(
+    public CheckSerialResponse checkSerials(
          @RequestParam(required = false) String serialItem) {
      System.out.println("check serrial :::::"+serialItem);
-        return ResponseEntity.ok(scanSerialCheckService.checkSerials(serialItem));
+        return scanSerialCheckService.checkSerials(serialItem);
     }
 }
