@@ -10,6 +10,7 @@ import io.bootify.my_app.repos.*;
 import io.bootify.my_app.util.NotFoundException;
 import io.bootify.my_app.util.ReferencedException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -102,10 +103,15 @@ public class ScanSerialCheckService {
         if(planningWOS.size() > 1){
             result ="Lỗi";
         }
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = sdf.format(now);
+
+
         ScanCheckSerialLogs scanCheckSerialLogs = new ScanCheckSerialLogs();
         scanCheckSerialLogs.setSerialCheck(serialItem);
         scanCheckSerialLogs.setResult(result);
-        scanCheckSerialLogs.setTimeCheck(new Date());
+        scanCheckSerialLogs.setTimeCheck(formattedDate);
         scanCheckSerialLogs.setWo(wo);
         scanCheckSerialLogs.setUserName(userName);
         this.scanCheckSerialLogsRepository.save(scanCheckSerialLogs);
