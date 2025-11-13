@@ -120,8 +120,8 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "\t\tc.PRODUCT_NAME as productName\n" +
             "FROM [ScadaMappingInfo].[dbo].[ScanSerialCheck] a\n" +
             "INNER JOIN MachinesModels b ON b.MachineID = a.machineID\n" +
-            "inner join planningwo c on c.wo_id = a.workOrder\n" +
-            "where a.workOrder= ?1  \n" +
+            "inner join planningwo c on c.wo_id = a.workOrder \n" +
+            " where a.workOrder= ?1   \n" +
             "GROUP BY \n" +
             "    b.MachineName,\n" +
             "    a.workOrder,\n" +
