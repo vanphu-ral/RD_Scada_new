@@ -1,6 +1,9 @@
 <div class="widget-content relative" appFullscreen #fs="appFullscreen">
   <i class="fa-solid fa-expand fullscreen-btn" (click)="fs.toggleFullscreen()"></i>
   <h5>Bảng thống kê công đoạn</h5>
+  <div class="d-flex justify-content-end">
+    <p-button icon="pi pi-file-excel" class="p-button-text" severity="success" label="Export Excel" (onClick)="exportExcel()"></p-button>
+  </div>
   <p-table class="dark-table" [value]="data" [paginator]="true" [rowsPerPageOptions]="[5,10,20,50]" [rows]="50" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
     <ng-template pTemplate="header">
       <tr>
