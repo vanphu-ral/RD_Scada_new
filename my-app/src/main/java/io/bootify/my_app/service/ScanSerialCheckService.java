@@ -84,7 +84,9 @@ public class ScanSerialCheckService {
         responses.setPlanningWOS(planningWOS);
         responses.setCheckSerialResults(list);
         System.out.println("check serial :::: " + list.size());
-        String lastPart = serialItem[serialItem.length - 1];
+        // Tách phần cuối cùng sau dấu "-"
+        String[] parts = serialItem.split("-");
+        String lastPart = parts[parts.length - 1];
         String result = "Hợp lệ";
         String wo = "";
         for (PlanningWO planningWO : planningWOS){
