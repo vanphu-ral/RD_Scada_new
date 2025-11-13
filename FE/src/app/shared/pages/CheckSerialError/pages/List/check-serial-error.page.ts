@@ -43,7 +43,7 @@ export class CheckSerialErrorPage {
             this.openDialog();
         }
         this.loading = true;
-        this.scanSerialCheckService.getErrorBySerial(this.filter.serial).subscribe({
+        this.scanSerialCheckService.getErrorBySerial(this.filter.serial, this.filter.key).subscribe({
             next: (res: any) => {
                 this.data = res.planningWOS
                 this.listSerial = res.checkSerialResults.sort((a: any, b: any) => {

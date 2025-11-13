@@ -23,7 +23,7 @@ public class ScanCheckSerialLogsResource {
         return this.scanCheckSerialLogsService.getAll();
     }
     @DeleteMapping
-    public void delete(ScanCheckSerialLogs scanCheckSerialLogs){
+    public void delete(@RequestBody ScanCheckSerialLogs scanCheckSerialLogs){
         this.scanCheckSerialLogsService.delete(scanCheckSerialLogs);
     }
 }

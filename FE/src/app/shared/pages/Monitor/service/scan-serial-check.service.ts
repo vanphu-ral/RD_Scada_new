@@ -9,8 +9,14 @@ export class ScanSerialCheck extends BaseApiService<any> {
     super(http, 'api/scanSerialChecks');
   }
 
-  getErrorBySerial(serialItem: string): Observable<any> {
-    let params = new HttpParams().set('serialItem', serialItem);
+  getErrorBySerial(serialItem: string, code: string): Observable<any> {
+    let params = new HttpParams();
+    if(serialItem) {
+      params = params.set('serialItem', serialItem);
+    };
+    if(code) {
+      params = params.set('code', code);
+    };
     return this.http.get<any>(`${this['fullBaseUrl']}/check`, { params, withCredentials: true });
   }
 }

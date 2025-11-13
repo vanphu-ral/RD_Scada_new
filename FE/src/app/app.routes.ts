@@ -24,6 +24,12 @@ export const routes: Routes = [
     canActivate: [AuthGuard],            
     loadChildren: () => import('./shared/pages/CheckSerialError/check-serial-error.routes')
   },
+  {
+    path: 'ScanSerialCheckLogs',
+    component: AppLayout,
+    canActivate: [AuthGuard],            
+    loadChildren: () => import('./shared/pages/ScanSerialCheckLogs/scan-serial-check-log.routes')
+  },
   { path: 'login', component: HomeComponent },
   { path: 'callback', component: CallbackComponent },
   { path: 'no-access', component: NoAccessComponent },
