@@ -4,12 +4,13 @@ import io.bootify.my_app.domain.ScanCheckSerialLogs;
 import io.bootify.my_app.domain.ScanSerialCheck;
 import io.bootify.my_app.service.ScanCheckSerialLogsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("api/scanCheckSerialLogs")
+@RequestMapping(value = "/api/scanCheckSerialLogs", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ScanCheckSerialLogsResource {
     @Autowired
     ScanCheckSerialLogsService scanCheckSerialLogsService;
