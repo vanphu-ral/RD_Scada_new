@@ -90,7 +90,11 @@ public class ScanSerialCheckService {
         String result = "Hợp lệ";
         String wo = "";
         for (PlanningWO planningWO : planningWOS){
+            if(wo == ""){
             wo += planningWO.getWoId();
+            }else{
+                wo += ";"+planningWO.getWoId();
+            }
         }
         if (!lastPart.equals(code)){
             result ="Lỗi";
