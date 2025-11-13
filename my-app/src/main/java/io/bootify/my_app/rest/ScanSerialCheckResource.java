@@ -10,6 +10,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -59,8 +61,10 @@ public class ScanSerialCheckResource {
     }
  @GetMapping("/check")
     public CheckSerialResponse checkSerials(
-         @RequestParam(required = false) String serialItem) {
+         @RequestParam(required = false) String serialItem,
+         @RequestParam(required = false) String code,
+         @AuthenticationPrincipal OidcUser oidcUser) {
      System.out.println("check serrial :::::"+serialItem);
-        return scanSerialCheckService.checkSerials(serialItem);
+        return scanSerialCheckService.checkSerials(serialItem,code,oidcUser.getName());
     }
 }

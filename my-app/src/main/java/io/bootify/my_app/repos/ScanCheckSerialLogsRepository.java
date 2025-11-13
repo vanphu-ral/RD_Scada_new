@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ScanCheckSerialLogsRepository extends JpaRepository<ScanCheckSerialLogs,Long> {
     @Modifying
-    @Query(value = "DELETE FROM ScanCheckSerialsLog where user_name = ?1 and wo like ?2 ;",nativeQuery = true)
+    @Query(value = "DELETE FROM ScanSerialCheckLogs where user_name = ?1 and wo like ?2 ;",nativeQuery = true)
     void deleteByTimeAndUserName(String userName,String date);
 }

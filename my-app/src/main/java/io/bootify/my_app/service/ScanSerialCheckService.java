@@ -1,22 +1,17 @@
 package io.bootify.my_app.service;
 
-import io.bootify.my_app.domain.MachinesModels;
-import io.bootify.my_app.domain.PlanningWO;
-import io.bootify.my_app.domain.ProductionOrderModels;
-import io.bootify.my_app.domain.ScanSerialCheck;
+import io.bootify.my_app.domain.*;
 import io.bootify.my_app.events.BeforeDeleteMachinesModels;
 import io.bootify.my_app.events.BeforeDeleteProductionOrderModels;
 import io.bootify.my_app.model.CheckSerialResponse;
 import io.bootify.my_app.model.CheckSerialResult;
 import io.bootify.my_app.model.ScanSerialCheckDTO;
-import io.bootify.my_app.repos.MachinesModelsRepository;
-import io.bootify.my_app.repos.PlanningwoRepository;
-import io.bootify.my_app.repos.ProductionOrderModelsRepository;
-import io.bootify.my_app.repos.ScanSerialCheckRepository;
+import io.bootify.my_app.repos.*;
 import io.bootify.my_app.util.NotFoundException;
 import io.bootify.my_app.util.ReferencedException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
@@ -30,14 +25,15 @@ public class ScanSerialCheckService {
     private final MachinesModelsRepository machinesModelsRepository;
     private final ProductionOrderModelsRepository productionOrderModelsRepository;
     private final PlanningwoRepository planningwoRepository;
-
+    private final ScanCheckSerialLogsRepository scanCheckSerialLogsRepository;
     public ScanSerialCheckService(final ScanSerialCheckRepository scanSerialCheckRepository,
                                   final MachinesModelsRepository machinesModelsRepository,
-                                  final ProductionOrderModelsRepository productionOrderModelsRepository, PlanningwoRepository planningwoRepository) {
+                                  final ProductionOrderModelsRepository productionOrderModelsRepository, PlanningwoRepository planningwoRepository, ScanCheckSerialLogsRepository scanCheckSerialLogsRepository) {
         this.scanSerialCheckRepository = scanSerialCheckRepository;
         this.machinesModelsRepository = machinesModelsRepository;
         this.productionOrderModelsRepository = productionOrderModelsRepository;
         this.planningwoRepository = planningwoRepository;
+        this.scanCheckSerialLogsRepository = scanCheckSerialLogsRepository;
     }
 
     public List<ScanSerialCheckDTO> findAll() {
@@ -71,7 +67,7 @@ public class ScanSerialCheckService {
                 .orElseThrow(NotFoundException::new);
         scanSerialCheckRepository.delete(scanSerialCheck);
     }
-    public CheckSerialResponse checkSerials(String serialItem){
+    public CheckSerialResponse checkSerials(String serialItem,String code,String userName){
         List<ScanSerialCheck> scanSerialChecks = scanSerialCheckRepository.findAllBySerialItem(serialItem);
         List<CheckSerialResult> list = new ArrayList<>();
         CheckSerialResponse responses = new CheckSerialResponse();
@@ -88,6 +84,25 @@ public class ScanSerialCheckService {
         responses.setPlanningWOS(planningWOS);
         responses.setCheckSerialResults(list);
         System.out.println("check serial :::: " + list.size());
+        String lastPart = serialItem[serialItem.length - 1];
+        String result = "Hợp lệ";
+        String wo = "";
+        for (PlanningWO planningWO : planningWOS){
+            wo += planningWO.getWoId();
+        }
+        if (!lastPart.equals(code)){
+            result ="Lỗi";
+        }
+        if(planningWOS.size() > 1){
+            result ="Lỗi";
+        }
+        ScanCheckSerialLogs scanCheckSerialLogs = new ScanCheckSerialLogs();
+        scanCheckSerialLogs.setSerialCheck(serialItem);
+        scanCheckSerialLogs.setResult(result);
+        scanCheckSerialLogs.setTimeCheck(new Date());
+        scanCheckSerialLogs.setWo(wo);
+        scanCheckSerialLogs.setUserName(userName);
+        this.scanCheckSerialLogsRepository.save(scanCheckSerialLogs);
         return responses;
     }
     public ScanSerialCheckDTO mapToDTO(final ScanSerialCheck scanSerialCheck,
