@@ -20,7 +20,7 @@ public class ScanCheckSerialLogs {
     @Column(name = "result")
     private String result;
     @Column(name = "time_check")
-    private LocalDateTime timeCheck;
+    private String timeCheck;
     @Column(name="wo")
     private String wo;
     @Column(name = "user_name")
