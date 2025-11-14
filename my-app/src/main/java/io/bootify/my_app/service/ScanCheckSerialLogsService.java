@@ -21,6 +21,8 @@ public class ScanCheckSerialLogsService {
     }
     @Transactional
     public void delete(ScanCheckSerialLogs scanCheckSerialLogs){
-        this.scanCheckSerialLogsRepository.deleteByTimeAndUserName(scanCheckSerialLogs.getUserName(),scanCheckSerialLogs.getTimeCheck());
+        this.scanCheckSerialLogsRepository.deleteByTimeAndUserName(scanCheckSerialLogs.getUserName(),
+                 scanCheckSerialLogs.getTimeCheck().substring(0, 10) + " 00:00:00.000000",
+                scanCheckSerialLogs.getTimeCheck().substring(0, 10) + " 23:59:59.999999");
     }
 }
