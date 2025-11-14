@@ -2,6 +2,8 @@ import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 export class Util {
   /**
@@ -435,5 +437,37 @@ export class Util {
       default:
         return '';
     }
+  }
+
+  static exportExcel(data: any[], headers: any, fileName: string) {
+    if (!data || data.length === 0) return;
+
+    // Chuyển data theo header
+    const exportData = data.map((row: any) => {
+      const mapped: any = {};
+      Object.keys(headers).forEach(headerName => {
+        const key = headers[headerName];
+        let value = row[key];
+
+        // Convert date nếu là Date string
+        if (value instanceof Date) {
+          value = value.toLocaleString('vi-VN');
+        }
+
+        mapped[headerName] = value || '';
+      });
+      return mapped;
+    });
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { 'Sheet1': worksheet },
+      SheetNames: ['Sheet1']
+    };
+
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob: Blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+
+    saveAs(blob, `${fileName}_${new Date().toLocaleDateString('vi-VN')}.xlsx`);
   }
 }

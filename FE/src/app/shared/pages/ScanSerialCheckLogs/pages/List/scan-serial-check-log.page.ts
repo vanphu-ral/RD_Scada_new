@@ -5,6 +5,10 @@ import { PlanningWoService } from '../../../Monitor/service/planning-wo.service'
 import { GrapSqlService } from '../../../../service/grap-sql.service';
 import _ from 'lodash';
 import { ScanSerialCheckLogsService } from '../../service/scan-serial-check-log.service';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ListSerialErrorDialog } from '../../dialogs/list-serial-error/list-serial-error.dialog';
+import { Util } from '../../../../core/utils/utils-function';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
     selector: 'app-scan-serial-check-log',
@@ -17,8 +21,10 @@ export class ScanSerialCheckLogsPage {
 
     data: any[] = [];
     loading: boolean = false;
+    ref?: DynamicDialogRef;
 
-    constructor(private cdr: ChangeDetectorRef, private ScanSerialCheckLogsService: ScanSerialCheckLogsService) { }
+    constructor(private cdr: ChangeDetectorRef, private ScanSerialCheckLogsService: ScanSerialCheckLogsService, private dialogService: DialogService, private comfirmService: ConfirmationService,
+        private messageService: MessageService) { }
 
     ngOnInit(): void {
         this.loadData();
@@ -26,13 +32,10 @@ export class ScanSerialCheckLogsPage {
 
     loadData() {
         this.ScanSerialCheckLogsService.getAll().subscribe((res: any) => {
-            this.data = res.data;
-            
             this.data = Object.values(
                 res.reduce((acc: any, item: any) => {
-                    const date = item.timeCheck.split(' ')[0]; // lấy yyyy-mm-dd
+                    const date = item.timeCheck.split(' ')[0];
                     const key = `${date}_${item.userName}`;
-
                     if (!acc[key]) {
                         acc[key] = {
                             date,
@@ -41,7 +44,6 @@ export class ScanSerialCheckLogsPage {
                             items: []
                         };
                     }
-
                     acc[key].items.push(item);
                     acc[key].totalSerial += 1;
                     return acc;
@@ -52,17 +54,30 @@ export class ScanSerialCheckLogsPage {
     }
 
     view(data: any) {
-
+        const ref = this.dialogService.open(ListSerialErrorDialog,
+            {
+                header: 'Danh sách chi tiết serial scan',
+                width: '70%',
+                modal: true,
+                data: data.items,
+            }
+        );
     }
 
-    delete(data: any) {
-        this.ScanSerialCheckLogsService.delete(data.items[0]).subscribe(() => {
-            this.loadData();
-        });
+    delete(data: any, event: any) {
+        Util.confirmAndExecute(event, `Bạn có muốn xóa dữ liệu của ${data.userName} ngày ${data.date}`, () => this.ScanSerialCheckLogsService.delete(data.items[0]), 'Xoa thanh cong', 'Co loi xay ra', this.comfirmService,
+            this.messageService, () => this.loadData());
     }
 
     exportExcel(data: any) {
-
+        const header = {
+            'Serial': 'serialCheck',
+            'Kết quả': 'result',
+            'Thời gian check': 'timeCheck',
+            'Lệnh SX xuất hiện': 'wo',
+            'Người check': 'userName'
+        }
+        Util.exportExcel(data.items, header, `Danh sách serial scan ngày ${data.items[0].timeCheck}`);
     }
 
 }
