@@ -44,4 +44,6 @@ public interface MachinesModelsRepository extends JpaRepository<MachinesModels, 
         "order by stageId ;" ,nativeQuery = true)
     MachinesDetailResponse getMachineNamesByWorkOrder(@Param("workOrder") String workOrder ,@Param("stageId") Integer stageId);
 
+@Query(value = "select count(*) from woMachineDetail where workOrder = :workOrder ;",nativeQuery = true)
+    Integer countByWorkOrderAndStatusIsZero(@Param("workOrder") String workOrder);
 }
