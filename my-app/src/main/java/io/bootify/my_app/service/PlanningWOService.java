@@ -254,7 +254,7 @@ public class PlanningWOService {
             detail.setProductionOrderModels(productionOrderModelsService.mapToDTO(pom, new ProductionOrderModelsDTO()));
             // Lấy danh sách máy móc thuộc nhóm máy và lineId = 58
             List<MachinesModels> machinesModelsList = machinesModelsRepository.findByMachineGroupIdAndFixedLineId(
-                    machineGroupDetail.getMachineTypesModels().getMachineGroupId());
+                    machineGroupDetail.getMachineTypesModels().getMachineGroupId(), lineProductionsModels.getLineId());
             for (MachinesModels mm : machinesModelsList) {
                 MachineDetail machineDetail = new MachineDetail();
                 // Lấy thông tin của máy

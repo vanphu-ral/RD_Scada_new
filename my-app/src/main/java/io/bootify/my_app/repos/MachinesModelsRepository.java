@@ -18,8 +18,8 @@ public interface MachinesModelsRepository extends JpaRepository<MachinesModels, 
 
     MachinesModels findFirstByLineLineId(Integer lineId);
 //    @Query(value = "SELECT * FROM MachinesModels m WHERE m.MachineGroupID = ?1 AND m.LineId = 58 ;",nativeQuery = true)
-    @Query(value = "SELECT * FROM MachinesModels m WHERE m.MachineGroupID = ?1 ;",nativeQuery = true)
-    List<MachinesModels> findByMachineGroupIdAndFixedLineId(Integer machineGroupId);
+    @Query(value = "SELECT * FROM MachinesModels m WHERE m.MachineGroupID = ?1 AND m.LineId = ?2 ;",nativeQuery = true)
+    List<MachinesModels> findByMachineGroupIdAndFixedLineId(Integer machineGroupId, Integer lineId);
     List<MachinesModels> findAllByMachineNameAndStageId(String machineName, Integer stageId);
     @Query(value = "" +
             "select m.machineName as machineName" +
