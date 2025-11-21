@@ -163,6 +163,7 @@ public class PlanningWOService {
     public ResponseEntity<SerialCheckResponse> checkSerialItemExist(SerialCheckRequest request) {
         Integer code = 0;
         List<String> workOrders = scanSerialCheckRepository.getDistinctWorkOrder(request.getWorkOrder());
+        System.out.println("check work order :: "+ workOrders.size());
         if (workOrders.size() > 1) {
             return ResponseEntity.ok(new SerialCheckResponse(1,
                     "Serial item đang nằm trên " + workOrders.size() + " work order. Vui lòng kiểm tra lại."));
