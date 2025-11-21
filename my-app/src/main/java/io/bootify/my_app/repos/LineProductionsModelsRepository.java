@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LineProductionsModelsRepository extends JpaRepository<LineProductionsModels, Integer> {
+    LineProductionsModels findAllByDescriptions(String description);
 }
