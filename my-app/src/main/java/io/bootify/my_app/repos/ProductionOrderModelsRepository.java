@@ -14,6 +14,8 @@ public interface ProductionOrderModelsRepository extends JpaRepository<Productio
 
     ProductionOrderModels findFirstByProductProductId(Integer productId);
     List<ProductionOrderModels> findAllByWorkOrder(String workOrder);
+    @Query(value = "select top 1 * from ProductionOrderModels where workOrder = ?1 order by ProductionOrderID desc", nativeQuery = true)
+    ProductionOrderModels getByWorkOrderAndMachineGroupID(String workOrder, Integer machineGroupId);
     @Query(value = "SELECT top 1 a.working FROM ProductionOrderModels a " +
             "inner join MachinesModels b on b.MachineGroupID = a.MachineGroupID WHERE a.workOrder = ?1 ORDER BY b.StageID DESC ", nativeQuery = true)
     String getStatusByWorkOrderWithMaxStage(String workOrder);

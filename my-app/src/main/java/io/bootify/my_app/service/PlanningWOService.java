@@ -242,23 +242,24 @@ public class PlanningWOService {
         // Lấy thông tin Production Order Models
         List<ProductionOrderModelDetail> productionOrderModelDetails = new ArrayList<>();
         List<ProductionOrderModels> productionOrderModelsList = productionOrderModelsRepository.findAllByWorkOrder(planningWO.getWoId());
-        for (ProductionOrderModels pom : productionOrderModelsList) {
+            List<MachinesModels> machinesModelsList = machinesModelsRepository.findByMachineGroupIdAndFixedLineId(lineProductionsModels.getLineId());
+        for (MachinesModels pom : machinesModelsList) {
             ProductionOrderModelDetail detail = new ProductionOrderModelDetail();
-            productionOrderModelsService.mapToDTO(pom, new ProductionOrderModelsDTO());
             // Lấy thông tin Machine Group Detail
             MachineGroupDetail machineGroupDetail = new MachineGroupDetail();
             List<MachineDetail> machineDetails = new ArrayList<>();
             machineGroupDetail.setMachineTypesModels(machineTypesModelsService.mapToDTO(
                     machineTypesModelsRepository.findById(pom.getMachineGroup().getMachineGroupId()).orElse(null),
                     new MachineTypesModelsDTO()));
-            detail.setProductionOrderModels(productionOrderModelsService.mapToDTO(pom, new ProductionOrderModelsDTO()));
+            detail.setProductionOrderModels(productionOrderModelsService.mapToDTO(productionOrderModelsRepository.getByWorkOrderAndMachineGroupID(
+                    planningWO.getWoId(), pom.getMachineGroup().getMachineGroupId()
+            ), new ProductionOrderModelsDTO()));
             // Lấy danh sách máy móc thuộc nhóm máy và lineId = 58
-            List<MachinesModels> machinesModelsList = machinesModelsRepository.findByMachineGroupIdAndFixedLineId(lineProductionsModels.getLineId());
             System.out.println("CHeck machine detail lenght :: "+ machinesModelsList.size() + "line ID ::" + lineProductionsModels.getLineId());
-            for (MachinesModels mm : machinesModelsList) {
+//            for (MachinesModels mm : machinesModelsList) {
                 MachineDetail machineDetail = new MachineDetail();
                 // Lấy thông tin của máy
-                machineDetail.setMachine(machinesModelsService.mapToDTO(mm, new MachinesModelsDTO()));
+                machineDetail.setMachine(machinesModelsService.mapToDTO(pom, new MachinesModelsDTO()));
                 //   Lấy thông tin quantity của máy
                 List<DetailQuantity> detailQuantities = detailQuantityRepository.findAllByWorkOrderAndMachineName(
                         planningWO.getWoId(), machineDetail.getMachine().getMachineName());
@@ -272,7 +273,7 @@ public class PlanningWOService {
                 machineDetail.setDetailQuantity(detailQuantityDTOS);
                 machineDetail.setErrors(errorModels);
                 machineDetails.add(machineDetail);
-            }
+//            }
             machineGroupDetail.setMachineDetails(machineDetails);
             detail.setMachineGroupDetails(machineGroupDetail);
             productionOrderModelDetails.add(detail);
