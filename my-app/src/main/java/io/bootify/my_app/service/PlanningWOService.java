@@ -59,6 +59,8 @@ public class PlanningWOService {
     KafkaProducer kafkaProducer;
     @Autowired
     WoErrorHistoryService woErrorHistoryService;
+    @Autowired
+    LineProductionsModelsRepository lineProductionsModelsRepository;
 
     public ProductOrderModelsResponse getWoInfo(Long id) {
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
@@ -164,67 +166,67 @@ public class PlanningWOService {
         if (workOrders.size() > 1) {
             return ResponseEntity.ok(new SerialCheckResponse(1,
                     "Serial item đang nằm trên " + workOrders.size() + " work order. Vui lòng kiểm tra lại."));
-        }else if (workOrders.size() ==1 && !workOrders.get(0).equals(request.getWorkOrder())) {
+        } else if (workOrders.size() == 1 && !workOrders.get(0).equals(request.getWorkOrder())) {
             return ResponseEntity.ok(new SerialCheckResponse(1,
-                    "Serial item đã tồn tại trên work order khác : "+workOrders.get(0)+" . Vui lòng kiểm tra lại."));
-        }else if(workOrders.size() ==1 && machinesModelsRepository.countByWorkOrderAndStatusIsZero(request.getWorkOrder()) ==0){
+                    "Serial item đã tồn tại trên work order khác : " + workOrders.get(0) + " . Vui lòng kiểm tra lại."));
+        } else if (workOrders.size() == 1 && machinesModelsRepository.countByWorkOrderAndStatusIsZero(request.getWorkOrder()) == 0) {
             return ResponseEntity.ok(new SerialCheckResponse(1,
-                " Chưa chọn công đoạn cho Work Order : "+request.getWorkOrder()+" . Vui lòng kiểm tra lại."));
-        }else {
-        String result = "Kết quả kiểm tra Serial : ";
-        if (request.getStage() > 0) {
+                    " Chưa chọn công đoạn cho Work Order : " + request.getWorkOrder() + " . Vui lòng kiểm tra lại."));
+        } else {
+            String result = "Kết quả kiểm tra Serial : ";
+            if (request.getStage() > 0) {
 //            List<MachinesModels> machinesModels = machinesModelsRepository.findAllByMachineNameAndStageId(request.getMachineName(), request.getStage()-1);
-            MachinesDetailResponse machinesDetailResponse = machinesModelsRepository.getMachineNamesByWorkOrder(request.getWorkOrder(), request.getStage());
-            if (machinesDetailResponse == null) {
+                MachinesDetailResponse machinesDetailResponse = machinesModelsRepository.getMachineNamesByWorkOrder(request.getWorkOrder(), request.getStage());
+                if (machinesDetailResponse == null) {
 //                result +=  "Không tìm thấy công đoạn ở stage trước: "+(request.getStage()-1);
 //                code = 1;
-                MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(request.getMachineName());
-                List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.getAllByWorkOrderAndMachineId(
-                        request.getWorkOrder(), machinesModels1.getMachineId());
-                boolean found = false;
-                for (ScanSerialCheck ssc : scanSerialCheck) {
-                    if (ssc.getSerialItem().equals(request.getSerialItems())) {
-                        found = true;
-                        break;
+                    MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(request.getMachineName());
+                    List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.getAllByWorkOrderAndMachineId(
+                            request.getWorkOrder(), machinesModels1.getMachineId());
+                    boolean found = false;
+                    for (ScanSerialCheck ssc : scanSerialCheck) {
+                        if (ssc.getSerialItem().equals(request.getSerialItems())) {
+                            found = true;
+                            break;
+                        }
                     }
+                    if (found) {
+                        code = 1;
+                        result += "\n Đã tồn tại Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage());
+                    }
+                } else {
+//                for (MachinesModels machinesModels1 : machinesModels){
+                    MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(machinesDetailResponse.getMachineName());
+                    List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.getAllByWorkOrderAndMachineId(
+                            request.getWorkOrder(), machinesModels1.getMachineId());
+                    boolean found = false;
+                    for (ScanSerialCheck ssc : scanSerialCheck) {
+                        if (ssc.getSerialItem().equals(request.getSerialItems())) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found == false) {
+                        code = 1;
+                        result += "\n Không tìm thấy Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesDetailResponse.getMachineName() + " stage: " + (machinesDetailResponse.getStageId());
+                    }
+//                }
                 }
-                if (found) {
-                    code = 1;
-                    result += "\n Đã tồn tại Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage());
+                if (code == 1) {
+                    ChatMessage message = new ChatMessage();
+                    message.setType(ChatMessage.MessageType.CHAT);
+                    message.setSender("Server");
+                    message.setContent(result);
+                    message.setWorkOrder(request.getWorkOrder());
+                    message.setId(woErrorHistoryService.insertError(message));
+                    kafkaProducer.sendMessage("scada-giam-sat", result);
+                    messagingTemplate.convertAndSend("/topic/public", message);
+                    System.out.println("Đã gửi: " + message.getWorkOrder());
                 }
             } else {
-//                for (MachinesModels machinesModels1 : machinesModels){
-                MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(machinesDetailResponse.getMachineName());
-                List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.getAllByWorkOrderAndMachineId(
-                        request.getWorkOrder(), machinesModels1.getMachineId());
-                boolean found = false;
-                for (ScanSerialCheck ssc : scanSerialCheck) {
-                    if (ssc.getSerialItem().equals(request.getSerialItems())) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (found == false) {
-                    code = 1;
-                    result += "\n Không tìm thấy Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesDetailResponse.getMachineName() + " stage: " + (machinesDetailResponse.getStageId());
-                }
-//                }
+                result += "\n Stage hiện tại là 0, không cần kiểm tra stage trước";
             }
-            if (code == 1) {
-                ChatMessage message = new ChatMessage();
-                message.setType(ChatMessage.MessageType.CHAT);
-                message.setSender("Server");
-                message.setContent(result);
-                message.setWorkOrder(request.getWorkOrder());
-                message.setId(woErrorHistoryService.insertError(message));
-                kafkaProducer.sendMessage("scada-giam-sat", result);
-                messagingTemplate.convertAndSend("/topic/public", message);
-                System.out.println("Đã gửi: " + message.getWorkOrder());
-            }
-        } else {
-            result += "\n Stage hiện tại là 0, không cần kiểm tra stage trước";
-        }
-        return ResponseEntity.ok(new SerialCheckResponse(code, result));
+            return ResponseEntity.ok(new SerialCheckResponse(code, result));
         }
 
     }
@@ -233,6 +235,8 @@ public class PlanningWOService {
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
         // Lấy thông tin Work Order
         PlanningWO planningWO = planningwoRepository.findById(id).orElse(null);
+        LineProductionsModels lineProductionsModels = new LineProductionsModels();
+        lineProductionsModels = lineProductionsModelsRepository.findAllByDescriptions(planningWO.getLineId());
 //        response.setPlanningWO(planningWO);
         // Lấy thông tin Production Order Models
         List<ProductionOrderModelDetail> productionOrderModelDetails = new ArrayList<>();
