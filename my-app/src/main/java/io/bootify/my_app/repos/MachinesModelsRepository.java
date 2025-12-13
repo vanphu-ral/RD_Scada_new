@@ -17,8 +17,9 @@ public interface MachinesModelsRepository extends JpaRepository<MachinesModels, 
     MachinesModels findFirstByMachineGroupMachineGroupId(Integer machineGroupId);
 
     MachinesModels findFirstByLineLineId(Integer lineId);
-    @Query(value = "SELECT * FROM MachinesModels m WHERE m.MachineGroupID = ?1 AND m.LineId = 58 ;",nativeQuery = true)
-    List<MachinesModels> findByMachineGroupIdAndFixedLineId(Integer machineGroupId);
+//    @Query(value = "SELECT * FROM MachinesModels m WHERE m.MachineGroupID = ?1 AND m.LineId = 58 ;",nativeQuery = true)
+    @Query(value = "SELECT * FROM MachinesModels m WHERE  m.LineId = ?1 ;",nativeQuery = true)
+    List<MachinesModels> findByMachineGroupIdAndFixedLineId( Integer lineId);
     List<MachinesModels> findAllByMachineNameAndStageId(String machineName, Integer stageId);
     @Query(value = "" +
             "select m.machineName as machineName" +
@@ -44,4 +45,6 @@ public interface MachinesModelsRepository extends JpaRepository<MachinesModels, 
         "order by stageId ;" ,nativeQuery = true)
     MachinesDetailResponse getMachineNamesByWorkOrder(@Param("workOrder") String workOrder ,@Param("stageId") Integer stageId);
 
+@Query(value = "select count(*) from woMachineDetail where workOrder = :workOrder ;",nativeQuery = true)
+    Integer countByWorkOrderAndStatusIsZero(@Param("workOrder") String workOrder);
 }

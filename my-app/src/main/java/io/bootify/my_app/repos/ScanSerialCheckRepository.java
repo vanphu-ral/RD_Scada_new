@@ -138,5 +138,6 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "        ELSE 0 END,\n" +
             "\t\tc.PRODUCT_NAME;\n",nativeQuery = true)
     public List<CheckSerialResult> checkSerials(String workOrder);
-
+ @Query(value = "select distinct workOrder from ScanSerialCheck where workOrder =?1 ;",nativeQuery = true)
+    List<String> getDistinctWorkOrder(String workOrder);
 }

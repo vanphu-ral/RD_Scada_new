@@ -47,12 +47,4 @@ public class LineProductionsModels {
     @OneToMany(mappedBy = "line")
     private Set<MachinesModels> lineMachinesModelses = new HashSet<>();
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false, columnDefinition = "datetime2")
-    private OffsetDateTime dateCreated;
-
-    @LastModifiedDate
-    @Column(nullable = false, columnDefinition = "datetime2")
-    private OffsetDateTime lastUpdated;
-
 }
