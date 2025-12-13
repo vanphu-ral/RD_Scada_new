@@ -3,6 +3,8 @@ package io.bootify.my_app.domain;
 import jakarta.persistence.*;
 
 import java.time.OffsetDateTime;
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -63,5 +65,7 @@ public class ScanSerialCheck {
     @JoinColumn(name = "productionOrderID")
     private ProductionOrderModels productionOrder;
 
+    @OneToMany(mappedBy = "scanSerialCheck", fetch = FetchType.LAZY)
+    private Set<DetailParamsFCTATE> detailParamsFctate;
 
 }
