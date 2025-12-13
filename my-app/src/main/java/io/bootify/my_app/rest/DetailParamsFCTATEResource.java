@@ -22,16 +22,24 @@ public class DetailParamsFCTATEResource {
         return service.getAll();
     }
 
-//    @GetMapping("/search")
-//    public List<DetailParamsFCTATE> search(@RequestParam String q) {
-//        return service.search(q);
-//    }
-
     @GetMapping("/search-details")
     public ResponseEntity<List<DetailParamsFCTATE>> searchDetailParamsBySerial(
             @RequestParam final String serial) {
 
         List<DetailParamsFCTATE> results = service.getDetailParamsBySerial(serial);
+
+        if (results.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/by-workorder")
+    public ResponseEntity<List<DetailParamsFCTATE>> getDetailParamsByWorkOrder(
+            @RequestParam final String workOrder) {
+
+        List<DetailParamsFCTATE> results = service.getDetailParamsByWorkOrder(workOrder);
 
         if (results.isEmpty()) {
             return ResponseEntity.notFound().build();

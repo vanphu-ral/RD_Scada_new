@@ -15,10 +15,18 @@ export class DetailParamsService extends BaseApiService<any> {
   }
 
   searchDetailParamsBySerial(serialValue: string): Observable<any[]> {
-    // Thiết lập tham số truy vấn (Query Parameter)
     const params = new HttpParams().set('serial', serialValue);
-
-    // Thực hiện cuộc gọi GET
     return this.http.get<any[]>(`${this['fullBaseUrl']}/search-details`, { params, withCredentials: true });
+  }
+
+  getDetailParamsByWorkOrder(workOrder: string): Observable<any[]> {
+    if (!workOrder) {
+      return new Observable(observer => {
+        observer.next([]);
+        observer.complete();
+      });
+    }
+    let params = new HttpParams().set('workOrder', workOrder);
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/by-workorder`, { params, withCredentials: true });
   }
 }

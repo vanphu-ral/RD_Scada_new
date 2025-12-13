@@ -28,27 +28,6 @@ public class DetailParamsFCTATEService {
         return repository.findAll();
     }
 
-//    public List<DetailParamsFCTATE> search(String keyword) {
-//
-//        // 1. Tìm theo serialItem
-//        List<ScanSerialChecksResponse> byItem = scanSerialCheckRepository.getBySerialItem(keyword);
-//
-//        // 2. Tìm theo serialBoard
-//        List<ScanSerialChecksResponse> byBoard = scanSerialCheckRepository.getBySerialBoard(keyword);
-//
-//        // 3. Gộp lại và lấy serialID
-//        List<Long> serialIDs = Stream.concat(byItem.stream(), byBoard.stream())
-//                .map(ScanSerialChecksResponse::getSerialId)   // Lấy serialID
-//                .filter(Objects::nonNull)
-//                .distinct()
-//                .toList();
-//
-//        // 4. Lấy dữ liệu DetailParamsFCTATE theo serialID
-//        return serialIDs.stream()
-//                .flatMap(id -> repository.findBySerialID(id).stream())
-//                .toList();
-//    }
-
 
     /**
      * Tìm kiếm DetailParamsFCTATE theo serialBoard HOẶC serialItem.
@@ -76,5 +55,15 @@ public class DetailParamsFCTATEService {
 
         // 3. Truy vấn DetailParamsFCTATE bằng danh sách Serial IDs
         return repository.findAllByScanSerialCheck_SerialIdIn(distinctSerialIds);
+    }
+
+
+    public List<DetailParamsFCTATE> getDetailParamsByWorkOrder(String workOrder) {
+        if (workOrder == null || workOrder.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Dùng phương thức JOIN mới, chỉ gọi 1 lần
+        return repository.findByWorkOrderEfficient(workOrder);
     }
 }

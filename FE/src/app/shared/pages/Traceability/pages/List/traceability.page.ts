@@ -69,6 +69,11 @@ export class TraceabilityPage {
                     this.filter.serial = '';
                     this.cdr.detectChanges();
                 })
+                this.detailParamsService.getDetailParamsByWorkOrder(_.get(res, 'planningWO.woId')).subscribe(res => {
+                    console.log(res);
+                    this.listDetailParamsBySerial = res
+                    this.cdr.detectChanges();
+                })
                 this.cdr.detectChanges();
             },
             error: () => {
@@ -76,12 +81,6 @@ export class TraceabilityPage {
                 this.cdr.detectChanges();
             }
         });
-        this.detailParamsService.searchDetailParamsBySerial(this.filter.serial).subscribe(res => {
-            console.log(res);
-            
-            this.listDetailParamsBySerial = res
-            this.cdr.detectChanges();
-        })
     }
 
     clearData() {
