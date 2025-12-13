@@ -34,6 +34,7 @@ public Page<PlanningWorkOrder> getLatestWorkOrders(
         String sapWoId,
         String lotNumber
 ) {
+    System.out.println("nhan thong bao lay thong tin");
     // Sắp xếp theo createTime giảm dần (mới nhất lên đầu)
     Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by(Sort.Direction.DESC, "createTime"));
 

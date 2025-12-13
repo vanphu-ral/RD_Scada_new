@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Controller;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Entity
 @Setter
 @Getter
@@ -23,4 +26,6 @@ public class WoErrorHistory {
     private String type;
     @Column(name = "status")
     private Integer status;
+    @Column(name = "time")
+    private LocalDateTime time;
 }

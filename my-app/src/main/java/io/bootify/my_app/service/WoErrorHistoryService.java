@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -21,6 +23,7 @@ public class WoErrorHistoryService {
         woErrorHistory.setWorkOrder(message.getWorkOrder());
         woErrorHistory.setType(message.getType().name());
         woErrorHistory.setStatus(0);
+        woErrorHistory.setTime(LocalDateTime.now());
         return Math.toIntExact(woErrorHistoryRepository.save(woErrorHistory).getId());
     }
     public List<WoErrorHistory> findByWorkOrder(String workOrder) {
