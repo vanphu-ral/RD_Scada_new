@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck, Long> {
     List<ScanSerialCheck> findAllBySerialItem(String serialItem);
+    List<ScanSerialCheck> findBySerialBoard(String serialBoard);
     ScanSerialCheck findFirstByMachineMachineId(Integer machineId);
 
     ScanSerialCheck findFirstByProductionOrderProductionOrderId(Integer productionOrderId);
