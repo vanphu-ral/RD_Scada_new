@@ -1,11 +1,11 @@
-<div class="bg-sosen">
+<div class="">
     <div class="base-table-header my-3 d-flex px-2">
-        <h2>Thông tin sản xuất</h2>
+        <h2 class="text-xl font-bold text-dark">Thông tin sản xuất</h2>
         <p-button *appHasRole="['RD_GiamSat_TruySuatSerial_Admin']" label="Thêm" class="p-button-sm"
-            severity="secondary" (onClick)="addWODialog()" />
+            severity="info" (onClick)="addWODialog()" />
     </div>
     <p-table [value]="data" [paginator]="true" [rows]="pageSize" [totalRecords]="totalRecords" [lazy]="true"
-        [loading]="loading" (onLazyLoad)="onPage($event)" [rowsPerPageOptions]="[5,10,20,50]" class="dark-table"
+        [loading]="loading" (onLazyLoad)="onPage($event)" [rowsPerPageOptions]="[5,10,20,50]" class=""
         currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục"
         [showCurrentPageReport]="true">
         <ng-template pTemplate="header">

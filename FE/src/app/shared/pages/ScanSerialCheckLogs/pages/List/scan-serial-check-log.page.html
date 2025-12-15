@@ -1,9 +1,9 @@
-<div class="bg-sosen">
+<div class="">
     <div class="base-table-header my-3 d-flex px-2">
-        <h2>Lịch sử kiểm tra serial</h2>
+        <h2 class="text-xl font-bold text-dark">Lịch sử kiểm tra serial</h2>
     </div>
     <div class="mt-5">
-        <p-table [loading]="loading" class="dark-table mb-5" [value]="data">
+        <p-table [loading]="loading" class="mb-5" [value]="data">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Ngày kiểm tra</th>
@@ -31,7 +31,7 @@
 
             <ng-template pTemplate="emptymessage">
                 <tr>
-                    <td colspan="4" class="text-center text-white py-3">Không tìm thấy dữ liệu</td>
+                    <td colspan="4" class="text-center py-3">Không tìm thấy dữ liệu</td>
                 </tr>
             </ng-template>
         </p-table>
