@@ -2,7 +2,6 @@ package io.bootify.my_app.rest;
 
 import io.bootify.my_app.model.CheckSerialResponse;
 import io.bootify.my_app.model.ScanSerialCheckDTO;
-import io.bootify.my_app.model.WorkOrderDetailsDTO;
 import io.bootify.my_app.service.ScanSerialCheckService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

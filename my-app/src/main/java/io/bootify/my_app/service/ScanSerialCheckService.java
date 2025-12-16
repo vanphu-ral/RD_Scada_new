@@ -6,7 +6,6 @@ import io.bootify.my_app.events.BeforeDeleteProductionOrderModels;
 import io.bootify.my_app.model.CheckSerialResponse;
 import io.bootify.my_app.model.CheckSerialResult;
 import io.bootify.my_app.model.ScanSerialCheckDTO;
-import io.bootify.my_app.model.WorkOrderDetailsDTO;
 import io.bootify.my_app.repos.*;
 import io.bootify.my_app.util.NotFoundException;
 import io.bootify.my_app.util.ReferencedException;

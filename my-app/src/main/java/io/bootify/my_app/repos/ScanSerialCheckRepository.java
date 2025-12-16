@@ -3,7 +3,6 @@ package io.bootify.my_app.repos;
 import io.bootify.my_app.domain.ScanSerialCheck;
 import io.bootify.my_app.model.CheckSerialResult;
 import io.bootify.my_app.model.ScanSerialChecksResponse;
-import io.bootify.my_app.model.WorkOrderDetailsDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
