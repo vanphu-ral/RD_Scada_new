@@ -47,6 +47,11 @@ export class TraceabilityPage {
     search() {
         if (!this.filter.serial || !this.filter.option) return;
         this.loading = true;
+        this.detailParamsService.getTestInfoBySerial(this.filter.serial).subscribe(res => {
+            console.log(res);
+            this.listDetailParamsBySerial = res
+            this.cdr.detectChanges();
+        })
         const apiCall =
             this.filter.option === 'serialBoard'
                 ? this.planningWoService.filterBySerialBoard(this.filter.serial)
@@ -69,11 +74,11 @@ export class TraceabilityPage {
                     this.filter.serial = '';
                     this.cdr.detectChanges();
                 })
-                this.detailParamsService.getDetailParamsByWorkOrder(_.get(res, 'planningWO.woId')).subscribe(res => {
-                    console.log(res);
-                    this.listDetailParamsBySerial = res
-                    this.cdr.detectChanges();
-                })
+                // this.detailParamsService.getDetailParamsByWorkOrder(_.get(res, 'planningWO.woId')).subscribe(res => {
+                //     console.log(res);
+                //     this.listDetailParamsBySerial = res
+                //     this.cdr.detectChanges();
+                // })
                 this.cdr.detectChanges();
             },
             error: () => {
@@ -161,12 +166,14 @@ export class TraceabilityPage {
             let flatItem: any = {
                 'paramsID': item.paramsID,
                 'programName': item.programName,
+                'StageName': item.machineName,
+                'serial': item.serial,
+                'results': item.results,
                 'fixLR': item.fixLR,
                 'fixID': item.fixID,
                 'startTestTime': item.startTestTime,
                 'endTestTime': item.endTestTime,
                 'timeElapsed': item.timeElapsed,
-                'results': item.results,
                 // Loại bỏ cột detailParams thô
             };
 

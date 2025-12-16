@@ -99,24 +99,30 @@
             </ng-template>
             <ng-template pTemplate="header">
                 <tr>
-                    <th>programName</th>
-                    <th>fixLR</th>
-                    <th>fixID</th>
-                    <th>startTestTime</th>
-                    <th>endTestTime</th>
-                    <th>timeElapsed</th>
-                    <th>results</th>
+                    <th>ProgramName</th>
+                    <th>StageName</th>
+                    <th>DetailSerial</th>
+                    <th>Results</th>
+                    <th>FixLR</th>
+                    <th>FixID</th>
+                    <th>StartTestTime</th>
+                    <th>EndTestTime</th>
+                    <th>TimeElapsed</th>
+                    <!-- <th>DetailParagram</th> -->
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-item>
                 <tr>
                     <td>{{ item.programName }}</td>
+                    <td>{{ item.machineName }}</td>
+                    <td>{{ item.serial }}</td>
+                    <td>{{ item.results }}</td>
                     <td>{{ item.fixLR }}</td>
                     <td>{{ item.fixID }}</td>
                     <td>{{ item.startTestTime }}</td>
                     <td>{{ item.endTestTime }}</td>
                     <td>{{ item.timeElapsed }}</td>
-                    <td>{{ item.results }}</td>
+                    <!-- <td>{{ item.detailParams }}</td> -->
                 </tr>
             </ng-template>
 

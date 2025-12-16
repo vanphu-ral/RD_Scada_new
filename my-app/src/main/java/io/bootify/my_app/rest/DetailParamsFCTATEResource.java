@@ -1,6 +1,7 @@
 package io.bootify.my_app.rest;
 
 import io.bootify.my_app.domain.DetailParamsFCTATE;
+import io.bootify.my_app.model.DetailParamsFCTATEDTO;
 import io.bootify.my_app.service.DetailParamsFCTATEService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,17 @@ public class DetailParamsFCTATEResource {
             @RequestParam final String workOrder) {
 
         List<DetailParamsFCTATE> results = service.getDetailParamsByWorkOrder(workOrder);
+
+        if (results.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/{serial}")
+    public ResponseEntity<List<DetailParamsFCTATEDTO>> getTestInfo(@PathVariable String serial) {
+        List<DetailParamsFCTATEDTO> results = service.getTestInfoBySerial(serial);
 
         if (results.isEmpty()) {
             return ResponseEntity.notFound().build();

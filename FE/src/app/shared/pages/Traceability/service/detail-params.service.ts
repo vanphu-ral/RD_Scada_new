@@ -29,4 +29,9 @@ export class DetailParamsService extends BaseApiService<any> {
     let params = new HttpParams().set('workOrder', workOrder);
     return this.http.get<any[]>(`${this['fullBaseUrl']}/by-workorder`, { params, withCredentials: true });
   }
+
+  getTestInfoBySerial(serial: string): Observable<any[]> {
+    const url = `${this['fullBaseUrl']}/${serial}`;
+    return this.http.get<any[]>(url, { withCredentials: true });
+  }
 }

@@ -2,6 +2,7 @@ package io.bootify.my_app.service;
 
 import io.bootify.my_app.domain.DetailParamsFCTATE;
 import io.bootify.my_app.domain.ScanSerialCheck;
+import io.bootify.my_app.model.DetailParamsFCTATEDTO;
 import io.bootify.my_app.model.ScanSerialChecksResponse;
 import io.bootify.my_app.repos.DetailParamsFCTATERepository;
 import io.bootify.my_app.repos.ScanSerialCheckRepository;
@@ -65,5 +66,10 @@ public class DetailParamsFCTATEService {
 
         // Dùng phương thức JOIN mới, chỉ gọi 1 lần
         return repository.findByWorkOrderEfficient(workOrder);
+    }
+
+
+    public List<DetailParamsFCTATEDTO> getTestInfoBySerial(String serial) {
+        return repository.findDetailsBySerial(serial);
     }
 }
