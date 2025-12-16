@@ -19,4 +19,9 @@ export class ScanSerialCheck extends BaseApiService<any> {
     };
     return this.http.get<any>(`${this['fullBaseUrl']}/check`, { params, withCredentials: true });
   }
+
+  getWorkOrderDetails(workOrder: string): Observable<any[]> {
+    const url = `${this['fullBaseUrl']}/by-workorder/${workOrder}`;
+    return this.http.get<any[]>(url, { withCredentials: true });
+  }
 }

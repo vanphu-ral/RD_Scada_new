@@ -6,14 +6,15 @@ import io.bootify.my_app.events.BeforeDeleteProductionOrderModels;
 import io.bootify.my_app.model.CheckSerialResponse;
 import io.bootify.my_app.model.CheckSerialResult;
 import io.bootify.my_app.model.ScanSerialCheckDTO;
+import io.bootify.my_app.model.WorkOrderDetailsDTO;
 import io.bootify.my_app.repos.*;
 import io.bootify.my_app.util.NotFoundException;
 import io.bootify.my_app.util.ReferencedException;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.OffsetDateTime;
+import java.util.*;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -117,6 +118,12 @@ public class ScanSerialCheckService {
         this.scanCheckSerialLogsRepository.save(scanCheckSerialLogs);
         return responses;
     }
+
+    public List<Object[]> getScanSerialCheckByWorkOrderNative(String workOrder) {
+        List<Object[]> results = scanSerialCheckRepository.findByWorkOrderNative(workOrder);
+        return results;
+    }
+
     public ScanSerialCheckDTO mapToDTO(final ScanSerialCheck scanSerialCheck,
             final ScanSerialCheckDTO scanSerialCheckDTO) {
         scanSerialCheckDTO.setSerialId(scanSerialCheck.getSerialId());

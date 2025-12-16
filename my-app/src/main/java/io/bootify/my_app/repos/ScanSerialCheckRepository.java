@@ -3,8 +3,10 @@ package io.bootify.my_app.repos;
 import io.bootify.my_app.domain.ScanSerialCheck;
 import io.bootify.my_app.model.CheckSerialResult;
 import io.bootify.my_app.model.ScanSerialChecksResponse;
+import io.bootify.my_app.model.WorkOrderDetailsDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,10 +14,13 @@ import java.util.List;
 @Repository
 public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck, Long> {
     List<ScanSerialCheck> findAllBySerialItem(String serialItem);
+
     List<ScanSerialCheck> findBySerialBoard(String serialBoard);
+
     ScanSerialCheck findFirstByMachineMachineId(Integer machineId);
 
     ScanSerialCheck findFirstByProductionOrderProductionOrderId(Integer productionOrderId);
+
     List<ScanSerialCheck> findAllByWorkOrder(String workOrder);
 
     @Query(value = "SELECT\n" +
@@ -34,7 +39,7 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "\t  ,b.StageID as stageNum\n" +
             "  FROM ScanSerialCheck a\n" +
             "  left join MachinesModels b on b.MachineID =a.machineID\n" +
-            "  where a.workOrder =?1 ;",nativeQuery = true)
+            "  where a.workOrder =?1 ;", nativeQuery = true)
     List<ScanSerialChecksResponse> getAllByWorkOrder(String workOrder);
 
     // Lấy 1 bản ghi theo serialItem
@@ -54,7 +59,7 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "\t  ,b.StageID as stageNum\n" +
             "  FROM ScanSerialCheck a\n" +
             "  left join MachinesModels b on b.MachineID =a.machineID\n" +
-            "  where a.serialItem =?1  ;",nativeQuery = true)
+            "  where a.serialItem =?1  ;", nativeQuery = true)
     List<ScanSerialChecksResponse> getBySerialItem(String serialItem);
 
 
@@ -75,8 +80,9 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "\t  ,b.StageID as stageNum\n" +
             "  FROM ScanSerialCheck a\n" +
             "  left join MachinesModels b on b.MachineID =a.machineID\n" +
-            "  where a.serialBoard =?1  ;",nativeQuery = true)
+            "  where a.serialBoard =?1  ;", nativeQuery = true)
     List<ScanSerialChecksResponse> getBySerialBoard(String serialBoard);
+
     @Query(value = "SELECT\n" +
             "\t\ta.serialID as serialId\n" +
             "      ,a.productionOrderID as productionOrderId\n" +
@@ -93,9 +99,10 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "\t  ,b.StageID as stageNum\n" +
             "  FROM ScanSerialCheck a\n" +
             "  left join MachinesModels b on b.MachineID =a.machineID\n" +
-            "  where a.workOrder =?1 and a.machineID =?2 ;",nativeQuery = true)
+            "  where a.workOrder =?1 and a.machineID =?2 ;", nativeQuery = true)
     List<ScanSerialCheck> getAllByWorkOrderAndMachineId(String workOrder, Integer machineId);
-    @Query(value="SELECT \n" +
+
+    @Query(value = "SELECT \n" +
             "    b.MachineName,\n" +
             "    a.workOrder,\n" +
             "    (SELECT COUNT(serialID) \n" +
@@ -136,8 +143,28 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "        WHEN CHARINDEX('-', a.serialItem) >0 \n" +
             "        THEN 1\n" +
             "        ELSE 0 END,\n" +
-            "\t\tc.PRODUCT_NAME;\n",nativeQuery = true)
+            "\t\tc.PRODUCT_NAME;\n", nativeQuery = true)
     public List<CheckSerialResult> checkSerials(String workOrder);
- @Query(value = "select distinct workOrder from ScanSerialCheck where workOrder =?1 ;",nativeQuery = true)
+
+    @Query(value = "select distinct workOrder from ScanSerialCheck where workOrder =?1 ;", nativeQuery = true)
     List<String> getDistinctWorkOrder(String workOrder);
+
+    @Query(value = """
+            SELECT c.MachineName,
+                          s.serialBoard,
+                                   s.serialItem,
+                                   s.serialStatus,
+                                   s.serialCheck,
+                                   s.timeScan,
+                                   s.timeCheck,
+                               	s.resultCheck,
+                               	d.* 
+                FROM [ScadaMappingInfo].[dbo].[ScanSerialCheck] AS s
+                INNER JOIN [ScadaMappingInfo].[dbo].[DetailParamsFCTATE] AS d
+                    ON s.serialID = d.serialID
+                INNER JOIN [ScadaMappingInfo].[dbo].[MachinesModels] AS c
+                	ON s.machineID = c.MachineID
+            WHERE s.workOrder = :workOrder
+            """, nativeQuery = true)
+    List<Object[]> findByWorkOrderNative(@Param("workOrder") String workOrder);
 }

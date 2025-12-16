@@ -2,6 +2,7 @@ package io.bootify.my_app.rest;
 
 import io.bootify.my_app.model.CheckSerialResponse;
 import io.bootify.my_app.model.ScanSerialCheckDTO;
+import io.bootify.my_app.model.WorkOrderDetailsDTO;
 import io.bootify.my_app.service.ScanSerialCheckService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -66,5 +67,16 @@ public class ScanSerialCheckResource {
          @AuthenticationPrincipal OidcUser oidcUser) {
      System.out.println("check serrial :::::"+serialItem);
         return scanSerialCheckService.checkSerials(serialItem,code,oidcUser.getName());
+    }
+
+    @GetMapping("/by-workorder/{workOrder}")
+    public ResponseEntity<List<Object[]>> getWorkOrderInfo(@PathVariable String workOrder) {
+        List<Object[]> results = scanSerialCheckService.getScanSerialCheckByWorkOrderNative(workOrder);
+
+        if (results.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(results);
     }
 }

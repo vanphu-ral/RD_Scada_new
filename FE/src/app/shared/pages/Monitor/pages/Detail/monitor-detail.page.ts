@@ -22,6 +22,7 @@ import _ from 'lodash';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { WarningDialog } from '../../dialogs/warning-dialog/warning.dialog';
 import { WOHistoryErrorService } from '../../service/wo-history-error.service';
+import { ScanSerialCheck } from '../../service/scan-serial-check.service';
 @Component({
     selector: 'app-monitor-detail',
     standalone: true,
@@ -66,7 +67,7 @@ export class MonitorDetailPage extends BasePageComponent<any> implements OnInit 
     toltalErrorQuantity: number = 0;
 
     constructor(protected override apiService: PlanningWoService, private socketService: SocketService,
-        private dialogService: DialogService, private woHistoryError: WOHistoryErrorService) {
+        private dialogService: DialogService, private woHistoryError: WOHistoryErrorService, private scanSerialCheckService: ScanSerialCheck) {
         super(apiService);
     }
 

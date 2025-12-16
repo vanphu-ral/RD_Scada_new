@@ -31,7 +31,7 @@
       [title]="'Lỗi chi tiết'"></base-chart-component>
   </div>
   <div class="widget widget-progress">
-    <app-conventional-table-component [data]="scanSerialChecks"></app-conventional-table-component>
+    <app-conventional-table-component [data]="scanSerialChecks" [model]="model"></app-conventional-table-component>
   </div>
   <div class="widget widget-frequency d-flex justify-content-center align-items-center">
     <base-chart-component [data]="chartDataErorrByStage" [options]="chartOptionErorrByStage"
