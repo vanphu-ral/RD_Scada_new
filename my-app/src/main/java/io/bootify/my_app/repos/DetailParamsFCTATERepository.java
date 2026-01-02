@@ -41,4 +41,8 @@ public interface DetailParamsFCTATERepository extends JpaRepository<DetailParams
             "LEFT JOIN s.machine m " + // Dùng LEFT JOIN để tránh lỗi nếu machine null
             "WHERE s.serialBoard = :serial OR s.serialItem = :serial")
     List<DetailParamsFCTATEDTO> findDetailsBySerial(@Param("serial") String serial);
+    @Query(value="select top 1 result FROM [ScadaMappingInfo].[dbo].[DetailParamsFCTATE] " +
+            "where serialID = ?1 order by paramsID desc ;",nativeQuery = true)
+    public String getResultBySerialId(Long serialId);
+
 }

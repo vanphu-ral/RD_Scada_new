@@ -1,6 +1,7 @@
 package io.bootify.my_app.repos;
 
 import io.bootify.my_app.domain.ScanSerialCheck;
+import io.bootify.my_app.model.ATECheckRespone;
 import io.bootify.my_app.model.CheckSerialResult;
 import io.bootify.my_app.model.ScanSerialChecksResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -60,6 +61,14 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "  left join MachinesModels b on b.MachineID =a.machineID\n" +
             "  where a.serialItem =?1  ;", nativeQuery = true)
     List<ScanSerialChecksResponse> getBySerialItem(String serialItem);
+
+    @Query(value = "SELECT top 1\n" +
+            "      a.serialStatus as serialStatus,\n" +
+            "\t  b.MachineName as machineName\n" +
+            "  FROM [ScadaMappingInfo].[dbo].[ScanSerialCheck] a\n" +
+            "  inner join  [ScadaMappingInfo].[dbo].MachinesModels b on b.MachineID = a.machineID\n" +
+            "  where a.serialItem=?1 and a.machineID between 326 and 329 order by a.serialID desc; ", nativeQuery = true)
+    ATECheckRespone getSerialStatusBySerialItem(String serialItem);
 
 
     // Lấy 1 bản ghi theo serialBoard

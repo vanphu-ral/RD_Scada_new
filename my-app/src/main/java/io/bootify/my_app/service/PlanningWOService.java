@@ -17,10 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serial;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +59,8 @@ public class PlanningWOService {
     WoErrorHistoryService woErrorHistoryService;
     @Autowired
     LineProductionsModelsRepository lineProductionsModelsRepository;
+    @Autowired
+    DetailParamsFCTATERepository detailParamsFCTATERepository;
 
     public ProductOrderModelsResponse getWoInfo(Long id) {
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();
@@ -161,10 +161,17 @@ public class PlanningWOService {
     }
 
     public ResponseEntity<SerialCheckResponse> checkSerialItemExist(SerialCheckRequest request) {
+        // stageId Pass first
+        Integer lineId = machinesModelsRepository.getLineIDByMachineName(request.getMachineName());
+        Integer stageId = Objects.equals(lineId, 58) ? 2 : 1;
         Integer code = 0;
         List<String> workOrders = scanSerialCheckRepository.getDistinctWorkOrder(request.getWorkOrder());
         System.out.println("check work order :: "+ workOrders.size());
-        if (workOrders.size() > 1) {
+        ATECheckRespone ateResult = scanSerialCheckRepository.getSerialStatusBySerialItem(request.getSerialItems());
+        if(ateResult != null && ateResult.getSerialStatus().equals("NG")){
+            return ResponseEntity.ok(new SerialCheckResponse(1,
+                    "Serial item  " + request.getSerialItems() + " FAIL o cong doan." + ateResult.getMachineName()));
+        }else if (workOrders.size() > 1) {
             return ResponseEntity.ok(new SerialCheckResponse(1,
                     "Serial item đang nằm trên " + workOrders.size() + " work order. Vui lòng kiểm tra lại."));
         } else if (workOrders.size() == 1 && !workOrders.get(0).equals(request.getWorkOrder())) {
@@ -175,10 +182,11 @@ public class PlanningWOService {
                     " Chưa chọn công đoạn cho Work Order : " + request.getWorkOrder() + " . Vui lòng kiểm tra lại."));
         } else {
             String result = "Kết quả kiểm tra Serial : ";
-            if (request.getStage() > 0) {
+            if (request.getStage() > stageId) { // bo qua cong doan FCT ( stageID = 1 va serial stageId = 0)
 //            List<MachinesModels> machinesModels = machinesModelsRepository.findAllByMachineNameAndStageId(request.getMachineName(), request.getStage()-1);
-                MachinesDetailResponse machinesDetailResponse = machinesModelsRepository.getMachineNamesByWorkOrder(request.getWorkOrder(), request.getStage());
-                if (machinesDetailResponse == null) {
+//                MachinesDetailResponse machinesDetailResponse = machinesModelsRepository.getMachineNamesByWorkOrder(request.getWorkOrder(), request.getStage());
+                List<MachinesDetailResponse> machinesDetailResponses = machinesModelsRepository.getAllMachineNamesByWorkOrder(request.getWorkOrder(), request.getStage());
+                if (machinesDetailResponses == null) {
 //                result +=  "Không tìm thấy công đoạn ở stage trước: "+(request.getStage()-1);
 //                code = 1;
                     MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(request.getMachineName());
@@ -196,22 +204,42 @@ public class PlanningWOService {
                         result += "\n Đã tồn tại Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage());
                     }
                 } else {
-//                for (MachinesModels machinesModels1 : machinesModels){
-                    MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(machinesDetailResponse.getMachineName());
+                    boolean found = false;
+                    String machineName = "";
+                    // Tìm bản ghi có stageId gần nhất (nhỏ hơn request)
+                    Optional<MachinesDetailResponse> nearestResponse = machinesDetailResponses.stream()
+                            .filter(m -> m.getStageId() < request.getStage()) // Lấy các stage nhỏ hơn 5
+                            .max(Comparator.comparingInt(MachinesDetailResponse::getStageId)); // Lấy thằng lớn nhất trong số đó
+
+                    if (nearestResponse.isPresent()) {
+                        MachinesDetailResponse target = nearestResponse.get();
+                        int targetStageId = target.getStageId();
+
+                        // Tiếp tục xử lý với targetStageId này (ví dụ: lấy list máy của stage này)
+                        List<MachinesDetailResponse> filteredList = machinesDetailResponses.stream()
+                                .filter(m -> m.getStageId() == targetStageId)
+                                .collect(Collectors.toList());
+
+                        // Thực hiện logic tìm ScanSerialCheck ở đây...
+                for (MachinesDetailResponse machinesModels2 : filteredList){
+                    MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(machinesModels2.getMachineName());
                     List<ScanSerialCheck> scanSerialCheck = scanSerialCheckRepository.getAllByWorkOrderAndMachineId(
                             request.getWorkOrder(), machinesModels1.getMachineId());
-                    boolean found = false;
                     for (ScanSerialCheck ssc : scanSerialCheck) {
                         if (ssc.getSerialItem().equals(request.getSerialItems())) {
+                            machineName = "";
                             found = true;
                             break;
+                        }else {
+                            machineName += machinesModels1.getMachineName();
                         }
+                    }
+                }
                     }
                     if (found == false) {
                         code = 1;
-                        result += "\n Không tìm thấy Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesDetailResponse.getMachineName() + " stage: " + (machinesDetailResponse.getStageId());
+                        result += "\n Không tìm thấy Serial Item: " + request.getSerialItems() +" o cong doan : "+ machineName;
                     }
-//                }
                 }
                 if (code == 1) {
                     ChatMessage message = new ChatMessage();

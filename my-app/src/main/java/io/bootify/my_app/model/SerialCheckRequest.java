@@ -13,4 +13,6 @@ public class SerialCheckRequest {
     private String workOrder;
     private Integer stage;
     private String serialItems;
+
+
 }
