@@ -1,5 +1,6 @@
 package io.bootify.my_app.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.OffsetDateTime;
@@ -58,14 +59,17 @@ public class ScanSerialCheck {
     private String workOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore // Thêm vào tất cả các Set/Collection gây lỗi
     @JoinColumn(name = "machineID")
     private MachinesModels machine;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore // Thêm vào tất cả các Set/Collection gây lỗi
     @JoinColumn(name = "productionOrderID")
     private ProductionOrderModels productionOrder;
 
     @OneToMany(mappedBy = "scanSerialCheck", fetch = FetchType.LAZY)
+    @JsonIgnore // Thêm vào tất cả các Set/Collection gây lỗi
     private Set<DetailParamsFCTATE> detailParamsFctate;
 
 }

@@ -13,10 +13,12 @@ import io.bootify.my_app.util.ReferencedException;
 import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.context.event.EventListener;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -180,4 +182,46 @@ public class ScanSerialCheckService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public Page<ScanSerialCheckDTO> getLatestScanData(String workOrder, String machineName, int pageNumber, int pageSize) {
+        // 1. Lấy thông tin máy để có MachineID
+        MachinesModels machine = machinesModelsRepository.findByMachineName(machineName);
+        if (machine == null) {
+            throw new NotFoundException("Máy không tồn tại: " + machineName);
+        }
+
+        // 2. Tính toán offset thủ công cho Native Query
+        int offset = pageNumber * pageSize;
+
+        // 3. Gọi Repository lấy dữ liệu thô (Entity)
+        List<ScanSerialCheck> content = scanSerialCheckRepository.findLatestDataManual(
+                workOrder,
+                machine.getMachineId(),
+                offset,
+                pageSize
+        );
+
+        // 4. Lấy tổng số bản ghi
+        long total = scanSerialCheckRepository.countScanData(workOrder, machine.getMachineId());
+
+        // 5. Mapping thủ công sang DTO (Giải quyết lỗi No Session)
+        List<ScanSerialCheckDTO> dtos = content.stream().map(entity -> {
+            ScanSerialCheckDTO dto = new ScanSerialCheckDTO();
+            dto.setSerialId(entity.getSerialId());
+            dto.setSerialBoard(entity.getSerialBoard());
+            dto.setSerialItem(entity.getSerialItem());
+            dto.setSerialStatus(entity.getSerialStatus());
+            dto.setResultCheck(entity.getResultCheck());
+            dto.setWorkOrder(entity.getWorkOrder());
+            dto.setTimeScan(entity.getTimeScan());
+
+            // Nếu DTO của bạn có trường machineId
+            dto.setMachine(entity.getMachine() != null ? entity.getMachine().getMachineId() : null);
+
+            return dto;
+        }).collect(Collectors.toList());
+
+        // 6. Trả về đối tượng Page
+        return new PageImpl<>(dtos, PageRequest.of(pageNumber, pageSize), total);
+    }
 }

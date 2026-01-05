@@ -4,6 +4,8 @@ import io.bootify.my_app.domain.ScanSerialCheck;
 import io.bootify.my_app.model.ATECheckRespone;
 import io.bootify.my_app.model.CheckSerialResult;
 import io.bootify.my_app.model.ScanSerialChecksResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -175,4 +177,21 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             WHERE s.workOrder = :workOrder
             """, nativeQuery = true)
     List<Object[]> findByWorkOrderNative(@Param("workOrder") String workOrder);
+
+    // Truy vấn tìm kiếm theo workOrder và machineName, sắp xếp giảm dần theo ID hoặc timeScan
+    @Query(value = "SELECT * FROM ScanSerialCheck " +
+            "WHERE workOrder = :workOrder AND machineID = :machineID " +
+            "ORDER BY serialID DESC " + // Bắt buộc phải có
+            "OFFSET :offset ROWS FETCH NEXT :size ROWS ONLY",
+            nativeQuery = true)
+    List<ScanSerialCheck> findLatestDataManual(
+            @Param("workOrder") String workOrder,
+            @Param("machineID") Integer machineID,
+            @Param("offset") int offset,
+            @Param("size") int size);
+    // Cần thêm một câu query để đếm tổng số bản ghi (phục vụ phân trang ở Frontend)
+    @Query(value = "SELECT COUNT(*) FROM ScanSerialCheck " +
+            "WHERE workOrder = :workOrder AND machineID = :machineID",
+            nativeQuery = true)
+    long countScanData(@Param("workOrder") String workOrder, @Param("machineID") Integer machineID);
 }

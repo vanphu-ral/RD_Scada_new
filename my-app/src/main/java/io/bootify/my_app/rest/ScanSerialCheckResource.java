@@ -1,5 +1,6 @@
 package io.bootify.my_app.rest;
 
+import io.bootify.my_app.domain.ScanSerialCheck;
 import io.bootify.my_app.model.CheckSerialResponse;
 import io.bootify.my_app.model.ScanSerialCheckDTO;
 import io.bootify.my_app.service.ScanSerialCheckService;
@@ -7,6 +8,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -77,5 +80,14 @@ public class ScanSerialCheckResource {
         }
 
         return ResponseEntity.ok(results);
+    }
+    @GetMapping("/latest")
+    public ResponseEntity<Page<ScanSerialCheckDTO>> getLatest(
+            @RequestParam String workOrder,
+            @RequestParam String machineName,
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize) {
+
+        return ResponseEntity.ok(scanSerialCheckService.getLatestScanData(workOrder, machineName, pageNumber, pageSize));
     }
 }

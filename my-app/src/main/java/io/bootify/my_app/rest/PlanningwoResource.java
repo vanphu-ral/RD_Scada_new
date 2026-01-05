@@ -100,6 +100,14 @@ public class PlanningwoResource {
         ResponseEntity<SerialCheckResponse> result = planningWOService.checkSerialItemExist(request);
         return result;
     }
+    @PostMapping("/check/mode")
+    public ResponseEntity<SerialCheckResponse> checkSerialItemExistBymode(
+            @RequestBody SerialCheckRequest request) {
+
+        ResponseEntity<SerialCheckResponse> result = planningWOService.checkSerialItemExistBymode(request);
+        return result;
+    }
+
     @PostMapping("/insert")
     public ResponseEntity<InsertMachineResultDTO> insertMachine(
             @RequestBody List<MachinesModelsDTO> request) {
