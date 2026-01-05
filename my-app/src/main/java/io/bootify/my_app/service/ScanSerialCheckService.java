@@ -214,7 +214,7 @@ public class ScanSerialCheckService {
             dto.setResultCheck(entity.getResultCheck());
             dto.setWorkOrder(entity.getWorkOrder());
             dto.setTimeScan(entity.getTimeScan());
-
+            dto.setTimeCheck(entity.getTimeCheck());
             // Nếu DTO của bạn có trường machineId
             dto.setMachine(entity.getMachine() != null ? entity.getMachine().getMachineId() : null);
 
