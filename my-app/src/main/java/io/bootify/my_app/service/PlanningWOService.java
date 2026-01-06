@@ -282,7 +282,7 @@ public class PlanningWOService {
         if(ateResult != null && ateResult.getSerialStatus().equals("NG")){
             return ResponseEntity.ok(new SerialCheckResponse(1,
                     "Serial item  " + request.getSerialItems() + " FAIL o cong doan." + ateResult.getMachineName()));
-        }else if(stageResult.equals("NG")){
+        }else if(stageResult !=null && stageResult.equals("NG")){
             return ResponseEntity.ok(new SerialCheckResponse(1,
                     "Serial item  " + request.getSerialItems() + " FAIL o cong doan." + stageResult.getMachineName()));
         } else if (workOrders.size() > 1) {
