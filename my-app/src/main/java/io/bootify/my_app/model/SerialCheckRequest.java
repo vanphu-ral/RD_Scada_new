@@ -14,9 +14,10 @@ public class SerialCheckRequest {
     private String workOrder;
     private Integer stage;
     private String serialItems;
-    private String detail;
-    private LocalDateTime timeScan;
+    private String detailParams;
+    private String timeScan;
     private Integer type; // 1:board , 0:item
     private String serialBoard;
-    private String serialStatus;
+    private String status;
+    private Integer machineType; //(0: LR, BG , 1: ATE, FCT , 2: Luyện )
 }

@@ -3,6 +3,7 @@ package io.bootify.my_app.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
@@ -21,17 +22,18 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class ScanSerialCheck {
 
     @Id
-    @Column(nullable = false, updatable = false,name="serialID")
-    @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
-            allocationSize = 1,
-            initialValue = 10000
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
-    )
+    @Column(nullable = false,name="serialID")
+//    @SequenceGenerator(
+//            name = "primary_sequence",
+//            sequenceName = "primary_sequence",
+//            allocationSize = 1,
+//            initialValue = 10000
+//    )
+//    @GeneratedValue(
+//            strategy = GenerationType.SEQUENCE,
+//            generator = "primary_sequence"
+//    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long serialId;
 
     @Column(length = 50,name="serialBoard")
@@ -47,10 +49,10 @@ public class ScanSerialCheck {
     private String serialCheck;
 
     @Column(columnDefinition = "datetime2", name="timeScan")
-    private OffsetDateTime timeScan;
+    private LocalDateTime timeScan;
 
     @Column(columnDefinition = "datetime2", name="timeCheck")
-    private OffsetDateTime timeCheck;
+    private LocalDateTime timeCheck;
 
     @Column(length = 30,name="resultCheck")
     private String resultCheck;

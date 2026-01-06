@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serial;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -261,6 +263,14 @@ public class PlanningWOService {
 
     }
     public ResponseEntity<SerialCheckResponse> checkSerialItemExistBymode(SerialCheckRequest request) {
+        if (request.getMachineType() == 1 || request.getMachineType() == 2) {
+            this.saveDetailParamsFCTATE(request);
+            this.saveScanSerialCheck(
+                    machinesModelsRepository.findByMachineName(request.getMachineName()),
+                    request,
+                    1
+            );
+        }
         // stageId Pass first
         Integer lineId = machinesModelsRepository.getLineIDByMachineName(request.getMachineName());
         Integer stageId = Objects.equals(lineId, 58) ? 2 : 1;
@@ -268,10 +278,14 @@ public class PlanningWOService {
         List<String> workOrders = scanSerialCheckRepository.getDistinctWorkOrder(request.getWorkOrder());
         System.out.println("check work order :: "+ workOrders.size());
         ATECheckRespone ateResult = scanSerialCheckRepository.getSerialStatusBySerialItem(request.getSerialItems());
+        ATECheckRespone stageResult = scanSerialCheckRepository.getSerialStatusBySerialItemAndMachineName(request.getSerialItems(),request.getMachineName());
         if(ateResult != null && ateResult.getSerialStatus().equals("NG")){
             return ResponseEntity.ok(new SerialCheckResponse(1,
                     "Serial item  " + request.getSerialItems() + " FAIL o cong doan." + ateResult.getMachineName()));
-        }else if (workOrders.size() > 1) {
+        }else if(stageResult.equals("NG")){
+            return ResponseEntity.ok(new SerialCheckResponse(1,
+                    "Serial item  " + request.getSerialItems() + " FAIL o cong doan." + stageResult.getMachineName()));
+        } else if (workOrders.size() > 1) {
             return ResponseEntity.ok(new SerialCheckResponse(1,
                     "Serial item đang nằm trên " + workOrders.size() + " work order. Vui lòng kiểm tra lại."));
         } else if (workOrders.size() == 1 && !workOrders.get(0).equals(request.getWorkOrder())) {
@@ -283,6 +297,7 @@ public class PlanningWOService {
         } else {
             String result = "Kết quả kiểm tra Serial : ";
             if (request.getStage() > stageId) { // bo qua cong doan FCT ( stageID = 1 va serial stageId = 0)
+                System.out.println("check stage :: "+ request.getStage() + " > " + stageId);
 //            List<MachinesModels> machinesModels = machinesModelsRepository.findAllByMachineNameAndStageId(request.getMachineName(), request.getStage()-1);
 //                MachinesDetailResponse machinesDetailResponse = machinesModelsRepository.getMachineNamesByWorkOrder(request.getWorkOrder(), request.getStage());
                 List<MachinesDetailResponse> machinesDetailResponses = machinesModelsRepository.getAllMachineNamesByWorkOrder(request.getWorkOrder(), request.getStage());
@@ -303,15 +318,7 @@ public class PlanningWOService {
                         code = 1;
                         result += "\n Đã tồn tại Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage());
                     }else{
-                    ScanSerialCheck scanSerialCheck1 = new ScanSerialCheck();
-                    scanSerialCheck1.setSerialCheck(null);
-                    scanSerialCheck1.setMachine(machinesModels1);
-                    scanSerialCheck1.setSerialBoard(request.getSerialBoard());
-                    scanSerialCheck1.setSerialItem(request.getSerialItems());
-                    scanSerialCheck1.setSerialStatus(request.getSerialStatus());
-                    scanSerialCheck1.setTimeScan(request.getTimeScan().atOffset(OffsetDateTime.now().getOffset()));
-                    scanSerialCheck1.setWorkOrder(request.getWorkOrder());
-                    scanSerialCheckRepository.save(scanSerialCheck1);
+                   this.saveScanSerialCheck(machinesModels1,request,0);
                     }
                 } else {
                     boolean found = false;
@@ -351,35 +358,105 @@ public class PlanningWOService {
                         result += "\n Không tìm thấy Serial Item: " + request.getSerialItems() +" o cong doan : "+ machineName;
                     } else{
                         MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(request.getMachineName());
-                            ScanSerialCheck scanSerialCheck1 = new ScanSerialCheck();
-                            scanSerialCheck1.setSerialCheck(null);
-                            scanSerialCheck1.setMachine(machinesModels1);
-                            scanSerialCheck1.setSerialBoard(request.getSerialBoard());
-                            scanSerialCheck1.setSerialItem(request.getSerialItems());
-                            scanSerialCheck1.setSerialStatus(request.getSerialStatus());
-                            scanSerialCheck1.setTimeScan(request.getTimeScan().atOffset(OffsetDateTime.now().getOffset()));
-                            scanSerialCheck1.setWorkOrder(request.getWorkOrder());
-                            scanSerialCheckRepository.save(scanSerialCheck1);
-
+                        ScanSerialCheck existingRecord = scanSerialCheckRepository.getByWorkOrderAndMachineIdAndSerialItem(
+                                request.getWorkOrder(),
+                                machinesModels1.getMachineId(),
+                                request.getSerialItems()
+                        );
+                        if (existingRecord != null) {
+                            code = 1;
+                            result += "\n Đã tồn tại Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage());
+                        } else {
+                            this.saveScanSerialCheck(machinesModels1,request,0);
+                        }
                     }
                 }
                 if (code == 1) {
-                    ChatMessage message = new ChatMessage();
-                    message.setType(ChatMessage.MessageType.CHAT);
-                    message.setSender("Server");
-                    message.setContent(result);
-                    message.setWorkOrder(request.getWorkOrder());
-                    message.setId(woErrorHistoryService.insertError(message));
-                    kafkaProducer.sendMessage("scada-giam-sat", result);
-                    messagingTemplate.convertAndSend("/topic/public", message);
-                    System.out.println("Đã gửi: " + message.getWorkOrder());
+                    this.sendMessage(result,request.getWorkOrder());
                 }
             } else {
-                result += "\n Stage hiện tại là 0, không cần kiểm tra stage trước";
+                result += "\n Stage hiện tại là " +(stageId - 1)+" , không cần kiểm tra stage trước";
+                MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(request.getMachineName());
+                Integer countExist = scanSerialCheckRepository.countByWorkOrderAndMachineIdAndSerialItem(
+                        request.getWorkOrder(), machinesModels1.getMachineId(), request.getSerialItems());
+                if (countExist >= 1) { // da ton tai
+                    code = 1;
+                    result = "Đã tồn tại Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage());
+                    this.sendMessage(result,request.getWorkOrder());
+                    // update
+                    Integer saveCode = request.getMachineType() == 1? 1: request.getMachineType()== 2?1:2;
+                    this.saveScanSerialCheck(machinesModelsRepository.findByMachineName(request.getMachineName()),request,saveCode);
+                }else { // chua ton tai
+                    this.saveScanSerialCheck(machinesModels1, request,0);
+                }
             }
             return ResponseEntity.ok(new SerialCheckResponse(code, result));
         }
 
+    }
+    public void sendMessage(String result,String workOrder){
+        ChatMessage message = new ChatMessage();
+        message.setType(ChatMessage.MessageType.CHAT);
+        message.setSender("Server");
+        message.setContent(result);
+        message.setWorkOrder(workOrder);
+        message.setId(woErrorHistoryService.insertError(message));
+        kafkaProducer.sendMessage("scada-giam-sat", result);
+        messagingTemplate.convertAndSend("/topic/public", message);
+        System.out.println("Đã gửi: " + message.getWorkOrder());
+    }
+    public void saveScanSerialCheck(MachinesModels machinesModels, SerialCheckRequest request, Integer code) {
+        // 1. Khai báo Formatter
+        // [.SSS] cho phép có hoặc không có 3 chữ số mili giây
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSS]");
+
+// Bây giờ cả 2 chuỗi dưới đây đều parse thành công:
+// "2025-12-30 01:07:08.000" -> OK
+// "2025-12-30 01:07:08"     -> OK
+        LocalDateTime parsedTime = LocalDateTime.parse(request.getTimeScan(), formatter);
+
+        if (code == 0) {
+            // Logic INSERT: Luôn tạo mới
+            ScanSerialCheck scanSerialCheck1 = new ScanSerialCheck();
+            scanSerialCheck1.setMachine(machinesModels);
+            scanSerialCheck1.setSerialBoard(request.getSerialBoard());
+            scanSerialCheck1.setSerialItem(request.getSerialItems());
+            scanSerialCheck1.setSerialStatus(request.getStatus());
+            scanSerialCheck1.setTimeScan(parsedTime);
+            scanSerialCheck1.setWorkOrder(request.getWorkOrder());
+
+            scanSerialCheckRepository.save(scanSerialCheck1);
+        } else if(code == 1){
+            // Logic UPDATE: Phải tìm đúng bản ghi cũ dựa trên bộ 3 điều kiện
+            ScanSerialCheck existingRecord = scanSerialCheckRepository.getByWorkOrderAndMachineIdAndSerialItem(
+                    request.getWorkOrder(),
+                    machinesModels.getMachineId(),
+                    request.getSerialItems()
+            );
+
+            if (existingRecord != null) {
+                // Cập nhật trên bản ghi đã tìm thấy (đã có ID)
+                existingRecord.setSerialStatus(request.getStatus());
+
+                // Cập nhật thời gian check (nếu bạn dùng chung cột timeScan thì sửa lại cho đúng)
+                existingRecord.setTimeCheck(parsedTime);
+                String resultCheck = request.getStatus().equals("OK") ? "PASS" : "FAIL";
+                existingRecord.setResultCheck(resultCheck);
+                // Vì existingRecord có ID từ DB, save() sẽ thực hiện lệnh UPDATE thay vì INSERT
+                scanSerialCheckRepository.save(existingRecord);
+            }
+        }
+    }
+    public void saveDetailParamsFCTATE(SerialCheckRequest request){
+        // Lưu DetailParamsFCTATE
+        DetailParamsFCTATE detailParamsFCTATE = new DetailParamsFCTATE();
+        detailParamsFCTATE.setDetailParams(request.getDetailParams());
+        detailParamsFCTATE.setSerialItem(request.getSerialItems());
+        detailParamsFCTATE.setSerialBoard(request.getSerialBoard());
+        detailParamsFCTATE.setWorkOrder(request.getWorkOrder());
+        detailParamsFCTATE.setResults(request.getStatus());
+        detailParamsFCTATE.setMachineType(request.getMachineType());
+        detailParamsFCTATERepository.save(detailParamsFCTATE);
     }
     public ProductOrderModelsResponse getWoDetaillnfo(Long id) {
         ProductOrderModelsResponse response = new ProductOrderModelsResponse();

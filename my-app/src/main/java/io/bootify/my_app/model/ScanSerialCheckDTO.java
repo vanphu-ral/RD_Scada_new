@@ -1,6 +1,8 @@
 package io.bootify.my_app.model;
 
 import jakarta.validation.constraints.Size;
+
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,9 +26,9 @@ public class ScanSerialCheckDTO {
     @Size(max = 20)
     private String serialCheck;
 
-    private OffsetDateTime timeScan;
+    private LocalDateTime timeScan;
 
-    private OffsetDateTime timeCheck;
+    private LocalDateTime timeCheck;
 
     @Size(max = 30)
     private String resultCheck;

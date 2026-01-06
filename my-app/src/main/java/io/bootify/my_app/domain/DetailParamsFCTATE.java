@@ -15,6 +15,7 @@ public class DetailParamsFCTATE {
 
     @Id
     @Column(name = "paramsID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paramsID;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,6 +31,8 @@ public class DetailParamsFCTATE {
 
     @Column(name = "fixID")
     private Integer fixID;
+    @Column(name = "machineType")
+    private Integer machineType;
 
     @Column(name = "startTestTime")
     private LocalDateTime startTestTime;
@@ -45,4 +48,10 @@ public class DetailParamsFCTATE {
 
     @Column(name = "detailParams")
     private String detailParams;
+    @Column(name = "serialItem")
+    private String serialItem;
+    @Column(name = "serialBoard")
+    private String serialBoard;
+    @Column(name = "workOrder")
+    private String workOrder;
 }

@@ -71,8 +71,13 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "  inner join  [ScadaMappingInfo].[dbo].MachinesModels b on b.MachineID = a.machineID\n" +
             "  where a.serialItem=?1 and a.machineID between 326 and 329 order by a.serialID desc; ", nativeQuery = true)
     ATECheckRespone getSerialStatusBySerialItem(String serialItem);
-
-
+    @Query(value = "SELECT top 1\n" +
+            "      a.serialStatus as serialStatus,\n" +
+            "\t  b.MachineName as machineName\n" +
+            "  FROM [ScadaMappingInfo].[dbo].[ScanSerialCheck] a\n" +
+            "  inner join  [ScadaMappingInfo].[dbo].MachinesModels b on b.MachineID = a.machineID\n" +
+            "  where a.serialItem=?1 and b.machineName =?2 order by a.serialID desc; ", nativeQuery = true)
+    ATECheckRespone getSerialStatusBySerialItemAndMachineName(String serialItem, String machineName);
     // Lấy 1 bản ghi theo serialBoard
     @Query(value = "SELECT\n" +
             "\t\ta.serialID as serialId\n" +
@@ -111,7 +116,10 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "  left join MachinesModels b on b.MachineID =a.machineID\n" +
             "  where a.workOrder =?1 and a.machineID =?2 ;", nativeQuery = true)
     List<ScanSerialCheck> getAllByWorkOrderAndMachineId(String workOrder, Integer machineId);
-
+    @Query(value = "SELECT COUNT(*) FROM ScanSerialCheck WHERE workOrder = ?1 AND machineID = ?2 and serialItem =?3 ;", nativeQuery = true)
+    Integer countByWorkOrderAndMachineIdAndSerialItem(String workOrder, Integer machineId, String serialItem);
+    @Query(value = "SELECT * FROM ScanSerialCheck WHERE workOrder = ?1 AND machineID = ?2 and serialItem =?3 ;", nativeQuery = true)
+    ScanSerialCheck getByWorkOrderAndMachineIdAndSerialItem(String workOrder, Integer machineId, String serialItem);
     @Query(value = "SELECT \n" +
             "    b.MachineName,\n" +
             "    a.workOrder,\n" +
