@@ -456,6 +456,7 @@ public class PlanningWOService {
         detailParamsFCTATE.setWorkOrder(request.getWorkOrder());
         detailParamsFCTATE.setResults(request.getStatus());
         detailParamsFCTATE.setMachineType(request.getMachineType());
+        detailParamsFCTATE.setMachineName(request.getMachineName());
         detailParamsFCTATERepository.save(detailParamsFCTATE);
     }
     public ProductOrderModelsResponse getWoDetaillnfo(Long id) {

@@ -27,6 +27,12 @@ export class ConventionalTableComponent implements OnInit {
             timeScan: x.timeScan ? new Date(x.timeScan) : null,
             timeCheck: x.timeCheck ? new Date(x.timeCheck) : null
         }));
+        this.scanSerialCheckService.getWorkOrderDetails(this.model.planningWO.woId)
+            .subscribe(res => {
+                console.log(res);
+                
+            });
+                
     }
 
     exportExcel(): void {

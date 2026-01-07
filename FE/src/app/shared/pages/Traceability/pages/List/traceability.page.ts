@@ -33,7 +33,8 @@ export class TraceabilityPage {
     listpqcBomQuantity: any[] = [];
     listpqcBomErrorDetail: any[] = [];
 
-    listDetailParamsBySerial: any[] = [];
+    listDataFCTATE: any[] = [];
+    listDataLUYEN: any[] = [];
 
     loading: boolean = false;
 
@@ -48,7 +49,11 @@ export class TraceabilityPage {
         if (!this.filter.serial || !this.filter.option) return;
         this.loading = true;
         this.detailParamsService.getTestInfoBySerial(this.filter.serial).subscribe(res => {
-            this.listDetailParamsBySerial = [res[0]]
+            _.map(res, item => item.detailParams = JSON.parse(item.detailParams))
+            console.log(res);
+            
+            this.listDataFCTATE = _.filter(res, item => item.machineType == 1)
+            this.listDataLUYEN = _.filter(res, item => item.machineType == 2)
             this.cdr.detectChanges();
         })
         const apiCall =
@@ -132,74 +137,109 @@ export class TraceabilityPage {
     }
 
     exportExcel() {
-        const rawData = this.listDetailParamsBySerial;
-
+        const rawData = this.listDataFCTATE;
         if (!rawData || rawData.length === 0) {
             alert('Không có dữ liệu để xuất!');
             return;
         }
-
-        // 1. TẠO DANH SÁCH TẤT CẢ CÁC KEY DUY NHẤT TỪ detailParams
         const detailKeysSet = new Set<string>();
-
-        // Duyệt qua tất cả các bản ghi để thu thập các key
         rawData.forEach(item => {
             try {
-                const detailObj = JSON.parse(item.detailParams);
+                const detailObj = item.detailParams.data
                 Object.keys(detailObj).forEach(key => detailKeysSet.add(key));
             } catch (e) {
                 console.error('Lỗi phân tích JSON cho paramsID:', item.paramsID, e);
             }
         });
-
         const detailKeys = Array.from(detailKeysSet);
-
-        // 2. TẠO CẤU TRÚC DỮ LIỆU PHẲNG (FLAT DATA)
         const processedData = rawData.map(item => {
-            // Bắt đầu với các trường tiêu chuẩn
             let flatItem: any = {
                 'paramsID': item.paramsID,
-                'programName': item.programName,
-                'StageName': item.machineName,
-                'serial': item.serial,
-                'results': item.results,
-                'fixLR': item.fixLR,
-                'fixID': item.fixID,
-                'startTestTime': item.startTestTime,
-                'endTestTime': item.endTestTime,
-                'timeElapsed': item.timeElapsed,
-                // Loại bỏ cột detailParams thô
             };
-
-            let detailObj: any = {};
+            let detailObj: any = item.detailParams.data;
             try {
                 detailObj = JSON.parse(item.detailParams);
             } catch (e) {
                 console.error('Không thể phân tích JSON khi tạo dữ liệu phẳng:', item.paramsID);
             }
-
-            // Thêm các key từ detailParams vào đối tượng phẳng
             detailKeys.forEach(key => {
-                // Dùng giá trị nếu có, nếu không thì để null hoặc chuỗi rỗng
                 flatItem[key] = detailObj[key] !== undefined ? detailObj[key] : null;
             });
-
             return flatItem;
         });
-
-        // 3. XUẤT FILE EXCEL (Sử dụng SheetJS)
         const workSheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(processedData);
         const workBook: XLSX.WorkBook = { Sheets: { 'Data': workSheet }, SheetNames: ['Data'] };
-
         const excelBuffer: any = XLSX.write(workBook, { bookType: 'xlsx', type: 'array' });
         this.saveAsExcelFile(excelBuffer, 'DetailParams_Export');
+    }
+
+    exportExcelLuyen() {
+        // 1. Kiểm tra dữ liệu đầu vào
+        if (!this.listDataLUYEN || this.listDataLUYEN.length === 0) {
+            return;
+        }
+
+        const exportData: any[] = [];
+
+        // 2. Duyệt qua từng Serial (Dòng cha)
+        this.listDataLUYEN.forEach(item => {
+            const childData = item.detailParams?.data;
+
+            if (Array.isArray(childData) && childData.length > 0) {
+                // Duyệt qua 10 dòng con bên trong mỗi Serial
+                childData.forEach((child: any) => {
+                    exportData.push({
+                        'Serial': item.serial,
+                        'Work Order': item.workOrder,
+                        'Test Result': item.results,
+                        'Date': child.date,
+                        'Temperature (Temp)': child.Temp,
+                        'Voltage In (U_in)': child.U_in,
+                        'Voltage Out (U_out)': child.U_out,
+                        'Current Out (I_out)': child.I_out,
+                        'Machine Type': 'Luyện'
+                    });
+                });
+            } else {
+                // Nếu chẳng may có dòng cha mà không có data con, vẫn xuất dòng cha
+                exportData.push({
+                    'Serial': item.serial,
+                    'Work Order': item.workOrder,
+                    'Test Result': item.results,
+                    'Machine Type': 'Luyện'
+                });
+            }
+        });
+
+        // 3. Khởi tạo Worksheet từ mảng đã làm phẳng
+        const workSheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+
+        // 4. Cấu hình độ rộng các cột (tùy chọn để file Excel đẹp hơn)
+        const wscols = [
+            { wch: 30 }, // Serial
+            { wch: 15 }, // Work Order
+            { wch: 10 }, // Test Result
+            { wch: 25 }, // Date
+            { wch: 15 }, // Temp
+            { wch: 15 }, // U_in
+            { wch: 15 }, // U_out
+            { wch: 15 }  // I_out
+        ];
+        workSheet['!cols'] = wscols;
+
+        // 5. Tạo Workbook và tải file
+        const workBook: XLSX.WorkBook = {
+            Sheets: { 'Dữ liệu máy Luyện': workSheet },
+            SheetNames: ['Dữ liệu máy Luyện']
+        };
+
+        const excelBuffer: any = XLSX.write(workBook, { bookType: 'xlsx', type: 'array' });
+        this.saveAsExcelFile(excelBuffer, 'Export_May_Luyen');
     }
 
     private saveAsExcelFile(buffer: any, fileName: string): void {
         const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
         const fileURL = URL.createObjectURL(data);
-
-        // Tự động tải file
         const link = document.createElement('a');
         link.href = fileURL;
         link.setAttribute('download', fileName + '_' + new Date().getTime() + '.xlsx');

@@ -90,7 +90,7 @@
     </div>
 
     <div class="mt-5" *ngIf="true">
-        <p-table [loading]="loading" class="" [value]="listDetailParamsBySerial || []" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
+        <p-table [loading]="loading" class="" [value]="listDataFCTATE || []" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
             <ng-template pTemplate="caption">
                 <div class="d-flex align-items-center justify-content-between">
                     <span class="text-xl font-bold">Thông số điện</span>
@@ -112,15 +112,64 @@
             </ng-template>
             <ng-template pTemplate="body" let-item>
                 <tr>
-                    <td>{{ item.programName }}</td>
+                    <td>{{ item.detailParams.data.ProgramName }}</td>
                     <td>{{ item.machineName }}</td>
-                    <td>{{ item.serial }}</td>
-                    <td>{{ item.results }}</td>
-                    <td>{{ item.fixLR }}</td>
-                    <td>{{ item.fixID }}</td>
-                    <td>{{ item.startTestTime }}</td>
-                    <td>{{ item.endTestTime }}</td>
-                    <td>{{ item.timeElapsed }}</td>
+                    <td>{{ item.detailParams.data.SerialSelected }}</td>
+                    <td>{{ item.detailParams.data.SerialStatus }}</td>
+                    <td>{{ item.detailParams.data.FixLR }}</td>
+                    <td>{{ item.detailParams.data.FixId }}</td>
+                    <td>{{ item.detailParams.data.TimeStart }}</td>
+                    <td>{{ item.detailParams.data.EndTest }}</td>
+                    <td>{{ item.detailParams.data.TimeElapsed }}</td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="11" class="text-center py-3">Không tìm thấy dữ liệu</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="mt-5" *ngIf="true">
+        <p-table [loading]="loading" class="" [value]="listDataLUYEN || []" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20,50]" currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} mục" [showCurrentPageReport]="true">
+            <ng-template pTemplate="caption">
+                <div class="d-flex align-items-center justify-content-between">
+                    <span class="text-xl font-bold">Thông số luyện</span>
+                    <p-button icon="pi pi-file-excel" class="p-button-text" severity="success" label="Export Excel" (onClick)="exportExcelLuyen()"></p-button>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Thời gian luyện</th>
+                    <th>Nhiệt độ</th>
+                    <th>Điện áp vào</th>
+                    <th>Điện áp ra</th>
+                    <th>Dòng ra</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr class="bg-gray-100 font-bold">
+                    <td colspan="5" style="background-color: #f8f9fa;">
+                        <div class="flex align-items-center">
+                            <span class="text-primary">SERIAL: {{item.serial}}</span>
+                            <span class="ml-4 text-600">| WO: {{item.workOrder}}</span>
+                            <span class="ml-4">| Kết quả:
+                                <span [class]="item.results === 'OK' ? 'text-green-500' : 'text-red-500'">
+                                    {{item.results}}
+                                </span>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            
+                <tr *ngFor="let child of item.detailParams?.data">
+                    <td>{{child.date}}</td>
+                    <td>{{child.Temp}}</td>
+                    <td>{{child.U_in}}</td>
+                    <td>{{child.U_out}}</td>
+                    <td>{{child.I_out}}</td>
                 </tr>
             </ng-template>
 
