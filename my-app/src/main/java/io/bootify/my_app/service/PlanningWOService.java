@@ -168,7 +168,7 @@ public class PlanningWOService {
         Integer lineId = machinesModelsRepository.getLineIDByMachineName(request.getMachineName());
         Integer stageId = Objects.equals(lineId, 58) ? 2 : 1;
         Integer code = 0;
-        List<String> workOrders = scanSerialCheckRepository.getDistinctWorkOrder(request.getWorkOrder());
+        List<String> workOrders = scanSerialCheckRepository.getDistinctWorkOrder(request.getSerialItems());
         System.out.println("check work order :: "+ workOrders.size());
         ATECheckRespone ateResult = scanSerialCheckRepository.getSerialStatusBySerialItem(request.getSerialItems());
         if(ateResult != null && ateResult.getSerialStatus().equals("NG")){
@@ -275,7 +275,10 @@ public class PlanningWOService {
         Integer lineId = machinesModelsRepository.getLineIDByMachineName(request.getMachineName());
         Integer stageId = Objects.equals(lineId, 58) ? 2 : 1;
         Integer code = 0;
-        List<String> workOrders = scanSerialCheckRepository.getDistinctWorkOrder(request.getWorkOrder());
+        List<String> workOrders = scanSerialCheckRepository.getDistinctWorkOrder(request.getSerialItems());
+        String otherWOs = workOrders.stream()
+                .filter(wo -> !wo.equals(request.getWorkOrder()))
+                .collect(Collectors.joining(", "));
         System.out.println("check work order :: "+ workOrders.size());
         ATECheckRespone ateResult = scanSerialCheckRepository.getSerialStatusBySerialItem(request.getSerialItems());
         ATECheckRespone stageResult = scanSerialCheckRepository.getSerialStatusBySerialItemAndMachineName(request.getSerialItems(),request.getMachineName());
@@ -288,9 +291,9 @@ public class PlanningWOService {
         } else if (workOrders.size() > 1) {
             return ResponseEntity.ok(new SerialCheckResponse(1,
                     "Serial item đang nằm trên " + workOrders.size() + " work order. Vui lòng kiểm tra lại."));
-        } else if (workOrders.size() == 1 && !workOrders.get(0).equals(request.getWorkOrder())) {
+        } else if (!otherWOs.isEmpty()) {
             return ResponseEntity.ok(new SerialCheckResponse(1,
-                    "Serial item đã tồn tại trên work order khác : " + workOrders.get(0) + " . Vui lòng kiểm tra lại."));
+                    "Serial item đã tồn tại trên work order khác : " +  otherWOs + " . Vui lòng kiểm tra lại."));
         } else if (workOrders.size() == 1 && machinesModelsRepository.countByWorkOrderAndStatusIsZero(request.getWorkOrder()) == 0) {
             return ResponseEntity.ok(new SerialCheckResponse(1,
                     " Chưa chọn công đoạn cho Work Order : " + request.getWorkOrder() + " . Vui lòng kiểm tra lại."));
