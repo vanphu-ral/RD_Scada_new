@@ -34,6 +34,9 @@ public class DetailParamsFCTATE {
     @Column(name = "machineType")
     private Integer machineType;
 
+    @Column(name = "machineName")
+    private String machineName;
+
     @Column(name = "startTestTime")
     private LocalDateTime startTestTime;
 

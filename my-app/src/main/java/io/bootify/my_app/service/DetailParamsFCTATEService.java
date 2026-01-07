@@ -59,7 +59,7 @@ public class DetailParamsFCTATEService {
     }
 
 
-    public List<DetailParamsFCTATE> getDetailParamsByWorkOrder(String workOrder) {
+    public List<DetailParamsFCTATEDTO> getDetailParamsByWorkOrder(String workOrder) {
         if (workOrder == null || workOrder.trim().isEmpty()) {
             return Collections.emptyList();
         }

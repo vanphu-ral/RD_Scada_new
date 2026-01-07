@@ -34,4 +34,12 @@ public class DetailParamsFCTATEDTO {
     private String timeElapsed;
     // 12. String
     private String detailParams; // <--- ĐƯA XUỐNG VỊ TRÍ 12 (Cuối cùng)
+
+    private String serialItem;
+
+    private String workOrder;
+
+    private String serialBoard;
+
+    private Integer machineType;
 }

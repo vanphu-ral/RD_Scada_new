@@ -17,30 +17,56 @@ public interface DetailParamsFCTATERepository extends JpaRepository<DetailParams
     // Phương thức tìm kiếm theo danh sách IDs (đã dùng trong service)
     List<DetailParamsFCTATE> findAllByScanSerialCheck_SerialIdIn(Collection<Long> serialIds);
 
-    @Query("SELECT dp FROM DetailParamsFCTATE dp JOIN dp.scanSerialCheck ssc WHERE ssc.workOrder = :workOrder")
-    List<DetailParamsFCTATE> findByWorkOrderEfficient(@Param("workOrder") String workOrder);
-
+//    @Query("SELECT dp FROM DetailParamsFCTATE dp JOIN dp.scanSerialCheck ssc WHERE ssc.workOrder = :workOrder")
+//    List<DetailParamsFCTATE> findByWorkOrderEfficient(@Param("workOrder") String workOrder);
 
 
     @Query("SELECT new io.bootify.my_app.model.DetailParamsFCTATEDTO(" +
             "  d.paramsID, " +
-            "  s.serialId, " +
+            "  d.scanSerialCheck.serialId, " +
             "  d.programName, " +
-            "  m.machineName, " +
-            "  CASE WHEN s.serialBoard = :serial THEN s.serialBoard ELSE s.serialItem END, " +
+            "  d.machineName, " +
+            "  CASE WHEN d.serialBoard = d.serialItem THEN d.serialBoard ELSE d.serialItem END, " +
             "  d.results, " +
             "  d.fixLR, " +
             "  d.fixID, " +
             "  d.startTestTime, " +
             "  d.endTestTime, " +
             "  d.timeElapsed, " +
-            "  d.detailParams " +
+            "  d.detailParams, " +
+            "  d.serialItem, " +
+            "  d.workOrder, " +
+            "  d.serialBoard, " +
+            "  d.machineType " +
             ") " +
             "FROM DetailParamsFCTATE d " +
-            "JOIN d.scanSerialCheck s " +
-            "LEFT JOIN s.machine m " + // Dùng LEFT JOIN để tránh lỗi nếu machine null
-            "WHERE s.serialBoard = :serial OR s.serialItem = :serial")
+            "WHERE d.workOrder = :workOrder")
+    List<DetailParamsFCTATEDTO> findByWorkOrderEfficient(@Param("workOrder") String workOrder);
+
+
+    @Query("SELECT new io.bootify.my_app.model.DetailParamsFCTATEDTO(" +
+            "  d.paramsID, " +
+            "  d.scanSerialCheck.serialId, " +
+            "  d.programName, " +
+            "  d.machineName, " +
+            "  CASE WHEN d.serialBoard = :serial THEN d.serialBoard ELSE d.serialItem END, " +
+            "  d.results, " +
+            "  d.fixLR, " +
+            "  d.fixID, " +
+            "  d.startTestTime, " +
+            "  d.endTestTime, " +
+            "  d.timeElapsed, " +
+            "  d.detailParams, " +
+            "  d.serialItem, " +
+            "  d.workOrder, " +
+            "  d.serialBoard, " +
+            "  d.machineType " +
+            ") " +
+            "FROM DetailParamsFCTATE d " +
+            "WHERE d.serialBoard = :serial OR d.serialItem = :serial")
     List<DetailParamsFCTATEDTO> findDetailsBySerial(@Param("serial") String serial);
+
+
     @Query(value="select top 1 result FROM [ScadaMappingInfo].[dbo].[DetailParamsFCTATE] " +
             "where serialID = ?1 order by paramsID desc ;",nativeQuery = true)
     public String getResultBySerialId(Long serialId);
