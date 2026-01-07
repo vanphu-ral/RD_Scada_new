@@ -5,6 +5,8 @@ import { saveAs } from 'file-saver';
 import { ChangeDetectorRef, Component, inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
 import { Util } from '../../../../core/utils/utils-function';
 import { ScanSerialCheck } from '../../service/scan-serial-check.service';
+import { DetailParamsService } from '../../../Traceability/service/detail-params.service';
+import _ from 'lodash';
 
 @Component({
     selector: 'app-conventional-table-component',
@@ -19,7 +21,7 @@ export class ConventionalTableComponent implements OnInit {
     @Input() model: any = {}
     filterDate?: Date;
 
-    constructor(private cd: ChangeDetectorRef, private scanSerialCheckService: ScanSerialCheck) { }
+    constructor(private cd: ChangeDetectorRef, private detailParamService: DetailParamsService) { }
 
     ngOnInit() {
         this.data = this.data.map(x => ({
@@ -27,12 +29,6 @@ export class ConventionalTableComponent implements OnInit {
             timeScan: x.timeScan ? new Date(x.timeScan) : null,
             timeCheck: x.timeCheck ? new Date(x.timeCheck) : null
         }));
-        this.scanSerialCheckService.getWorkOrderDetails(this.model.planningWO.woId)
-            .subscribe(res => {
-                console.log(res);
-                
-            });
-                
     }
 
     exportExcel(): void {
@@ -54,75 +50,68 @@ export class ConventionalTableComponent implements OnInit {
         }));
         const worksheet1 = XLSX.utils.json_to_sheet(mainData, { header: mainHeaderKeys, skipHeader: false });
         XLSX.utils.book_append_sheet(workbook, worksheet1, 'Danh sách serial');
-        this.scanSerialCheckService.getWorkOrderDetails(workOrderId)
+        this.detailParamService.getDetailParamsByWorkOrder(workOrderId)
             .subscribe({
                 next: (listData: any[]) => {
-                    let dynamicParamKeys: Set<string> = new Set();
-                    const detailData = listData.map((row: any[]) => {
-                        const baseData: any = {
-                            'MachineName': row[0],
-                            'serialBoard': row[1],
-                            'serialItem': row[2],
-                            'serialStatus': row[3],
-                            'serialCheck': row[4],
-                            'timeScan': row[5],
-                            'timeCheck': row[6],
-                            'resultCheck': row[7],
-                            'paramsID': row[8],
-                            'serialID': row[9],
-                            'programName': row[10],
-                            'fixLR': row[11],
-                            'fixID': row[12],
-                            'startTestTime': row[13],
-                            'endTestTime': row[14],
-                            'timeElapsed': row[15],
-                            'results': row[16],
-                        };
-                        const jsonParamString = row[17] as string;
+                    const dataFCTATE = _.filter(listData, (item: any) => item.machineType == 1);
+                    const dataLUYEN = _.filter(listData, (item: any) => item.machineType == 2);
+                    let dynamicParamKeysFCT: Set<string> = new Set();
+                    const detailDataFCT = dataFCTATE.map((item: any) => {
+                        const baseData: any = { 'paramsID': item.paramsID };
                         let paramDetails = {};
-                        if (jsonParamString) {
+                        if (item.detailParams) {
                             try {
-                                paramDetails = JSON.parse(jsonParamString);
-                                Object.keys(paramDetails).forEach(key => {
-                                    dynamicParamKeys.add(key);
-                                });
+                                const parsed = JSON.parse(item.detailParams);
+                                paramDetails = parsed.data || parsed;
+                                Object.keys(paramDetails).forEach(key => dynamicParamKeysFCT.add(key));
                             } catch (e) {
-                                console.error('Lỗi khi phân tích JSON row[17]:', e);
                                 baseData['JSON Parse Error'] = 'Invalid JSON';
                             }
                         }
                         return { ...baseData, ...paramDetails };
                     });
-                    const fixedHeaders = [
-                        'MachineName',
-                        'serialBoard',
-                        'serialItem',
-                        'serialStatus',
-                        'serialCheck',
-                        'timeScan',
-                        'timeCheck',
-                        'resultCheck',
-                        'paramsID',
-                        'serialID',
-                        'programName',
-                        'fixLR',
-                        'fixID',
-                        'startTestTime',
-                        'endTestTime',
-                        'timeElapsed',
-                        'results'
-                    ];
-                    fixedHeaders.forEach(key => dynamicParamKeys.delete(key));
-                    const fullHeader = [...fixedHeaders, ...Array.from(dynamicParamKeys)];
-                    const worksheet2 = XLSX.utils.json_to_sheet(detailData, { header: fullHeader, skipHeader: false });
-                    XLSX.utils.book_append_sheet(workbook, worksheet2, 'Chi tiết FCT'); // Đổi tên sheet
+
+                    const fixedHeaders = ['paramsID'];
+                    const fullHeaderFCT = [...fixedHeaders, ...Array.from(dynamicParamKeysFCT)];
+                    const worksheetFCT = XLSX.utils.json_to_sheet(detailDataFCT, { header: fullHeaderFCT });
+                    XLSX.utils.book_append_sheet(workbook, worksheetFCT, 'Chi tiết FCT');
+                    let detailDataLUYEN: any[] = [];
+                    let dynamicParamKeysLUYEN: Set<string> = new Set();
+
+                    dataLUYEN.forEach((item: any) => {
+                        if (item.detailParams) {
+                            try {
+                                const parsed = JSON.parse(item.detailParams);
+                                const dataArray = parsed.data; 
+
+                                if (Array.isArray(dataArray)) {
+                                    dataArray.forEach((point: any) => {
+                                        const row = {
+                                            'paramsID': item.paramsID,
+                                            'serialBoard': item.serialBoard,
+                                            'serialItem': item.serialItem,
+                                            ...point 
+                                        };
+                                        detailDataLUYEN.push(row);
+                                        Object.keys(point).forEach(key => dynamicParamKeysLUYEN.add(key));
+                                    });
+                                }
+                            } catch (e) {
+                                console.error('Lỗi parse JSON LUYEN:', e);
+                            }
+                        }
+                    });
+
+                    const fixedHeadersLUYEN = ['paramsID', 'serialBoard', 'serialItem'];
+                    const fullHeaderLUYEN = [...fixedHeadersLUYEN, ...Array.from(dynamicParamKeysLUYEN)];
+                    const worksheetLUYEN = XLSX.utils.json_to_sheet(detailDataLUYEN, { header: fullHeaderLUYEN });
+                    XLSX.utils.book_append_sheet(workbook, worksheetLUYEN, 'Chi tiết LUYEN');
                     const filename = `Báo cáo serial ${workOrderId}.xlsx`;
                     XLSX.writeFile(workbook, filename);
                 },
                 error: (err) => {
                     console.error('Lỗi khi tải dữ liệu chi tiết:', err);
-                    const filename = `Báo cáo serial ${workOrderId}_Error.xlsx`;
-                    XLSX.writeFile(workbook, filename);
+                    XLSX.writeFile(workbook, `Báo cáo serial ${workOrderId}_Error.xlsx`);
                 }
             });
     }

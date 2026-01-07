@@ -17,9 +17,31 @@ public interface DetailParamsFCTATERepository extends JpaRepository<DetailParams
     // Phương thức tìm kiếm theo danh sách IDs (đã dùng trong service)
     List<DetailParamsFCTATE> findAllByScanSerialCheck_SerialIdIn(Collection<Long> serialIds);
 
-    @Query("SELECT dp FROM DetailParamsFCTATE dp JOIN dp.scanSerialCheck ssc WHERE ssc.workOrder = :workOrder")
-    List<DetailParamsFCTATE> findByWorkOrderEfficient(@Param("workOrder") String workOrder);
+//    @Query("SELECT dp FROM DetailParamsFCTATE dp JOIN dp.scanSerialCheck ssc WHERE ssc.workOrder = :workOrder")
+//    List<DetailParamsFCTATE> findByWorkOrderEfficient(@Param("workOrder") String workOrder);
 
+
+    @Query("SELECT new io.bootify.my_app.model.DetailParamsFCTATEDTO(" +
+            "  d.paramsID, " +
+            "  d.scanSerialCheck.serialId, " +
+            "  d.programName, " +
+            "  d.machineName, " +
+            "  CASE WHEN d.serialBoard = d.serialItem THEN d.serialBoard ELSE d.serialItem END, " +
+            "  d.results, " +
+            "  d.fixLR, " +
+            "  d.fixID, " +
+            "  d.startTestTime, " +
+            "  d.endTestTime, " +
+            "  d.timeElapsed, " +
+            "  d.detailParams, " +
+            "  d.serialItem, " +
+            "  d.workOrder, " +
+            "  d.serialBoard, " +
+            "  d.machineType " +
+            ") " +
+            "FROM DetailParamsFCTATE d " +
+            "WHERE d.workOrder = :workOrder")
+    List<DetailParamsFCTATEDTO> findByWorkOrderEfficient(@Param("workOrder") String workOrder);
 
 
     @Query("SELECT new io.bootify.my_app.model.DetailParamsFCTATEDTO(" +

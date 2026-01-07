@@ -37,10 +37,10 @@ public class DetailParamsFCTATEResource {
     }
 
     @GetMapping("/by-workorder")
-    public ResponseEntity<List<DetailParamsFCTATE>> getDetailParamsByWorkOrder(
+    public ResponseEntity<List<DetailParamsFCTATEDTO>> getDetailParamsByWorkOrder(
             @RequestParam final String workOrder) {
 
-        List<DetailParamsFCTATE> results = service.getDetailParamsByWorkOrder(workOrder);
+        List<DetailParamsFCTATEDTO> results = service.getDetailParamsByWorkOrder(workOrder);
 
         if (results.isEmpty()) {
             return ResponseEntity.notFound().build();
