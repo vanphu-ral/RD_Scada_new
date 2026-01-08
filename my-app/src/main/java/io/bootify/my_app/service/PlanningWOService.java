@@ -177,9 +177,9 @@ public class PlanningWOService {
         }else if (workOrders.size() > 1) {
             return ResponseEntity.ok(new SerialCheckResponse(1,
                     "Serial item đang nằm trên " + workOrders.size() + " work order. Vui lòng kiểm tra lại."));
-        } else if (workOrders.size() == 1 && !workOrders.get(0).equals(request.getWorkOrder())) {
-            return ResponseEntity.ok(new SerialCheckResponse(1,
-                    "Serial item đã tồn tại trên work order khác : " + workOrders.get(0) + " . Vui lòng kiểm tra lại."));
+//        } else if (workOrders.size() == 1 && !workOrders.get(0).equals(request.getWorkOrder())) {
+//            return ResponseEntity.ok(new SerialCheckResponse(1,
+//                    "Serial item đã tồn tại trên work order khác : " + workOrders.get(0) + " . Vui lòng kiểm tra lại."));
         } else if (workOrders.size() == 1 && machinesModelsRepository.countByWorkOrderAndStatusIsZero(request.getWorkOrder()) == 0) {
             return ResponseEntity.ok(new SerialCheckResponse(1,
                     " Chưa chọn công đoạn cho Work Order : " + request.getWorkOrder() + " . Vui lòng kiểm tra lại."));
