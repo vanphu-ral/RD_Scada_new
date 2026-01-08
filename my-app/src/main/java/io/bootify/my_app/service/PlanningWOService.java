@@ -394,7 +394,11 @@ public class PlanningWOService {
                         // update
                         Integer saveCode = request.getMachineType() == 1 ? 1 : request.getMachineType() == 2 ? 1 : 2;
                         this.saveScanSerialCheck(machinesModelsRepository.findByMachineName(request.getMachineName()), request, saveCode);
-                    } else { // chua ton tai
+                    } else if (request.getStatus().equals("NG")){
+                        code = 1;
+                        result = "Serial : " + request.getSerialItems() + " bị lỗi ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage());
+                        this.sendMessage(result,request.getWorkOrder());
+                    } else{ // chua ton tai
                         this.saveScanSerialCheck(machinesModels1, request, 0);
                     }
                 }
@@ -437,18 +441,18 @@ public class PlanningWOService {
                             for (MachinesDetailResponse machinesModels2 : filteredList) {
                                 MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(machinesModels2.getMachineName());
                                 List<ScanSerialCheck> scanSerialChecks = scanSerialCheckRepository.getBySerialBoardAndWorkOrderAndMachineId(
-                                        request.getSerialBoard(), request.getWorkOrder(), machinesModels.getMachineId());
+                                        request.getSerialBoard(), request.getWorkOrder(), machinesModels1.getMachineId());
                                 if(scanSerialChecks != null && scanSerialChecks.size() >0){
                                     machineName = "";
-                                    this.saveListSerialItem(scanSerialChecks, request, machinesModels1);
+                                    this.saveListSerialItem(scanSerialChecks, request, machinesModels);
                                     found = true;
                                     break;
                                 } else {
-                                    machineName += machinesModels1.getMachineName();
+                                    machineName += machinesModels1.getMachineName() + " - ";
                                 }
                             }
                         }
-                        if (found) {
+                        if (found == false) {
                             code =1;
                             result = "Không tìm thấy Serial Board: " + request.getSerialBoard() + " o cong doan : " + machineName;
                         }
