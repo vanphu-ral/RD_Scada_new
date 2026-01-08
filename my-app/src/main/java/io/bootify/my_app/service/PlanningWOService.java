@@ -288,12 +288,12 @@ public class PlanningWOService {
         }else if(stageResult !=null && stageResult.equals("NG")){
             return ResponseEntity.ok(new SerialCheckResponse(1,
                     "Serial item  " + request.getSerialItems() + " FAIL o cong doan." + stageResult.getMachineName()));
-        } else if (workOrders.size() > 1) {
-            return ResponseEntity.ok(new SerialCheckResponse(1,
-                    "Serial item đang nằm trên " + workOrders.size() + " work order. Vui lòng kiểm tra lại."));
-        } else if (!otherWOs.isEmpty()) {
-            return ResponseEntity.ok(new SerialCheckResponse(1,
-                    "Serial item đã tồn tại trên work order khác : " +  otherWOs + " . Vui lòng kiểm tra lại."));
+//        } else if (workOrders.size() > 1) {
+//            return ResponseEntity.ok(new SerialCheckResponse(1,
+//                    "Serial item đang nằm trên " + workOrders.size() + " work order. Vui lòng kiểm tra lại."));
+//        } else if (!otherWOs.isEmpty()) {
+//            return ResponseEntity.ok(new SerialCheckResponse(1,
+//                    "Serial item đã tồn tại trên work order khác : " +  otherWOs + " . Vui lòng kiểm tra lại."));
         } else if (workOrders.size() == 1 && machinesModelsRepository.countByWorkOrderAndStatusIsZero(request.getWorkOrder()) == 0) {
             return ResponseEntity.ok(new SerialCheckResponse(1,
                     " Chưa chọn công đoạn cho Work Order : " + request.getWorkOrder() + " . Vui lòng kiểm tra lại."));
