@@ -16,7 +16,7 @@ public class SerialCheckRequest {
     private String serialItems;
     private String detailParams;
     private String timeScan;
-    private Integer type; // 1:board , 0:item
+    private Integer type; // 1:board , 0:item, 2 : pallet
     private String serialBoard;
     private String status;
     private Integer machineType; //(0: LR, BG , 1: ATE, FCT , 2: Luyện )
