@@ -174,9 +174,9 @@ public class PlanningWOService {
         if(ateResult != null && ateResult.getSerialStatus().equals("NG")){
             return ResponseEntity.ok(new SerialCheckResponse(1,
                     "Serial item  " + request.getSerialItems() + " FAIL o cong doan." + ateResult.getMachineName()));
-        }else if (workOrders.size() > 1) {
-            return ResponseEntity.ok(new SerialCheckResponse(1,
-                    "Serial item đang nằm trên " + workOrders.size() + " work order. Vui lòng kiểm tra lại."));
+//        }else if (workOrders.size() > 1) {
+//            return ResponseEntity.ok(new SerialCheckResponse(1,
+//                    "Serial item đang nằm trên " + workOrders.size() + " work order. Vui lòng kiểm tra lại."));
 //        } else if (workOrders.size() == 1 && !workOrders.get(0).equals(request.getWorkOrder())) {
 //            return ResponseEntity.ok(new SerialCheckResponse(1,
 //                    "Serial item đã tồn tại trên work order khác : " + workOrders.get(0) + " . Vui lòng kiểm tra lại."));
