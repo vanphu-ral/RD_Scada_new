@@ -1,11 +1,14 @@
 package io.bootify.my_app.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.bootify.my_app.domain.*;
 import io.bootify.my_app.model.*;
 import io.bootify.my_app.repos.*;
 import io.bootify.my_app.rest.ProductOrderModelsResponse;
 import io.bootify.planning.repos.PlanningWorkOrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,9 +27,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Service
 @RequiredArgsConstructor
 public class PlanningWOService {
+    private static final Logger logger = getLogger(PlanningWOService.class);
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     PlanningwoRepository planningwoRepository;
     @Autowired
@@ -265,7 +272,6 @@ public class PlanningWOService {
         }
 
     }
-
     public ResponseEntity<SerialCheckResponse> checkSerialItemExistBymode(SerialCheckRequest request) {
         // stageId Pass first
         Integer lineId = machinesModelsRepository.getLineIDByMachineName(request.getMachineName());
@@ -356,14 +362,18 @@ public class PlanningWOService {
                                         found = true;
                                         break;
                                     } else {
+                                        if(machineName.contains(machinesModels1.getMachineName())){
+                                            // do nothing
+                                        }else{
                                         machineName += machinesModels1.getMachineName();
+                                        }
                                     }
                                 }
                             }
                         }
                         if (!found) {
                             code = 1;
-                            result += "\n Không tìm thấy Serial Item: " + request.getSerialItems() + " o cong doan : " + machineName;
+                            result += "\n Không tìm thấy Serial Item: " + request.getSerialItems() + " ở công đoạn : " + machineName;
                         } else {
                             MachinesModels machinesModels1 = machinesModelsRepository.findByMachineName(request.getMachineName());
                             ScanSerialCheck existingRecord = scanSerialCheckRepository.getByWorkOrderAndMachineIdAndSerialItem(
@@ -531,7 +541,8 @@ public class PlanningWOService {
 
             if (existingRecord != null) {
                 // Cập nhật trên bản ghi đã tìm thấy (đã có ID)
-                existingRecord.setSerialStatus(request.getStatus());
+                String serialStatus = request.getStatus().equals("OK") ? "OK" : "NG";
+                existingRecord.setSerialStatus(serialStatus);
 
                 // Cập nhật thời gian check (nếu bạn dùng chung cột timeScan thì sửa lại cho đúng)
                 existingRecord.setTimeCheck(parsedTime);
