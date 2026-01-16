@@ -19,6 +19,7 @@ public class ScanSerialCheckDTO {
 
     @Size(max = 50)
     private String serialItem;
+    private String serialPallet;
 
     @Size(max = 20)
     private String serialStatus;

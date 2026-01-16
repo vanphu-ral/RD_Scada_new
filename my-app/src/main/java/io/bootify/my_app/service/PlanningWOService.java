@@ -297,6 +297,7 @@ public class PlanningWOService {
             ATECheckRespone ateResult = scanSerialCheckRepository.getSerialStatusBySerialItem(request.getSerialItems());
             ATECheckRespone stageResult = scanSerialCheckRepository.getSerialStatusBySerialItemAndMachineName(request.getSerialItems(), request.getMachineName());
             if(request.getStage() == 6){
+
                 this.saveScanSerialCheck(
                         machinesModelsRepository.findByMachineName(request.getMachineName()),
                         request,
@@ -548,9 +549,9 @@ public class PlanningWOService {
             scanSerialCheck1.setSerialStatus(request.getStatus());
             scanSerialCheck1.setTimeScan(parsedTime);
             scanSerialCheck1.setWorkOrder(request.getWorkOrder());
-//            if(request.getStage() == 6){
-//            scanSerialCheck1.setSerialPallet(request.getSerialPallet());
-//            }
+            if(request.getStage() == 6){
+            scanSerialCheck1.setSerialPallet(request.getSerialPallet());
+            }
             scanSerialCheckRepository.save(scanSerialCheck1);
         } else if (code == 1) {
             // Logic UPDATE: Phải tìm đúng bản ghi cũ dựa trên bộ 3 điều kiện
