@@ -78,6 +78,8 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "  inner join  [ScadaMappingInfo].[dbo].MachinesModels b on b.MachineID = a.machineID\n" +
             "  where a.serialItem=?1 and b.machineName =?2 order by a.serialID desc; ", nativeQuery = true)
     ATECheckRespone getSerialStatusBySerialItemAndMachineName(String serialItem, String machineName);
+    @Query(value = "SELECT * FROM ScanSerialCheck WHERE workOrder = ?1 AND machineID = ?2 and serialBoard = ?3  ;", nativeQuery = true)
+    List<ScanSerialCheck> countByWorkOrderAndMachineIdAndSerialBoard(String workOrder, Integer machineId, String serialBoard);
     // Lấy 1 bản ghi theo serialBoard
     @Query(value = "SELECT\n" +
             "\t\ta.serialID as serialId\n" +
@@ -116,7 +118,7 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "  left join MachinesModels b on b.MachineID =a.machineID\n" +
             "  where a.workOrder =?1 and a.machineID =?2 ;", nativeQuery = true)
     List<ScanSerialCheck> getAllByWorkOrderAndMachineId(String workOrder, Integer machineId);
-    @Query(value = "SELECT COUNT(*) FROM ScanSerialCheck WHERE workOrder = ?1 AND machineID = ?2 and serialItem =?3 ;", nativeQuery = true)
+    @Query(value = "SELECT * FROM ScanSerialCheck WHERE workOrder = ?1 AND machineID = ?2 and serialItem =?3 ;", nativeQuery = true)
     Integer countByWorkOrderAndMachineIdAndSerialItem(String workOrder, Integer machineId, String serialItem);
     @Query(value = "SELECT * FROM ScanSerialCheck WHERE serialBoard = ?1 AND workOrder = ?2 AND machineID = ?3 ;", nativeQuery = true)
     public List<ScanSerialCheck> getBySerialBoardAndWorkOrderAndMachineId(String serialBoard, String workOrder,Integer machineId);

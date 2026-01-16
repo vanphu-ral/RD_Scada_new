@@ -280,12 +280,12 @@ public class PlanningWOService {
         Integer code = 0;
         String result = "Kết quả kiểm tra Serial : ";
         List<String> workOrders = scanSerialCheckRepository.getDistinctWorkOrder(request.getSerialItems());
-
+        MachinesModels machinesModelsRequest = machinesModelsRepository.findByMachineName(request.getMachineName());
         if (request.getType() == 0) {
             if (request.getMachineType() == 1 || request.getMachineType() == 2) {
                 this.saveDetailParamsFCTATE(request);
                 this.saveScanSerialCheck(
-                        machinesModelsRepository.findByMachineName(request.getMachineName()),
+                        machinesModelsRequest,
                         request,
                         1
                 );
@@ -297,13 +297,35 @@ public class PlanningWOService {
             ATECheckRespone ateResult = scanSerialCheckRepository.getSerialStatusBySerialItem(request.getSerialItems());
             ATECheckRespone stageResult = scanSerialCheckRepository.getSerialStatusBySerialItemAndMachineName(request.getSerialItems(), request.getMachineName());
             if(request.getStage() == 6){
+                Integer codeReturn = 0;
+                String mss = "";
 
-                this.saveScanSerialCheck(
-                        machinesModelsRepository.findByMachineName(request.getMachineName()),
-                        request,
-                        0
+                List<ScanSerialCheck> countExist = scanSerialCheckRepository.countByWorkOrderAndMachineIdAndSerialBoard(
+                        request.getWorkOrder(),
+                        machinesModelsRequest.getMachineId(),
+                        request.getSerialBoard()
                 );
-                return ResponseEntity.ok(new SerialCheckResponse(0,"Thanh cong"));
+
+                if (countExist != null && !countExist.isEmpty()) {
+                    // 1. Lấy danh sách Pallet, lọc trùng (distinct) và nối thành chuỗi
+                    String duplicatePallets = countExist.stream()
+                            .map(ScanSerialCheck::getSerialPallet) // Giả định getter là getSerialPallet
+                            .filter(Objects::nonNull)              // Loại bỏ giá trị null nếu có
+                            .distinct()                            // Loại bỏ các pallet trùng tên
+                            .collect(Collectors.joining(", "));    // Nối lại cách nhau bởi dấu phẩy
+
+                    // 2. Gán thông báo
+                    mss = "Serial Board: " + request.getSerialBoard() + " đã tồn tại ở (các) pallet: " + duplicatePallets;
+                    codeReturn = 1;
+                } else {
+                    this.saveScanSerialCheck(
+                            machinesModelsRequest,
+                            request,
+                            0
+                    );
+                }
+
+                return ResponseEntity.ok(new SerialCheckResponse(codeReturn, mss));
             } else if (ateResult != null && ateResult.getSerialStatus().equals("NG")) {
                 return ResponseEntity.ok(new SerialCheckResponse(1,
                         "Serial item  " + request.getSerialItems() + " FAIL o cong doan." + ateResult.getMachineName()));
