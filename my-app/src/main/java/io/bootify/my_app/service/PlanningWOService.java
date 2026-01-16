@@ -280,6 +280,7 @@ public class PlanningWOService {
         Integer code = 0;
         String result = "Kết quả kiểm tra Serial : ";
         List<String> workOrders = scanSerialCheckRepository.getDistinctWorkOrder(request.getSerialItems());
+
         if (request.getType() == 0) {
             if (request.getMachineType() == 1 || request.getMachineType() == 2) {
                 this.saveDetailParamsFCTATE(request);
@@ -295,7 +296,14 @@ public class PlanningWOService {
             System.out.println("check work order :: " + workOrders.size());
             ATECheckRespone ateResult = scanSerialCheckRepository.getSerialStatusBySerialItem(request.getSerialItems());
             ATECheckRespone stageResult = scanSerialCheckRepository.getSerialStatusBySerialItemAndMachineName(request.getSerialItems(), request.getMachineName());
-            if (ateResult != null && ateResult.getSerialStatus().equals("NG")) {
+            if(request.getStage() == 6){
+                this.saveScanSerialCheck(
+                        machinesModelsRepository.findByMachineName(request.getMachineName()),
+                        request,
+                        0
+                );
+                return ResponseEntity.ok(new SerialCheckResponse(0,"Thanh cong"));
+            } else if (ateResult != null && ateResult.getSerialStatus().equals("NG")) {
                 return ResponseEntity.ok(new SerialCheckResponse(1,
                         "Serial item  " + request.getSerialItems() + " FAIL o cong doan." + ateResult.getMachineName()));
             } else if (stageResult != null && stageResult.equals("NG")) {
@@ -307,7 +315,7 @@ public class PlanningWOService {
 //        } else if (!otherWOs.isEmpty()) {
 //            return ResponseEntity.ok(new SerialCheckResponse(1,
 //                    "Serial item đã tồn tại trên work order khác : " +  otherWOs + " . Vui lòng kiểm tra lại."));
-            } else if (workOrders.size() == 1 && machinesModelsRepository.countByWorkOrderAndStatusIsZero(request.getWorkOrder()) == 0) {
+            } else if (machinesModelsRepository.countByWorkOrderAndStatusIsZero(request.getWorkOrder()) == 0) {
                 return ResponseEntity.ok(new SerialCheckResponse(1,
                         " Chưa chọn công đoạn cho Work Order : " + request.getWorkOrder() + " . Vui lòng kiểm tra lại."));
             } else {
@@ -540,7 +548,9 @@ public class PlanningWOService {
             scanSerialCheck1.setSerialStatus(request.getStatus());
             scanSerialCheck1.setTimeScan(parsedTime);
             scanSerialCheck1.setWorkOrder(request.getWorkOrder());
-
+//            if(request.getStage() == 6){
+//            scanSerialCheck1.setSerialPallet(request.getSerialPallet());
+//            }
             scanSerialCheckRepository.save(scanSerialCheck1);
         } else if (code == 1) {
             // Logic UPDATE: Phải tìm đúng bản ghi cũ dựa trên bộ 3 điều kiện
@@ -571,7 +581,6 @@ public class PlanningWOService {
                     scanSerialCheck1.setSerialStatus(request.getStatus());
                     scanSerialCheck1.setTimeScan(parsedTime);
                     scanSerialCheck1.setWorkOrder(request.getWorkOrder());
-
                     scanSerialCheckRepository.save(scanSerialCheck1);
                 }
             }

@@ -120,7 +120,7 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
     Integer countByWorkOrderAndMachineIdAndSerialItem(String workOrder, Integer machineId, String serialItem);
     @Query(value = "SELECT * FROM ScanSerialCheck WHERE serialBoard = ?1 AND workOrder = ?2 AND machineID = ?3 ;", nativeQuery = true)
     public List<ScanSerialCheck> getBySerialBoardAndWorkOrderAndMachineId(String serialBoard, String workOrder,Integer machineId);
-    @Query(value = "SELECT * FROM ScanSerialCheck WHERE workOrder = ?1 AND machineID = ?2 and serialItem =?3 ;", nativeQuery = true)
+    @Query(value = "SELECT TOP 1 * FROM ScanSerialCheck WHERE workOrder = ?1 AND machineID = ?2 and serialItem =?3  order by serialID desc;", nativeQuery = true)
     ScanSerialCheck getByWorkOrderAndMachineIdAndSerialItem(String workOrder, Integer machineId, String serialItem);
     @Query(value = "SELECT \n" +
             "    b.MachineName,\n" +

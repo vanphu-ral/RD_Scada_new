@@ -41,6 +41,9 @@ public class ScanSerialCheck {
 
     @Column(length = 50,name="serialItem")
     private String serialItem;
+//    @Column(length = 50,name="serialPallet")
+//    private String serialPallet;
+
 
     @Column(length = 20,name="serialStatus")
     private String serialStatus;
