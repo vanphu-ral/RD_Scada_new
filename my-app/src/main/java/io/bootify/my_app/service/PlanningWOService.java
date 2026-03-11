@@ -438,12 +438,31 @@ public class PlanningWOService {
                     Integer countExist = scanSerialCheckRepository.countByWorkOrderAndMachineIdAndSerialItem(
                             request.getWorkOrder(), machinesModels1.getMachineId(), request.getSerialItems());
                     if (countExist >= 1) { // da ton tai
-                        code = 1;
-                        result = "Đã tồn tại Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage());
-                        this.sendMessage(result, request.getWorkOrder());
-                        // update
-                        Integer saveCode = request.getMachineType() == 1 ? 1 : request.getMachineType() == 2 ? 1 : 2;
-                        this.saveScanSerialCheck(machinesModelsRepository.findByMachineName(request.getMachineName()), request, saveCode);
+                        if (request.getMachineName().contains("FCT")) {
+                            // Nếu Type là 1 hoặc 2 thì saveCode = 1, ngược lại = 2
+                            int machineType = request.getMachineType();
+                            Integer saveCode = (machineType == 1 || machineType == 2) ? 1 : 2;
+
+                            this.saveScanSerialCheck(
+                                    machinesModelsRepository.findByMachineName(request.getMachineName()),
+                                    request,
+                                    saveCode
+                            );
+                        } else {
+                            code = 1; // Đảm bảo biến 'code' đã được khai báo trước đó
+                            result = "Đã tồn tại Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage());
+
+                            this.sendMessage(result, request.getWorkOrder());
+                            // update
+                            Integer saveCode = request.getMachineType() == 1 ? 1 : request.getMachineType() == 2 ? 1 : 2;
+                            this.saveScanSerialCheck(machinesModelsRepository.findByMachineName(request.getMachineName()), request, saveCode);
+                        }
+//                        code = 1;
+//                        result = "Đã tồn tại Serial Item: " + request.getSerialItems() + " ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage());
+//                        this.sendMessage(result, request.getWorkOrder());
+//                        // update
+//                        Integer saveCode = request.getMachineType() == 1 ? 1 : request.getMachineType() == 2 ? 1 : 2;
+//                        this.saveScanSerialCheck(machinesModelsRepository.findByMachineName(request.getMachineName()), request, saveCode);
                     } else if (request.getStatus().equals("NG")) {
                         code = 1;
                         result = "Serial : " + request.getSerialItems() + " bị lỗi ở công đoạn: " + machinesModels1.getMachineName() + " stage: " + (request.getStage());

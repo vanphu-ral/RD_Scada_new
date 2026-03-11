@@ -112,6 +112,7 @@ public interface ScanSerialCheckRepository extends JpaRepository<ScanSerialCheck
             "      ,a.timeCheck as timeCheck\n" +
             "      ,a.resultCheck as resultCheck\n" +
             "      ,a.workOrder as workOrder\n" +
+            "       ,a.serialPallet as serialPallet " + // THÊM DÒNG NÀY
             "\t  ,b.MachineName as machineName\n" +
             "\t  ,b.StageID as stageNum\n" +
             "  FROM ScanSerialCheck a\n" +
