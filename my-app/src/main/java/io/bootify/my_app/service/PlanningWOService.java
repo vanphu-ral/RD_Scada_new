@@ -706,13 +706,13 @@ public class PlanningWOService {
             for (DetailQuantity dq : detailQuantities) {
                 detailQuantityDTOS.add(detailQuantityService.mapToDTO(dq, new DetailQuantityDTO()));
             }
-            // Lấy thông tin lỗi của máy
-            List<ErrorResponse> errorModels = errorModelRepository.getErrorResponsesByWorkOrderAndMachineNameAndStageID(
-                    planningWO.getWoId(), machineDetail.getMachine().getMachineName(), machineDetail.getMachine().getStageId());
-            machineDetail.setDetailQuantity(detailQuantityDTOS);
-            machineDetail.setErrors(errorModels);
-            machineDetails.add(machineDetail);
-//            }
+//            // Lấy thông tin lỗi của máy
+//            List<ErrorResponse> errorModels = errorModelRepository.getErrorResponsesByWorkOrderAndMachineNameAndStageID(
+//                    planningWO.getWoId(), machineDetail.getMachine().getMachineName(), machineDetail.getMachine().getStageId());
+//            machineDetail.setDetailQuantity(detailQuantityDTOS);
+//            machineDetail.setErrors(errorModels);
+//            machineDetails.add(machineDetail);
+////            }
             machineGroupDetail.setMachineDetails(machineDetails);
             detail.setMachineGroupDetails(machineGroupDetail);
             productionOrderModelDetails.add(detail);
