@@ -135,5 +135,7 @@ public class ProductionOrderModelsService {
             throw referencedException;
         }
     }
-
+    public List<String> getWorkOrderByWorkingNot2AndMachineName (String machineName){
+        return productionOrderModelsRepository.getWorkOrderByWorkingNot2AndMachineName(machineName);
+    }
 }

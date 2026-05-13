@@ -37,6 +37,7 @@ public class WoErrorHistoryService {
         woErrorHistory.setType(message.getType().name());
         woErrorHistory.setStatus(message.getStatus());
         woErrorHistory.setId(Long.valueOf(message.getId()));
+        woErrorHistory.setTime(LocalDateTime.now());
         woErrorHistoryRepository.save(woErrorHistory);
     }
     @Transactional
@@ -49,6 +50,7 @@ public class WoErrorHistoryService {
             woErrorHistory.setType(message.getType().name());
             woErrorHistory.setStatus(message.getStatus());
             woErrorHistory.setId(Long.valueOf(message.getId()));
+            woErrorHistory.setTime(LocalDateTime.now());
             woErrorHistoryRepository.save(woErrorHistory);
         }
     }

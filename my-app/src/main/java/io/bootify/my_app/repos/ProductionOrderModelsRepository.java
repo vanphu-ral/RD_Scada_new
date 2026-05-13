@@ -19,4 +19,10 @@ public interface ProductionOrderModelsRepository extends JpaRepository<Productio
     @Query(value = "SELECT top 1 a.working FROM ProductionOrderModels a " +
             "inner join MachinesModels b on b.MachineGroupID = a.MachineGroupID WHERE a.workOrder = ?1 ORDER BY b.StageID DESC ", nativeQuery = true)
     String getStatusByWorkOrderWithMaxStage(String workOrder);
+    @Query(value ="SELECT\n" +
+            "      [WorkOrder]\n" +
+            "  FROM [ScadaMappingInfo].[dbo].[ProductionOrderModels] p\n" +
+            "   inner join MachinesModels m on p.MachineGroupID=m.MachineGroupID\n" +
+            "  where m.MachineName= ?1 and Working not in (2) group by WorkOrder ;",nativeQuery = true)
+    List<String> getWorkOrderByWorkingNot2AndMachineName (String machineName);
 }
