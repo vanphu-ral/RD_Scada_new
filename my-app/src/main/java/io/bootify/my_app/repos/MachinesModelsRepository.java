@@ -13,6 +13,8 @@ import java.util.List;
 
 @Repository
 public interface MachinesModelsRepository extends JpaRepository<MachinesModels, Integer> {
+    @Query(value = "SELECT * FROM MachinesModels m WHERE  m.MachineGroupId = ?1 ;",nativeQuery = true)
+    MachinesModels findByMachineGroupId( Integer groupId);
     MachinesModels findByMachineName(String machineName);
     MachinesModels findFirstByMachineGroupMachineGroupId(Integer machineGroupId);
 

@@ -81,47 +81,49 @@ public class PlanningWOService {
         response.getPlanningWO().setNumberOfOutputs(detailQuantityRepository.sumQuantityOutByWorkOrder(response.getPlanningWO().getWoId()));
         response.getPlanningWO().setNumberOfInputs(detailQuantityRepository.sumQuantityInByWorkOrder(response.getPlanningWO().getWoId()));
         response.setMachinesDetailResponses(machinesModelsRepository.getMachinesByWorkOrder(response.getPlanningWO().getWoId()));
-//        // Lấy thông tin Production Order Models
-//        List<ProductionOrderModelDetail> productionOrderModelDetails = new ArrayList<>();
-//        List<ProductionOrderModels> productionOrderModelsList = productionOrderModelsRepository.findAllByWorkOrder(planningWO.getWoId());
-//        for (ProductionOrderModels pom : productionOrderModelsList) {
-//            ProductionOrderModelDetail detail = new ProductionOrderModelDetail();
-//            productionOrderModelsService.mapToDTO(pom, new ProductionOrderModelsDTO());
-//            // Lấy thông tin Machine Group Detail
-//            MachineGroupDetail machineGroupDetail = new MachineGroupDetail();
-//            List<MachineDetail> machineDetails = new ArrayList<>();
-//            machineGroupDetail.setMachineTypesModels( machineTypesModelsService.mapToDTO(
-//                    machineTypesModelsRepository.findById(pom.getMachineGroup().getMachineGroupId()).orElse(null),
-//                    new MachineTypesModelsDTO()));
-//            detail.setProductionOrderModels(productionOrderModelsService.mapToDTO(pom, new ProductionOrderModelsDTO()));
-//            // Lấy danh sách máy móc thuộc nhóm máy và lineId = 58
-//            List<MachinesModels> machinesModelsList = machinesModelsRepository.findByMachineGroupIdAndFixedLineId(
-//                    machineGroupDetail.getMachineTypesModels().getMachineGroupId());
-//            for (MachinesModels mm : machinesModelsList) {
-//                MachineDetail machineDetail = new MachineDetail();
-//                // Lấy thông tin của máy
-//                machineDetail.setMachine(machinesModelsService.mapToDTO(mm, new MachinesModelsDTO()));
-//               //   Lấy thông tin quantity của máy
-//                List<DetailQuantity> detailQuantities = detailQuantityRepository.findAllByWorkOrderAndMachineName(
-//                        planningWO.getWoId(),machineDetail.getMachine().getMachineName());
-//                List<DetailQuantityDTO> detailQuantityDTOS = new ArrayList<>();
-//                for (DetailQuantity dq : detailQuantities) {
-//                    detailQuantityDTOS.add(detailQuantityService.mapToDTO(dq, new DetailQuantityDTO()));
-//                }
-//                // Lấy thông tin lỗi của máy
+        // Lấy thông tin Production Order Models
+        PlanningWO planningWO = planningwoRepository.findById(id).orElse(null);
+        List<ProductionOrderModelDetail> productionOrderModelDetails = new ArrayList<>();
+        List<ProductionOrderModels> productionOrderModelsList = productionOrderModelsRepository.findAllByWorkOrder(planningWO.getWoId());
+        for (ProductionOrderModels pom : productionOrderModelsList) {
+            ProductionOrderModelDetail detail = new ProductionOrderModelDetail();
+            productionOrderModelsService.mapToDTO(pom, new ProductionOrderModelsDTO());
+            // Lấy thông tin Machine Group Detail
+            MachineGroupDetail machineGroupDetail = new MachineGroupDetail();
+            List<MachineDetail> machineDetails = new ArrayList<>();
+            MachinesModels machine = machinesModelsRepository.findByMachineGroupId(pom.getMachineGroup().getMachineGroupId());
+            machineGroupDetail.setMachineTypesModels( machineTypesModelsService.mapToDTO(
+                    machineTypesModelsRepository.findById(machine.getLine().getLineId()).orElse(null),
+                    new MachineTypesModelsDTO()));
+            detail.setProductionOrderModels(productionOrderModelsService.mapToDTO(pom, new ProductionOrderModelsDTO()));
+            // Lấy danh sách máy móc thuộc nhóm máy và lineId = 58
+            List<MachinesModels> machinesModelsList = machinesModelsRepository.findByMachineGroupIdAndFixedLineId(
+                    machineGroupDetail.getMachineTypesModels().getMachineGroupId());
+            for (MachinesModels mm : machinesModelsList) {
+                MachineDetail machineDetail = new MachineDetail();
+                // Lấy thông tin của máy
+                machineDetail.setMachine(machinesModelsService.mapToDTO(mm, new MachinesModelsDTO()));
+               //   Lấy thông tin quantity của máy
+                List<DetailQuantity> detailQuantities = detailQuantityRepository.findAllByWorkOrderAndMachineName(
+                        planningWO.getWoId(),machineDetail.getMachine().getMachineName());
+                List<DetailQuantityDTO> detailQuantityDTOS = new ArrayList<>();
+                for (DetailQuantity dq : detailQuantities) {
+                    detailQuantityDTOS.add(detailQuantityService.mapToDTO(dq, new DetailQuantityDTO()));
+                }
+                // Lấy thông tin lỗi của máy
 //                List<ErrorResponse> errorModels = errorModelRepository.getErrorResponsesByWorkOrderAndMachineNameAndStageID(
 //                        planningWO.getWoId(),machineDetail.getMachine().getMachineName(),machineDetail.getMachine().getStageId());
-//                machineDetail.setDetailQuantity(detailQuantityDTOS);
+                machineDetail.setDetailQuantity(detailQuantityDTOS);
 //                machineDetail.setErrors(errorModels);
-//                machineDetails.add(machineDetail);
-//            }
-//            machineGroupDetail.setMachineDetails(machineDetails);
-//            detail.setMachineGroupDetails(machineGroupDetail);
-//            productionOrderModelDetails.add(detail);
-//        }
-//        response.setProductionOrderModelDetails(productionOrderModelDetails);
-//        //
-//        response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(planningWO.getWoId()));
+                machineDetails.add(machineDetail);
+            }
+            machineGroupDetail.setMachineDetails(machineDetails);
+            detail.setMachineGroupDetails(machineGroupDetail);
+            productionOrderModelDetails.add(detail);
+        }
+        response.setProductionOrderModelDetails(productionOrderModelDetails);
+        //
+        response.setScanSerialChecks(scanSerialCheckRepository.getAllByWorkOrder(planningWO.getWoId()));
         return response;
     }
 
@@ -687,8 +689,9 @@ public class PlanningWOService {
             // Lấy thông tin Machine Group Detail
             MachineGroupDetail machineGroupDetail = new MachineGroupDetail();
             List<MachineDetail> machineDetails = new ArrayList<>();
-            machineGroupDetail.setMachineTypesModels(machineTypesModelsService.mapToDTO(
-                    machineTypesModelsRepository.findById(pom.getMachineGroup().getMachineGroupId()).orElse(null),
+            MachinesModels machine = machinesModelsRepository.findByMachineGroupId(pom.getMachineGroup().getMachineGroupId());
+            machineGroupDetail.setMachineTypesModels( machineTypesModelsService.mapToDTO(
+                    machineTypesModelsRepository.findById(machine.getLine().getLineId()).orElse(null),
                     new MachineTypesModelsDTO()));
             detail.setProductionOrderModels(productionOrderModelsService.mapToDTO(productionOrderModelsRepository.getByWorkOrderAndMachineGroupID(
                     planningWO.getWoId(), pom.getMachineGroup().getMachineGroupId()
